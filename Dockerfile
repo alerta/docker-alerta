@@ -18,12 +18,18 @@ RUN wget -q -O - https://github.com/alerta/angular-alerta-webui/tarball/master |
 RUN mv alerta-angular-alerta-webui-*/app /app
 
 COPY alerta.conf /etc/apache2/sites-available/000-default.conf
-ADD start.sh /start.sh
 
 RUN mkdir /logs && chmod 777 /logs
-RUN echo "LOG_FILE = '/logs/alerta.log'" >/api/alerta/settings.py
 
-RUN sed -i -e 's,"http://"+window.location.hostname+":8080","",' /app/config.js
+ADD config.js.sh /config.js.sh
+ADD settings.py.sh /settings.py.sh
+ADD start.sh /start.sh
+
+ENV AUTH_REQUIRED False
+ENV CLIENT_ID not-set
+ENV REDIRECT_URL not-set
+ENV ALLOWED_EMAIL_DOMAIN *
 
 EXPOSE 80
-CMD ["/start.sh"]
+CMD /config.js.sh && /settings.py.sh && /start.sh
+
