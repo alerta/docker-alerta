@@ -10,20 +10,17 @@ RUN mv guardian-alerta-* /api
 RUN pip install -r /api/requirements.txt
 RUN pip install gunicorn supervisor
 
-
 RUN wget -q -O - https://github.com/alerta/angular-alerta-webui/tarball/master | tar zxf -
 RUN mv alerta-angular-alerta-webui-*/app /app
-
-ADD nginx.conf /nginx.conf
-
-ADD config.js.sh /config.js.sh
-ADD settings.py.sh /settings.py.sh
 
 ENV AUTH_REQUIRED False
 ENV CLIENT_ID not-set
 ENV REDIRECT_URL not-set
 ENV ALLOWED_EMAIL_DOMAIN *
 
+ADD config.js.sh /config.js.sh
+ADD settings.py.sh /settings.py.sh
+ADD nginx.conf /nginx.conf
 ADD supervisord.conf /etc/supervisord.conf
 
 EXPOSE 80
