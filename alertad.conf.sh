@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cat >/api/alerta/settings.py << EOF
+cat >/alertad.conf << EOF
 
 DEBUG = True
 USE_STDERR = True
