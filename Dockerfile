@@ -11,7 +11,7 @@ RUN pip install gunicorn supervisor
 RUN wget -q -O - https://github.com/alerta/angular-alerta-webui/tarball/master | tar zxf -
 RUN mv alerta-angular-alerta-webui-*/app /app
 
-ENV ALERTA_SVR_CONFIG_FILE /alertad.conf
+ENV ALERTA_SVR_CONF_FILE /alertad.conf
 ENV AUTH_REQUIRED False
 ENV CLIENT_ID not-set
 ENV REDIRECT_URL not-set
