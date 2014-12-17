@@ -74,7 +74,7 @@ A command-line tool for alerta is available. To install it run:
 Configuration file `$HOME/.alerta.conf`:
 
     [DEFAULT]
-    endpoint = http://<docker>:<port>
+    endpoint = http://<docker>:<port>/api
 
 If authentication is enabled (ie. `AUTH_REQUIRED` is `True`), then create a new API key in the alerta console and add the key to the configuration file. For example:
 
