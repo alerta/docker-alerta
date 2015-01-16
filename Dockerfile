@@ -14,7 +14,7 @@ RUN mv alerta-angular-alerta-webui-*/app /app
 ENV ALERTA_SVR_CONF_FILE /alertad.conf
 ENV AUTH_REQUIRED False
 ENV CLIENT_ID not-set
-ENV REDIRECT_URL not-set
+ENV CLIENT_SECRET not-set
 ENV ALLOWED_EMAIL_DOMAIN *
 
 ADD config.js.sh /config.js.sh

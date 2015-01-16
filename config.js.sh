@@ -5,7 +5,7 @@ cat >/app/config.js << EOF
 angular.module('config', [])
   .constant('config', {
     'endpoint'    : "/api",
-    'client_id'   : "$CLIENT_ID",
-    'redirect_url': "$REDIRECT_URL"
+    'provider'    : "google",
+    'client_id'   : "$CLIENT_ID"
   });
 EOF
