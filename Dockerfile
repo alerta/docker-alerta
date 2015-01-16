@@ -24,4 +24,3 @@ ADD supervisord.conf /etc/supervisord.conf
 
 EXPOSE 80
 CMD /config.js.sh && /alertad.conf.sh && supervisord -n
-
