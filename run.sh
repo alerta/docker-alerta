@@ -1,11 +1,28 @@
 #!/bin/bash
 
-DOCKER_HOST="tcp://54.76.228.10:4242" 
+# To build and run docker images:
+#
+#    $ export VERSION=1.0
+#    $ docker build -t="alerta/test:$VERSION" .
+#    $ run.sh alerta/test:$VERSION
+
+IMAGE=${1:-alerta/alerta-web} && shift
+
+DOCKER_HOST="tcp://52.17.76.5:4243"
+
+docker run --name alerta-db -d mongo
+docker pull alerta/alerta-web
 
 AUTH_REQUIRED=True
-CLIENT_ID=988466068957-0lkeb0u8takpfsoasbciou2f44crhk0k.apps.googleusercontent.com
-REDIRECT_URL=http://docker.alerta.io:49901/oauth2callback.html
-ALLOWED_EMAIL_DOMAIN=guardian.co.uk
+PROVIDER=google
+CLIENT_ID=
+CLIENT_SECRET=
+ALLOWED_EMAIL_DOMAIN=example.com
 
-docker run --link alerta-db:mongo -e AUTH_REQUIRED=$AUTH_REQUIRED -e CLIENT_ID=$CLIENT_ID -e REDIRECT_URL=$REDIRECT_URL -t -i -p 49901:80 $*
-
+docker run --link alerta-db:mongo \
+-e AUTH_REQUIRED=$AUTH_REQUIRED \
+-e PROVIDER=$PROVIDER \
+-e CLIENT_ID=$CLIENT_ID \
+-e CLIENT_SECRET=$CLIENT_SECRET \
+-e ALLOWED_EMAIL_DOMAIN=$ALLOWED_EMAIL_DOMAIN \
+-t -i -p 49901:80 $IMAGE $*
