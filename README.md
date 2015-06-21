@@ -35,34 +35,28 @@ To check running processes and tail the application and web server logs:
 Configuration
 -------------
 
-To make it easy to get going with alerta on docker quickly, the default image will **not** require users to login. However, if logins aren't enabled then certain features in the web console are not available, such as:
+To make it easy to get going with alerta on docker quickly, the default image will use Basic Auth for user logins.
 
-  * watching alerts
-  * creating API keys
-  * adding users to whitelist
+To allow users to login using Google OAuth, go to the [Google Developer Console][1] and create a new client ID for a web application. Then set the `CLIENT_ID` and `CLIENT_SECRET` environment variables on the command line to `docker run` as follows:
 
-To allow users to login, go to the [Google Developer Console][1] and create a new client ID for a web application. Then set the `CLIENT_ID` and `REDIRECT_URL` environment variables on the command line to `docker run` as follows:
-
-    $ export CLIENT_ID=988466068957-example-client-id.apps.googleusercontent.com
-    $ export REDIRECT_URL=http://<docker>:<port>/oauth2callback.html
-
-Important: The Redirect URL can not be an IP address.
+    $ export CLIENT_ID=379647311730-6tfdcopl5fodke08el52nnoj3x8mpl3.apps.googleusercontent.com
+    $ export CLIENT_SECRET=UpJxs02c_bx9GlI3X8MPL3-p
 
 Now pass in the defined environment variables to the `docker run` command:
 
-    $ docker run --link alerta-db:mongo -e CLIENT_ID=$CLIENT_ID -e REDIRECT_URL=$REDIRECT_URL -d -p <port>:80 alerta/alerta-web
+    $ docker run --link alerta-db:mongo -e PROVIDER=google -e CLIENT_ID=$CLIENT_ID -e CLIENT_SECRET=$CLIENT_SECRET -d -p <port>:80 alerta/alerta-web
 
-This will allow users to login but will only make it optional. To enforce users to login set the `AUTH_REQUIRED` environment variable to `True` as follows:
+This will allow users to login but will only make it optional. To enforce users to login additionally set the `AUTH_REQUIRED` environment variable to `True` when starting the docker image:
 
-    $ export AUTH_REQUIRED=True
-    $ docker run --link alerta-db:mongo -e AUTH_REQUIRED=$AUTH_REQUIRED -e CLIENT_ID=$CLIENT_ID -e REDIRECT_URL=$REDIRECT_URL -d -p <port>:80 alerta/alerta-web
+    $ docker run --link alerta-db:mongo -e AUTH_REQUIRED=True -e ...
 
 To restrict logins to a certain email domain set the `ALLOWED_EMAIL_DOMAIN` environment variable as follows:
 
-    $ export ALLOWED_EMAIL_DOMAIN=example.com
-    $ docker run --link alerta-db:mongo -e AUTH_REQUIRED=$AUTH_REQUIRED -e CLIENT_ID=$CLIENT_ID -e REDIRECT_URL=$REDIRECT_URL -e ALLOWED_EMAIL_DOMAIN=$ALLOWED_EMAIL_DOMAIN -d -p <port>:80 alerta/alerta-web
+    $ docker run --link alerta-db:mongo -e ALLOWED_EMAIL_DOMAIN=example.com ...
 
 Individual users whose email domains do not match the `ALLOWED_EMAIL_DOMAIN` setting can be added to a user whitelist in the console under the `Configuration / Users` menu option.
+
+GitHub and Twitter can also be used as the OAuth providers by setting the `PROVIDER` environment variable to `github` and `twitter` respectively.
 
 Command-line Tool
 -----------------
