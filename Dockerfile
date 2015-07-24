@@ -2,8 +2,7 @@
 FROM ubuntu:latest
 MAINTAINER Nick Satterly <nick.satterly@theguardian.com>
 
-RUN apt-get update
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git wget build-essential python python-setuptools python-pip python-dev libffi-dev nginx
+RUN apt-get update && apt-get install -y git wget build-essential python python-setuptools python-pip python-dev libffi-dev nginx
 
 RUN pip install alerta-server
 RUN pip install gunicorn supervisor
