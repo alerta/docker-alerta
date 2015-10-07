@@ -7,5 +7,6 @@ angular.module('config', [])
     'endpoint'    : "/api",
     'provider'    : "$PROVIDER",
     'client_id'   : "$CLIENT_ID"
-  });
+  })
+  .constant('colors', {});
 EOF
