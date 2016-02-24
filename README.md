@@ -54,9 +54,7 @@ To restrict logins to a certain email domain set the `ALLOWED_EMAIL_DOMAIN` envi
 
     $ docker run --link alerta-db:mongo -e ALLOWED_EMAIL_DOMAIN=example.com ...
 
-Individual users whose email domains do not match the `ALLOWED_EMAIL_DOMAIN` setting can be added to a user whitelist in the console under the `Configuration / Users` menu option.
-
-GitHub and Twitter can also be used as the OAuth providers by setting the `PROVIDER` environment variable to `github` and `twitter` respectively.
+GitHub and GitLab can also be used as the OAuth2 providers by setting the `PROVIDER` environment variable to `github` and `gitlab` respectively.
 
 Command-line Tool
 -----------------
@@ -84,6 +82,6 @@ More information about alerta can be found at http://docs.alerta.io
 License
 -------
 
-Copyright (c) 2014 Nick Satterly. Available under the MIT License.
+Copyright (c) 2014-2016 Nick Satterly. Available under the MIT License.
 
 [1]: <https://console.developers.google.com> "Google Developer Console"
