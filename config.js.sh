@@ -7,6 +7,7 @@ angular.module('config', [])
     'endpoint'    : "/api",
     'provider'    : "$PROVIDER",
     'client_id'   : "$CLIENT_ID",
+    'gitlab_url'  : "$GITLAB_URL"
 
     'colors'      : {}
   });
