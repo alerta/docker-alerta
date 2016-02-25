@@ -2,8 +2,8 @@
 
 cat >/alertad.conf << EOF
 DEBUG = True
-
 SECRET_KEY = '$(< /dev/urandom tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -c 32)'
+BASE_URL = '$BASE_URL'
 
 AUTH_REQUIRED = $AUTH_REQUIRED
 ADMIN_USERS = ['$ADMIN_USERS']

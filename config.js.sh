@@ -6,7 +6,8 @@ angular.module('config', [])
   .constant('config', {
     'endpoint'    : "/api",
     'provider'    : "$PROVIDER",
-    'client_id'   : "$CLIENT_ID"
-  })
-  .constant('colors', {});
+    'client_id'   : "$CLIENT_ID",
+
+    'colors'      : {}
+  });
 EOF

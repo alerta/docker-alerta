@@ -11,6 +11,7 @@ RUN wget -q -O - https://github.com/alerta/angular-alerta-webui/tarball/master |
 RUN mv alerta-angular-alerta-webui-*/app /app
 
 ENV ALERTA_SVR_CONF_FILE /alertad.conf
+ENV BASE_URL /api
 ENV AUTH_REQUIRED False
 ENV ADMIN_USERS not-set
 ENV CUSTOMER_VIEWS False
