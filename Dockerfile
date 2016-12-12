@@ -4,7 +4,7 @@ MAINTAINER Nick Satterly <nick.satterly@theguardian.com>
 
 RUN apt-get update && apt-get install -y git wget build-essential python python-setuptools python-pip python-dev libffi-dev nginx
 
-RUN pip install alerta-server
+RUN pip install alerta-server alerta
 RUN pip install gunicorn supervisor
 
 RUN wget -q -O - https://github.com/alerta/angular-alerta-webui/tarball/master | tar zxf -
