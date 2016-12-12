@@ -11,8 +11,8 @@ services:
       - ADMIN_USERS=${ADMIN_USERS:-not-set}
       - CUSTOMER_VIEWS=${CUSTOMER_VIEWS:-False}
       - PROVIDER=${PROVIDER:-basic}
-      - CLIENT_ID=${CLIENT_ID}
-      - CLIENT_SECRET=${CLIENT_SECRET}
+      - CLIENT_ID=${CLIENT_ID:-not-set}
+      - CLIENT_SECRET=${CLIENT_SECRET:-not-set}
       - ALLOWED_EMAIL_DOMAIN=${ALLOWED_EMAIL_DOMAIN:-*}
       - ALLOWED_GITHUB_ORGS=${ALLOWED_GITHUB_ORGS:-*}
       - GITLAB_URL=${GITLAB_URL:-not-set}
