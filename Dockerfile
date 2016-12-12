@@ -4,6 +4,7 @@ MAINTAINER Nick Satterly <nick.satterly@theguardian.com>
 
 RUN apt-get update && apt-get install -y git wget build-essential python python-setuptools python-pip python-dev libffi-dev nginx
 
+RUN pip install --upgrade pip
 RUN pip install alerta-server alerta
 RUN pip install gunicorn supervisor
 
@@ -32,4 +33,4 @@ ADD nginx.conf /nginx.conf
 ADD supervisord.conf /etc/supervisord.conf
 
 EXPOSE 80
-CMD /config.js.sh && /alertad.conf.sh && supervisord -n
+CMD /config.js.sh && /alertad.conf.sh && supervisord -c /etc/supervisord.conf
