@@ -5,8 +5,8 @@ MAINTAINER Nick Satterly <nick.satterly@theguardian.com>
 RUN apt-get update && apt-get install -y git wget build-essential python python-setuptools python-pip python-dev libffi-dev nginx
 
 RUN pip install --upgrade pip
+RUN pip install uwsgi supervisor
 RUN pip install alerta-server alerta
-RUN pip install gunicorn supervisor
 
 RUN wget -q -O - https://github.com/alerta/angular-alerta-webui/tarball/master | tar zxf -
 RUN mv alerta-angular-alerta-webui-*/app /app
@@ -29,6 +29,8 @@ ENV ALLOWED_ENVIRONMENTS Production,Development
 
 ADD config.js.sh /config.js.sh
 ADD alertad.conf.sh /alertad.conf.sh
+RUN echo "from alerta.app import app" >/wsgi.py
+ADD uwsgi.ini /uwsgi.ini
 ADD nginx.conf /nginx.conf
 ADD supervisord.conf /etc/supervisord.conf
 
