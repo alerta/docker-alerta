@@ -1,6 +1,3 @@
-#!/bin/bash
-
-cat >/app/config.js << EOF
 'use strict';
 
 angular.module('config', [])
@@ -33,4 +30,3 @@ angular.module('config', [])
       'new'  : '/audio/Bike Horn.mp3'
     }
   });
-EOF
