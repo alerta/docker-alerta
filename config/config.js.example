@@ -3,10 +3,7 @@
 angular.module('config', [])
   .constant('config', {
     'endpoint'    : "/api",
-    'provider'    : "$PROVIDER",
-    'client_id'   : "$CLIENT_ID",
-    'gitlab_url'  : "$GITLAB_URL",
-
+    'provider'    : "basic",
     'colors'      : {
       'severity': {
         'critical'     : '#D8122A',

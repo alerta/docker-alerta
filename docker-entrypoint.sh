@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 # Generate web console config, if not supplied
 if [ ! -f "$ALERTA_WEB_CONF_FILE" ]; then
@@ -27,7 +27,7 @@ OAUTH2_CLIENT_ID = '$CLIENT_ID'
 OAUTH2_CLIENT_SECRET = '$CLIENT_SECRET'
 EOF
 else
-  PLUGINS=$(python -c "exec(open('$ALERTA_SVR_CONF_FILE')); print ','.join(PLUGINS)")
+  PLUGINS=$(python -c "exec(open('$ALERTA_SVR_CONF_FILE')); print(','.join(PLUGINS))")
 fi
 
 # Install plugins

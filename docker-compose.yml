@@ -1,0 +1,19 @@
+version: '2.1'
+services:
+  web:
+    build: .
+    volumes:
+      - $PWD/config/alertad.conf.example:/etc/alertad.conf
+      - $PWD/config/config.js.example:/app/config.js
+    ports:
+      - "8181:80"
+    depends_on:
+      - db
+    environment:
+      - MONGO_URI=mongodb://db:27017/monitoring
+    restart: always
+  db:
+    image: mongo
+    volumes:
+      - ./mongodb:/data/db
+    restart: always
