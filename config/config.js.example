@@ -1,15 +1,9 @@
-#!/bin/bash
-
-cat >/app/config.js << EOF
 'use strict';
 
 angular.module('config', [])
   .constant('config', {
     'endpoint'    : "/api",
-    'provider'    : "$PROVIDER",
-    'client_id'   : "$CLIENT_ID",
-    'gitlab_url'  : "$GITLAB_URL",
-
+    'provider'    : "basic",
     'colors'      : {
       'severity': {
         'critical'     : '#D8122A',
@@ -33,4 +27,3 @@ angular.module('config', [])
       'new'  : '/audio/Bike Horn.mp3'
     }
   });
-EOF
