@@ -1,7 +1,10 @@
 What is Alerta?
 ===============
 
-???
+The alerta monitoring system is a tool used to consolidate and
+de-duplicate alerts from multiple sources for quick ‘at-a-glance’
+visualisation. With just one system you can monitor alerts from
+many other monitoring tools on a single screen.
 
 How to use this image
 =====================
@@ -22,73 +25,89 @@ Browse to the alerta console at:
 
     http://<docker>:<port>/
 
-To check running processes and tail the application and web server logs:
-
-    $ docker top alerta-web
-    $ docker logs -f alerta-web
-
 Environment Variables
 ---------------------
 
-The following environment variables are also honoured for configuring
+The following environment variables are supported for configuring
 the `alerta-web` container:
 
 `DEBUG`
+    - debug mode. Set to ``True`` for increased logging.
 
 `BASE_URL`
+    - used to fix relative links. (default: `/api`)
 
 `SECRET_KEY`
+    - a unique, randomly generated sequence of ASCII characters.
 
 `MONGO_URI`
+    - MongoDB connection URI string.
 
 `AUTH_REQUIRED`
+    - require users to authenticate when using web UI or `alerta` CLI.
 
 `ADMIN_USERS`
+    - list of logins that should be granted "admin" role.
 
 `CUSTOMER_VIEWS`
+    - enable alert views partitioned by customer. (default:``False``)
 
 `OAUTH2_CLIENT_ID`
+    - client ID required by OAuth2 provider
 
 `OAUTH2_CLIENT_SECRET`
+    - client secret required by OAuth2 provider
 
 `ALLOWED_EMAIL_DOMAINS`
+    - list of authorised email domains when using Google
 
 `GITHUB_URL`
+    - GitHub Enteprise URL for privately run GitHub server
 
 `ALLOWED_GITHUB_ORGS`
+    - list of authorised GitHub organisations when using GitHub
 
 `GITLAB_URL`
+    - GitLab website URL for public or privately run GitLab server
 
 `ALLOWED_GITLAB_GROUPS`
+    - list of authorised GitLab groups when using GitLab
 
 `CORS_ORIGINS`
+    - list of URL origins that can access the API
 
 `MAIL_FROM`
+    - valid email address from which verification emails are sent
 
 `SMTP_PASSWORD`
+    - password for ``MAIL_FROM`` email account
 
 `PLUGINS`
+    - list of plugins to automatically install and enable. (default: `reject`)
 
 Configuration Files
 -------------------
 
-To use configuration files instead of environment variables ...
+To set configuration settings not supported by environment variable use
+configuration files instead. For example:
 
-    $ docker run -v $PWD/config/alertad.conf:/etc/alertad.conf --network dbnet -p 8181:80 48e84ce69d3a
+    $ docker run -v $PWD/config/alertad.conf:/etc/alertad.conf \
+      -v $PWD/config/config.js:/app/config.js \
+      -p 80 alerta/alerta-web
 
 Installing Plugins
 ------------------
 
 Plugins listed in the `PLUGINS` environment variable or in the `PLUGINS`
 server configuration file setting will be installed automatically at
-start time.
+container start time.
 
-Alternatively, install them as an additional image layer.
+Alternatively, install all wanted plugins as an additional image layer.
 
 Authentication
 --------------
 
-To make it easy to get going with alerta on docker quickly, the default image
+To make it easy to get going with Alerta on docker quickly, the default image
 will use Basic Auth for user logins and login will be optional.
 
 To allow users to login using Google OAuth, go to the [Google Developer Console][1]
