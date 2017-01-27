@@ -27,6 +27,7 @@ RUN set -x && \
 
 ENV ALERTA_SVR_CONF_FILE /etc/alertad.conf
 ENV ALERTA_WEB_CONF_FILE /app/config.js
+ENV ALERTA_CONF_FILE /root/alerta.conf
 
 ENV BASE_URL /api
 ENV PROVIDER basic
