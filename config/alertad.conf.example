@@ -3,8 +3,6 @@ SECRET = "f1ef432b-b8eb-4c5f-a24b-47f74da5efdb"
 AUTH_REQUIRED = True
 MONGO_URI = 'mongodb://db:27017/monitoring'
 
-PLUGINS = ['reject', 'geoip', 'hipchat']
+PLUGINS = ['reject', 'geoip', 'normalise']
 GEOIP_URL = 'http://ip-api.com/json'
-HIPCHAT_ROOM = 'alerts'
-HIPCHAT_API_KEY =  'W4Dll5plS0qrqXCpPwjwzF9pO2TJI2Oou9Xaq8je'
 DASHBOARD_URL = 'http://try.alerta.io'
