@@ -2,6 +2,7 @@
 
 set -ex
 
+ADMIN_USER=$(echo $ADMIN_USERS | cut -d, -f1)
 MONGO_ADDR=$(echo $MONGO_URI | sed -e 's/mongodb:\/\///')
 
 # Generate web console config, if not supplied
@@ -37,7 +38,7 @@ KEY=$(openssl rand -base64 32 | cut -c1-40)
 EXPIRE_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z" -d +1year)
 /usr/bin/mongo $MONGO_ADDR --eval "db.keys.insert( \
     { \
-        user:\"internal\", \
+        user:\"${ADMIN_USER:-internal}\", \
         key:\"${KEY}\", \
         type:\"read-write\", \
         text:\"cron jobs\", \
