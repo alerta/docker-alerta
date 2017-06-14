@@ -15,7 +15,9 @@ To use this image run a `mongo` container first:
 
 Then link to the `mongo` container when running the `alerta-web` container:
 
-    $ docker run --name alerta-web --link alerta-db:mongo -d -p <port>:80 alerta/alerta-web
+    $ export MONGO_URI=mongodb://db:27017/monitoring
+    $ docker run --name alerta-web -e MONGO_URI=$MONGO_URI --link alerta-db:db \
+    -d -p <port>:80 alerta/alerta-web
 
 The API endpoint is at:
 
