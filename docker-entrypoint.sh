@@ -20,6 +20,13 @@ angular.module('config', [])
 EOF
 fi
 
+# Massage plugins variable for config file
+if [ -n "$PLUGINS" ]; then
+  PLUGS="['reject'$( { echo -n $PLUGINS | echo -e $(sed 's/\w+//g' | sed 's/[^A-z0-9]/\\\n/g') |grep -v ^reject$ | while read l; do echo -n ",'${l}'"; done; } )]"
+else
+  PLUGS="['reject']";
+fi
+
 # Generate server config, if not supplied
 if [ ! -f "$ALERTA_SVR_CONF_FILE" ]; then
   cat >$ALERTA_SVR_CONF_FILE << EOF
@@ -28,6 +35,7 @@ BASE_URL = '$BASE_URL'
 SECRET_KEY = '$(< /dev/urandom tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -c 32)'
 OAUTH2_CLIENT_ID = '$CLIENT_ID'
 OAUTH2_CLIENT_SECRET = '$CLIENT_SECRET'
+PLUGINS = ${PLUGS}
 EOF
 else
   PLUGINS=$(python -c "exec(open('$ALERTA_SVR_CONF_FILE')); print(','.join(PLUGINS))")
