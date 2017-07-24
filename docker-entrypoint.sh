@@ -34,12 +34,12 @@ else
 fi
 
 # Generate API key for admin
-KEY=$(openssl rand -base64 32 | cut -c1-40)
+ADMIN_KEY=${ADMIN_KEY:-$(openssl rand -base64 32 | cut -c1-40)}
 EXPIRE_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z" -d +1year)
 /usr/bin/mongo $MONGO_ADDR --eval "db.keys.insert( \
     { \
         user:\"${ADMIN_USER:-internal}\", \
-        key:\"${KEY}\", \
+        key:\"${ADMIN_KEY}\", \
         type:\"read-write\", \
         text:\"cron jobs\", \
         expireTime: new Date(\"$EXPIRE_TIME\"), \
