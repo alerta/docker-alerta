@@ -28,6 +28,7 @@ BASE_URL = '$BASE_URL'
 SECRET_KEY = '$(< /dev/urandom tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -c 32)'
 OAUTH2_CLIENT_ID = '$CLIENT_ID'
 OAUTH2_CLIENT_SECRET = '$CLIENT_SECRET'
+PLUGINS = $(python -c "print('${PLUGINS:-reject}'.split(','))")
 EOF
 else
   PLUGINS=$(python -c "exec(open('$ALERTA_SVR_CONF_FILE')); print(','.join(PLUGINS))")
