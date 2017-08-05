@@ -1,7 +1,8 @@
 version: '2.1'
 services:
   web:
-    build: .
+    # build: .
+    image: alerta/alerta-web
     volumes:
       - $PWD/config/alertad.conf.example:/etc/alertad.conf
       - $PWD/config/config.js.example:/app/config.js
@@ -11,7 +12,6 @@ services:
       - db
     environment:
       - MONGO_URI=mongodb://db:27017/monitoring
-      - ADMIN_KEY=${ALERTA_ADMIN_API_KEY}
     restart: always
   db:
     image: mongo
