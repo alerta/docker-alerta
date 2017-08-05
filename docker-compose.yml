@@ -11,6 +11,7 @@ services:
       - db
     environment:
       - MONGO_URI=mongodb://db:27017/monitoring
+      - ADMIN_KEY=${ALERTA_ADMIN_API_KEY}
     restart: always
   db:
     image: mongo
