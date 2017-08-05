@@ -41,6 +41,7 @@ EXPIRE_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z" -d +1year)
     { \
         user:\"${ADMIN_USER:-internal}\", \
         key:\"${ADMIN_KEY}\", \
+        scopes:[\"read\",\"write\",\"admin\"], \
         type:\"read-write\", \
         text:\"cron jobs\", \
         expireTime: new Date(\"$EXPIRE_TIME\"), \
