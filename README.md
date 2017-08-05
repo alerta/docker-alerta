@@ -51,6 +51,9 @@ the `alerta-web` container:
 `ADMIN_USERS`
     - list of logins that should be granted "admin" role.
 
+`ADMIN_KEY`
+    - set an "admin" API key for use by the `alerta` CLI
+
 `CUSTOMER_VIEWS`
     - enable alert views partitioned by customer. (default:``False``)
 
