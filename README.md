@@ -88,7 +88,10 @@ the `alerta-web` container:
     - password for ``MAIL_FROM`` email account
 
 `PLUGINS`
-    - list of plugins to automatically install and enable. (default: `reject`)
+    - list of plugins to enable.
+
+`INSTALL_PLUGINS`
+    - list of plugins to automatically install.
 
 Configuration Files
 -------------------
