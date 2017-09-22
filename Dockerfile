@@ -1,6 +1,6 @@
 
 FROM ubuntu:latest
-MAINTAINER Nick Satterly <nick.satterly@theguardian.com>
+LABEL maintainer="Nick Satterly <nick.satterly@theguardian.com>"
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -13,11 +13,12 @@ RUN apt-get update && apt-get install -y \
     python-dev \
     python-pip \
     python-setuptools \
-    wget
+    wget \
+    uuid
 
 RUN set -x && \
   pip install pip --upgrade && \
-  pip install uwsgi supervisor alerta-server alerta
+  pip install uwsgi supervisor alerta alerta-server
 
 RUN wget -q -O - https://github.com/alerta/angular-alerta-webui/tarball/master | tar zxf -
 RUN set -x && \
@@ -34,7 +35,7 @@ ENV PROVIDER basic
 ENV CLIENT_ID not-set
 ENV CLIENT_SECRET not-set
 
-RUN echo "from alerta.app import app" >/wsgi.py
+ADD wsgi.py /wsgi.py
 ADD uwsgi.ini /uwsgi.ini
 ADD nginx.conf /nginx.conf
 ADD housekeepingAlerts.js /housekeepingAlerts.js

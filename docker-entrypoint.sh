@@ -38,10 +38,11 @@ else
 fi
 
 # Generate API key for admin
-ADMIN_KEY=${ADMIN_KEY:-$(openssl rand -base64 32 | cut -c1-40)}
+ADMIN_KEY=${ADMIN_KEY:-$(openssl rand -base64 32 | cut -c1-40 | tr '+/' '-_')}
 EXPIRE_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.000Z" -d +1year)
 /usr/bin/mongo "${MONGO_ADDR}" --eval "db.keys.insert( \
     { \
+        _id:\"$(uuid | tr '[:upper:]' '[:lower:]')\", \
         user:\"${ADMIN_USER:-internal}\", \
         key:\"${ADMIN_KEY}\", \
         scopes:[\"read\",\"write\",\"admin\"], \

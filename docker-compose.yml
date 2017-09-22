@@ -12,6 +12,7 @@ services:
       - db
     environment:
       - MONGO_URI=mongodb://db:27017/monitoring
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
     restart: always
   db:
     image: mongo
