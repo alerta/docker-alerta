@@ -60,7 +60,7 @@ key = ${KEY}
 EOF
 
 # Install plugins
-echo -n "${INSTALL_PLUGINS}" | sed 's/,/\n/g;' | sed '/^$/d' | while read plugin
+echo "${INSTALL_PLUGINS}" | sed 's/,/\n/g;' | sed '/^$/d' | while read plugin
 do
   echo "Installing plugin '${plugin}'"
   pip install git+https://github.com/alerta/alerta-contrib.git#subdirectory=plugins/$plugin
