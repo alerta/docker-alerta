@@ -1,0 +1,31 @@
+version: '2.1'
+services:
+  web:
+    environment:
+      - DATABASE_URL=mongodb://db:27017,db1:27018/monitoring?replicaSet=rs0
+  db:
+    image: mongo
+    command: mongod --replSet rs0 --smallfiles --oplogSize 128
+    ports:
+      - 27017
+    volumes:
+      - /data/db
+      - /data/configdb
+    restart: always
+
+  db1:
+    image: mongo
+    command: mongod --replSet rs0 --smallfiles --oplogSize 128
+    ports:
+      - 27017
+    volumes:
+      - /data/db
+      - /data/configdb
+
+  db2:
+    image: mongo
+    command: mongod --replSet rs0  --smallfiles --oplogSize 128
+    ports:
+      - 27017
+    volumes:
+      - /data/db

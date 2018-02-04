@@ -1,0 +1,11 @@
+version: '2.1'
+services:
+  web:
+    environment:
+      - DATABASE_URL=mongodb://db:27017/monitoring
+  db:
+    image: mongo
+    volumes:
+      - ./mongodb:/data/db
+    restart: always
+  
