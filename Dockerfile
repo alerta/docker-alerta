@@ -1,48 +1,55 @@
+FROM python:3
+ENV PYTHONUNBUFFERED 1
 
-FROM ubuntu:latest
-LABEL maintainer="Nick Satterly <nick.satterly@theguardian.com>"
+LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
+LABEL version="5.0.11"
+LABEL url="https://alerta.io"
+LABEL vcs-url="https://github.com/alerta/docker-alerta"
+
+RUN groupadd -r alerta && useradd --no-log-init -r -g alerta alerta
 
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    cron \
     git \
     libffi-dev \
+    libpq-dev \
     mongodb-clients \
     nginx \
-    python \
-    python-dev \
-    python-pip \
-    python-setuptools \
-    wget \
-    uuid
+    postgresql-client \
+    postgresql-client-common \
+    python3-dev \
+    supervisor \
+    wget
 
-RUN set -x && \
-  pip install pip --upgrade && \
-  pip install uwsgi supervisor alerta alerta-server
+RUN pip install --no-cache-dir virtualenv && \
+    virtualenv --python=python3 /venv && \
+    /venv/bin/pip install uwsgi alerta alerta-server
+ENV PATH $PATH:/venv/bin
 
-RUN wget -q -O - https://github.com/alerta/angular-alerta-webui/tarball/master | tar zxf -
-RUN set -x && \
-  mv alerta-angular-alerta-webui-*/app /app && \
-  rm -Rf /alerta-angular-alerta-webui-* && \
-  mv /app/config.js /app/config.js.orig
+ADD https://github.com/alerta/angular-alerta-webui/archive/master.tar.gz /tmp/web.tar.gz
+RUN tar zxvf /tmp/web.tar.gz -C /tmp && \
+    mv /tmp/angular-alerta-webui-master/app /web
 
-ENV ALERTA_SVR_CONF_FILE /etc/alertad.conf
-ENV ALERTA_WEB_CONF_FILE /app/config.js
-ENV ALERTA_CONF_FILE /root/alerta.conf
+COPY wsgi.py /app/wsgi.py
+COPY uwsgi.ini /app/uwsgi.ini
+
+COPY nginx.conf /app/nginx.conf
+RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx
+
+RUN chown -R alerta:alerta /app /venv /web
+USER alerta:alerta
+
+ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
+ENV ALERTA_CONF_FILE /app/alerta.conf
+ENV ALERTA_WEB_CONF_FILE /web/config.js
 
 ENV BASE_URL /api
 ENV PROVIDER basic
-ENV CLIENT_ID not-set
-ENV CLIENT_SECRET not-set
-
-ADD wsgi.py /wsgi.py
-ADD uwsgi.ini /uwsgi.ini
-ADD nginx.conf /nginx.conf
-ADD housekeepingAlerts.js /housekeepingAlerts.js
-ADD supervisord.conf /etc/supervisord.conf
+ENV INSTALL_PLUGINS ""
 
 EXPOSE 80
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+
+COPY supervisord.conf /app/supervisord.conf
+CMD ["supervisord", "-c", "/app/supervisord.conf"]

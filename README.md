@@ -9,14 +9,14 @@ many other monitoring tools on a single screen.
 How to use this image
 =====================
 
-To use this image run a `mongo` container first:
+To use this image run either a `mongo` or `postgres` container first:
 
     $ docker run --name alerta-db -d mongo
 
-Then link to the `mongo` container when running the `alerta-web` container:
+Then link to the database container when running the `alerta-web` container:
 
-    $ export MONGO_URI=mongodb://db:27017/monitoring
-    $ docker run --name alerta-web -e MONGO_URI=$MONGO_URI --link alerta-db:db \
+    $ export DATABASE_URL=mongodb://db:27017/monitoring
+    $ docker run --name alerta-web -e DATABASE_URL=$DATABASE_URL --link alerta-db:db \
     -d -p <port>:80 alerta/alerta-web
 
 The API endpoint is at:
@@ -34,25 +34,28 @@ The following environment variables are supported for configuring
 the `alerta-web` container:
 
 `DEBUG`
-    - debug mode. Set to ``True`` for increased logging.
+    - debug mode for increased logging. (eg. `DEBUG=1`)
 
 `BASE_URL`
-    - used to fix relative links. (default: `/api`)
+    - used to make links in API responses relative. (default: `/api`)
 
 `SECRET_KEY`
     - a unique, randomly generated sequence of ASCII characters.
 
-`MONGO_URI`
-    - MongoDB connection URI string.
+`DATABASE_URL`
+    - database connection URI string. Only MongoDB and Postgres allowed.
+
+`DATABASE_NAME`
+    - used to override database name in `DATABASE_URL`.
 
 `AUTH_REQUIRED`
     - require users to authenticate when using web UI or `alerta` CLI.
 
 `ADMIN_USERS`
-    - list of logins that should be granted "admin" role.
+    - comma-separated list of logins that will be created with "admin" role.
 
-`ADMIN_KEY`
-    - set an "admin" API key for use by the `alerta` CLI
+`ADMIN_PASSWORD`
+    - sets the password of all admins. Should be changed at first login.
 
 `CUSTOMER_VIEWS`
     - enable alert views partitioned by customer. (default:``False``)
@@ -78,6 +81,15 @@ the `alerta-web` container:
 `ALLOWED_GITLAB_GROUPS`
     - list of authorised GitLab groups when using GitLab
 
+`KEYCLOAK_URL`
+    - Keycloak URL
+
+`KEYCLOAK_REALM`
+    - Keycloak realm
+
+`ALLOWED_KEYCLOAK_ROLES`
+    - Keycloak roles
+
 `CORS_ORIGINS`
     - list of URL origins that can access the API
 
@@ -96,19 +108,28 @@ the `alerta-web` container:
 Configuration Files
 -------------------
 
-To set configuration settings not supported by environment variable use
+To set configuration settings not supported by environment variables use
 configuration files instead. For example:
 
     $ docker run -v $PWD/config/alertad.conf:/etc/alertad.conf \
       -v $PWD/config/config.js:/app/config.js \
       -p 80 alerta/alerta-web
 
+For a full list of server configuration options see http://docs.alerta.io.
+
 Installing Plugins
 ------------------
 
-Plugins listed in the `PLUGINS` environment variable or in the `PLUGINS`
-server configuration file setting will be installed automatically at
-container start time.
+Plugins listed in the `INSTALL_PLUGINS` environment variable will be installed
+automatically at container start time. Only plugins listed in `PLUGINS` will be
+enabled. This allows plugins to be installed and enabled at a later time.
+
+In the example below, the `reject` and `blackout` plugins are installed by
+default, the `slack` and `prometheus` plugins are also installed but of the
+two only the `slack` plugin is enabled:
+
+    PLUGINS=reject,blackout,slack
+    INSTALL_PLUGINS=slack,prometheus
 
 Alternatively, install all wanted plugins as an additional image layer.
 
@@ -149,7 +170,7 @@ provider see http://docs.alerta.io
 Docker Compose
 --------------
 
-Use `docker-compose` to create and start Alerta and MongoDB with
+Use `docker-compose` to create and start Alerta and Postgres with
 one command:
 
     $ docker-compose up
@@ -159,19 +180,28 @@ one command:
 ```yaml
 version: '2.1'
 services:
-  alerta-web:
+  web:
     image: alerta/alerta-web
     ports:
       - "8181:80"
     depends_on:
-      - alerta-db
+      - db
     environment:
-      - MONGO_URI=mongodb://alerta-db:27017/monitoring
+      - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - AUTH_REQUIRED=True
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - PLUGINS=reject,blackout,normalise,enhance
+      - INSTALL_PLUGINS=normalise,enhance
     restart: always
-  alerta-db:
-    image: mongo
+  db:
+    image: postgres
     volumes:
-      - ./mongodb:/data/db
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     restart: always
 ```
 
@@ -203,6 +233,6 @@ More information about Alerta can be found at http://docs.alerta.io
 License
 -------
 
-Copyright (c) 2014-2017 Nick Satterly. Available under the MIT License.
+Copyright (c) 2014-2018 Nick Satterly. Available under the MIT License.
 
 [1]: <https://console.developers.google.com> "Google Developer Console"

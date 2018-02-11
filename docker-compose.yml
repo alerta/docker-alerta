@@ -1,21 +1,22 @@
 version: '2.1'
 services:
   web:
-    # build: .
-    image: alerta/alerta-web
+    build: .
+    # image: alerta/alerta-web
     volumes:
-      - $PWD/config/alertad.conf.example:/etc/alertad.conf
-      - $PWD/config/config.js.example:/app/config.js
+        # - $PWD/config/alertad.conf.example:/etc/alertad.conf
+      - $PWD/config/config.js.example:/web/config.js
     ports:
       - "8181:80"
     depends_on:
       - db
     environment:
-      - MONGO_URI=mongodb://db:27017/monitoring
+      - DEBUG=1  # remove this line to turn DEBUG off
+      - AUTH_REQUIRED=True
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      # - ADMIN_USERS=admin@alerta.io
+      # - ADMIN_PASSWORD=password
+      - PLUGINS=reject,blackout,normalise,enhance
+      - INSTALL_PLUGINS=normalise,enhance
     restart: always
-  db:
-    image: mongo
-    volumes:
-      - ./mongodb:/data/db
-    restart: always
+  
