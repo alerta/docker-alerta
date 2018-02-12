@@ -25,17 +25,22 @@ EOF
 fi
 
 if [ ! -f "${RUN_ONCE}" ]; then
+  # Set BASE_URL
+  sed -i 's@!BASE_URL!@'"$BASE_URL"'@' /app/nginx.conf
+  sed -i 's@!BASE_URL!@'"$BASE_URL"'@' /app/supervisord.conf
+
   # Init admin users and API Keys
   if [ -n "${ADMIN_USERS}" ]; then
     alertad user --password ${ADMIN_PASSWORD:-alerta} --all
     alertad key --all
   fi
+
   # Generate alerta CLI config
   API_KEY=`alertad keys 2>/dev/null | head -1 | cut -d" " -f1`
   if [ -n "${API_KEY}" ]; then
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
-endpoint = http://localhost/api
+endpoint = http://localhost${BASE_URL}
 key = ${API_KEY}
 EOF
   fi

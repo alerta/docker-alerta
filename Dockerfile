@@ -27,7 +27,8 @@ ENV PATH $PATH:/venv/bin
 
 ADD https://github.com/alerta/angular-alerta-webui/archive/master.tar.gz /tmp/web.tar.gz
 RUN tar zxvf /tmp/web.tar.gz -C /tmp && \
-    mv /tmp/angular-alerta-webui-master/app /web
+    mv /tmp/angular-alerta-webui-master/app /web && \
+    mv /web/config.js /web/config.js.orig
 
 COPY wsgi.py /app/wsgi.py
 COPY uwsgi.ini /app/uwsgi.ini

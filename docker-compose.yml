@@ -3,15 +3,16 @@ services:
   web:
     build: .
     # image: alerta/alerta-web
-    volumes:
-        # - $PWD/config/alertad.conf.example:/etc/alertad.conf
-      - $PWD/config/config.js.example:/web/config.js
+    # volumes:
+    #   - $PWD/config/alertad.conf.example:/etc/alertad.conf
+    #   - $PWD/config/config.js.example:/web/config.js
     ports:
       - "8181:80"
     depends_on:
       - db
     environment:
       - DEBUG=1  # remove this line to turn DEBUG off
+      - BASE_URL=/api/v5
       - AUTH_REQUIRED=True
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       # - ADMIN_USERS=admin@alerta.io
