@@ -6,8 +6,6 @@ LABEL version="5.0.11"
 LABEL url="https://alerta.io"
 LABEL vcs-url="https://github.com/alerta/docker-alerta"
 
-RUN groupadd -r alerta && useradd --no-log-init -r -g alerta alerta
-
 RUN apt-get update && apt-get install -y \
     git \
     libffi-dev \
@@ -36,8 +34,8 @@ COPY uwsgi.ini /app/uwsgi.ini
 COPY nginx.conf /app/nginx.conf
 RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx
 
-RUN chown -R alerta:alerta /app /venv /web
-USER alerta:alerta
+RUN chown -R 1001:1001 /app /venv /web
+USER 1001
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
