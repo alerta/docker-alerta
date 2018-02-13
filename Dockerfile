@@ -34,7 +34,8 @@ COPY uwsgi.ini /app/uwsgi.ini
 COPY nginx.conf /app/nginx.conf
 RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx
 
-RUN chown -R 1001:1001 /app /venv /web
+RUN chgrp -R 0 /app /venv /web && \
+    chmod -R g=u /app /venv /web
 USER 1001
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
