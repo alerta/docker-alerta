@@ -6,8 +6,6 @@ LABEL version="5.0.11"
 LABEL url="https://alerta.io"
 LABEL vcs-url="https://github.com/alerta/docker-alerta"
 
-RUN groupadd -r -g 1001 alerta && useradd --no-log-init -r -u 1001 -g alerta alerta
-
 RUN apt-get update && apt-get install -y \
     git \
     libffi-dev \
