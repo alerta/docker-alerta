@@ -30,9 +30,7 @@ RUN tar zxvf /tmp/web.tar.gz -C /tmp && \
 
 COPY wsgi.py /app/wsgi.py
 COPY uwsgi.ini /app/uwsgi.ini
-
 COPY nginx.conf /app/nginx.conf
-RUN setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx
 
 RUN chgrp -R 0 /app /venv /web && \
     chmod -R g=u /app /venv /web
@@ -46,7 +44,7 @@ ENV BASE_URL /api
 ENV PROVIDER basic
 ENV INSTALL_PLUGINS ""
 
-EXPOSE 80
+EXPOSE 8080
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
