@@ -40,7 +40,7 @@ if [ ! -f "${RUN_ONCE}" ]; then
   if [ -n "${API_KEY}" ]; then
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
-endpoint = http://localhost${BASE_URL}
+endpoint = http://localhost:8080${BASE_URL}
 key = ${API_KEY}
 EOF
   fi
