@@ -183,7 +183,7 @@ services:
   web:
     image: alerta/alerta-web
     ports:
-      - "8181:80"
+      - "8080:8080"
     depends_on:
       - db
     environment:
