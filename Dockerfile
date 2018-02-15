@@ -2,9 +2,15 @@ FROM python:3
 ENV PYTHONUNBUFFERED 1
 
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
-LABEL version="5.0.11"
-LABEL url="https://alerta.io"
-LABEL vcs-url="https://github.com/alerta/docker-alerta"
+
+ARG BUILD_DATE
+ARG VCS_REF
+
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.url="http://alerta.io" \
+      org.label-schema.vcs-url="https://github.com/alerta/docker-alerta" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.schema-version="1.0.0-rc.1"
 
 RUN apt-get update && apt-get install -y \
     git \
