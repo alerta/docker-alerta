@@ -41,7 +41,9 @@ COPY uwsgi.ini /app/uwsgi.ini
 COPY nginx.conf /app/nginx.conf
 
 RUN chgrp -R 0 /app /venv /web && \
-    chmod -R g=u /app /venv /web
+    chmod -R g=u /app /venv /web \
+    useradd -u 1001 -g root -G root alerta
+
 USER 1001
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
