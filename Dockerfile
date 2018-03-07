@@ -42,7 +42,7 @@ COPY nginx.conf /app/nginx.conf
 
 RUN chgrp -R 0 /app /venv /web && \
     chmod -R g=u /app /venv /web && \
-    useradd -u 1001 -g root -G root alerta
+    useradd -u 1001 -g 0 alerta
 
 USER 1001
 
