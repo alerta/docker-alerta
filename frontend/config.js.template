@@ -1,0 +1,17 @@
+'use strict';
+
+angular.module('config', [])
+  .constant('config', {
+    'endpoint'        : ${ALERTA_API_SERVER},
+    'provider'        : "${AUTH_PROVIDER}", // google, github, gitlab, keycloak, pingfederate, saml2 or basic
+    'client_id'       : "${CLIENT_ID}",
+    'github_url'      : "${GITHUB_URL}",  // replace with your enterprise github server
+    'gitlab_url'      : "${GITLAB_URL}",  // replace with your gitlab server
+    'keycloak_url'    : "${KEYCLOAK_URL}",  // replace with your keycloak server
+    'keycloak_realm'  : "${KEYCLOAK_REALM}",  // replace with your keycloak realm
+    'pingfederate_url': "${PINGFEDERATE_URL}", // replace with your pingfederate server
+    'colors'          : ${COLORS}, // use default colors
+    'severity'        : ${SEVERITY}, // use default severity codes
+    'audio'           : ${AUDIO}, // no audio
+    'tracking_id'     : "${TRACKING_ID}"  // Google Analytics tracking ID eg. UA-NNNNNN-N
+  });
