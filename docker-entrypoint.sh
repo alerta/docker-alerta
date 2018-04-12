@@ -43,6 +43,11 @@ if [ ! -f "${RUN_ONCE}" ]; then
 endpoint = http://localhost:8080${BASE_URL}
 key = ${API_KEY}
 EOF
+  else
+    cat >${ALERTA_CONF_FILE} << EOF
+[DEFAULT]
+endpoint = http://localhost:8080${BASE_URL}
+EOF
   fi
 
   # Install plugins
