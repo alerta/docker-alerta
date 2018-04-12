@@ -17,7 +17,7 @@ Then link to the database container when running the `alerta-web` container:
 
     $ export DATABASE_URL=mongodb://db:27017/monitoring
     $ docker run --name alerta-web -e DATABASE_URL=$DATABASE_URL --link alerta-db:db \
-    -d -p <port>:80 alerta/alerta-web
+    -d -p <port>:8080 alerta/alerta-web
 
 The API endpoint is at:
 
@@ -113,7 +113,7 @@ configuration files instead. For example:
 
     $ docker run -v $PWD/config/alertad.conf:/etc/alertad.conf \
       -v $PWD/config/config.js:/app/config.js \
-      -p 80 alerta/alerta-web
+      -p <port>:8080 alerta/alerta-web
 
 For a full list of server configuration options see http://docs.alerta.io.
 
@@ -149,7 +149,7 @@ and `CLIENT_SECRET` environment variables on the command line as follows:
 Now pass in the defined environment variables to the `docker run` command:
 
     $ docker run --name alerta-web  -e PROVIDER=google -e CLIENT_ID=$CLIENT_ID \
-    -e CLIENT_SECRET=$CLIENT_SECRET -d -p <port>:80 alerta/alerta-web
+    -e CLIENT_SECRET=$CLIENT_SECRET -d -p <port>:8080 alerta/alerta-web
 
 This will allow users to login but will only make it optional. To enforce
 users to login you must also set the `AUTH_REQUIRED` environment variable to
