@@ -1,4 +1,4 @@
-version: '2.1'
+version: '2.2'
 services:
   web:
     build: .
@@ -12,7 +12,7 @@ services:
       - db
     environment:
       - DEBUG=1  # remove this line to turn DEBUG off
-      - BASE_URL=/api/v5
+      - BASE_URL=/alerta/api  # => web_url=/alerta
       - AUTH_REQUIRED=True
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       # - ADMIN_USERS=admin@alerta.io
@@ -20,4 +20,3 @@ services:
       - PLUGINS=reject,blackout,normalise,enhance
       - INSTALL_PLUGINS=normalise,enhance
     restart: always
-  

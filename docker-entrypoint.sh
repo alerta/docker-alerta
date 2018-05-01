@@ -29,6 +29,10 @@ if [ ! -f "${RUN_ONCE}" ]; then
   sed -i 's@!BASE_URL!@'"$BASE_URL"'@' /app/nginx.conf
   sed -i 's@!BASE_URL!@'"$BASE_URL"'@' /app/supervisord.conf
 
+  # Set Web URL
+  WEB_URL=${BASE_URL%/api}
+  sed -i 's@!WEB_URL!@'"${WEB_URL:=/}"'@' /app/nginx.conf
+
   # Init admin users and API Keys
   if [ -n "${ADMIN_USERS}" ]; then
     alertad user --password ${ADMIN_PASSWORD:-alerta} --all

@@ -1,4 +1,4 @@
-version: '2.1'
+version: '2.2'
 services:
   web:
     environment:
@@ -8,4 +8,3 @@ services:
     volumes:
       - ./mongodb:/data/db
     restart: always
-  

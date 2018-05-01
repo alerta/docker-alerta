@@ -1,4 +1,4 @@
-version: '2.1'
+version: '2.2'
 services:
   web:
     environment:
@@ -12,4 +12,3 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     restart: always
-  
