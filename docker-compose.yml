@@ -17,6 +17,7 @@ services:
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       # - ADMIN_USERS=admin@alerta.io
       # - ADMIN_PASSWORD=password
+      - ADMIN_KEY=demo-admin-key
       - PLUGINS=reject,blackout,normalise,enhance
       - INSTALL_PLUGINS=normalise,enhance
     restart: always

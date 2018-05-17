@@ -57,6 +57,9 @@ the `alerta-web` container:
 `ADMIN_PASSWORD`
     - sets the password of all admins. Should be changed at first login.
 
+`ADMIN_KEY`
+    - sets an admin API key.
+
 `CUSTOMER_VIEWS`
     - enable alert views partitioned by customer. (default:``False``)
 
