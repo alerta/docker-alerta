@@ -33,14 +33,19 @@ if [ ! -f "${RUN_ONCE}" ]; then
   WEB_URL=${BASE_URL%/api}
   sed -i 's@!WEB_URL!@'"${WEB_URL:=/}"'@' /app/nginx.conf
 
-  # Init admin users and API Keys
+  # Init admin users and API keys
   if [ -n "${ADMIN_USERS}" ]; then
     alertad user --password ${ADMIN_PASSWORD:-alerta} --all
     alertad key --all
+
+    # Create user-defined API key, if required
+    if [ -n "${ADMIN_KEY}" ]; then
+      alertad key --username $(echo ${ADMIN_USERS} | cut -d, -f1)  --key ${ADMIN_KEY}
+    fi
   fi
 
   # Generate alerta CLI config
-  API_KEY=`alertad keys 2>/dev/null | head -1 | cut -d" " -f1`
+  API_KEY=${ADMIN_KEY:-$(alertad keys 2>/dev/null | head -1 | cut -d" " -f1)}
   if [ -n "${API_KEY}" ]; then
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
