@@ -5,6 +5,19 @@ VERSION:=$(shell cat VERSION)
 
 .PHONY: version
 
+all:	help
+
+help:
+	@echo ""
+	@echo "Usage: make <command>"
+	@echo "Commands:"
+	@echo "   build    Build container"
+	@echo "   up       Create and start containers"
+	@echo "   down     Stop and remove containers"
+	@echo "   clean    Remove stopped containers"
+	@echo "   version  Show docker and alerta versions  "
+	@echo ""
+
 build:
 	docker-compose -f docker-compose.yml -f docker-compose.mongo.yml build \
 	--build-arg VCS_REF=$(VCS_REF) \

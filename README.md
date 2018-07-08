@@ -114,7 +114,7 @@ Configuration Files
 To set configuration settings not supported by environment variables use
 configuration files instead. For example:
 
-    $ docker run -v $PWD/config/alertad.conf:/etc/alertad.conf \
+    $ docker run -v $PWD/config/alertad.conf:/app/alertad.conf \
       -v $PWD/config/config.js:/app/config.js \
       -p <port>:8080 alerta/alerta-web
 

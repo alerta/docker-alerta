@@ -44,7 +44,18 @@ if [ ! -f "${RUN_ONCE}" ]; then
     fi
   fi
 
-  # Generate alerta CLI config
+  # Install plugins
+  IFS=","
+  for plugin in ${INSTALL_PLUGINS}
+  do
+    echo "Installing plugin '${plugin}'"
+    /venv/bin/pip install git+https://github.com/alerta/alerta-contrib.git#subdirectory=plugins/$plugin
+  done
+  touch ${RUN_ONCE}
+fi
+
+# Generate client config, if not supplied
+if [ ! -f "${ALERTA_CONF_FILE}" ]; then
   API_KEY=${ADMIN_KEY:-$(alertad keys 2>/dev/null | head -1 | cut -d" " -f1)}
   if [ -n "${API_KEY}" ]; then
     cat >${ALERTA_CONF_FILE} << EOF
@@ -58,15 +69,6 @@ EOF
 endpoint = http://localhost:8080${BASE_URL}
 EOF
   fi
-
-  # Install plugins
-  IFS=","
-  for plugin in ${INSTALL_PLUGINS}
-  do
-    echo "Installing plugin '${plugin}'"
-    /venv/bin/pip install git+https://github.com/alerta/alerta-contrib.git#subdirectory=plugins/$plugin
-  done
-  touch ${RUN_ONCE}
 fi
 
 exec "$@"
