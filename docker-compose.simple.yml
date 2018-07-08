@@ -1,7 +1,8 @@
 version: '2.1'
 services:
   web:
-    image: alerta/alerta-web
+    #image: alerta/alerta-web
+    build: .
     ports:
       - "8080:8080"
     depends_on:
