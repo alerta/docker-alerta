@@ -1,0 +1,50 @@
+version: '2.1'
+services:
+  web:
+    #image: alerta/alerta-web
+    build: .
+    container_name: alerta-web
+    volumes:
+      - $PWD/config/alertad.conf:/app/alertad.conf
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - AUTH_REQUIRED=True
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - PLUGINS=reject,blackout,normalise,enhance
+      - INSTALL_PLUGINS=normalise,enhance
+    restart: always
+  db:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
+  openldap:
+    image: osixia/openldap
+    container_name: openldap
+    ports:
+      - 389:389
+      - 636:636
+    environment:
+      LDAP_ORGANISATION: My Domain Co.
+      LDAP_DOMAIN: my-domain.com
+      LDAP_ADMIN_PASSWORD: "1234"  # admin/1234
+  phpldapadmin:
+    image: osixia/phpldapadmin:latest
+    container_name: ldapadmin
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+      PHPLDAPADMIN_HTTPS=false:
+    ports:
+      - "8081:80"
+    depends_on:
+      - openldap
