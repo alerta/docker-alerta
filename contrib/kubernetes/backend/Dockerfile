@@ -12,6 +12,12 @@ RUN pip install uwsgi alerta alerta-server==$VERSION
 
 WORKDIR /app
 
+RUN chgrp -R 0 /app && \
+    chmod -R g=u /app && \
+    useradd -u 1001 -g 0 alerta
+
+USER 1001
+
 COPY wsgi.py /app/wsgi.py
 COPY uwsgi.ini.template /app/uwsgi.ini.template
 
