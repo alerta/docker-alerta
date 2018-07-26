@@ -8,12 +8,15 @@ RUN apt-get update && apt-get install -y \
     postgresql-client \
     gettext
 
-RUN pip install uwsgi alerta alerta-server==$VERSION
+RUN pip install --no-cache-dir virtualenv && \
+    virtualenv --python=python3 /venv && \
+    /venv/bin/pip install uwsgi alerta alerta-server==$VERSION
+ENV PATH $PATH:/venv/bin
 
 WORKDIR /app
 
-RUN chgrp -R 0 /app && \
-    chmod -R g=u /app && \
+RUN chgrp -R 0 /app /venv && \
+    chmod -R g=u /app /venv && \
     useradd -u 1001 -g 0 alerta
 
 USER 1001
