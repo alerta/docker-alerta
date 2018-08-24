@@ -1,14 +1,14 @@
-version: '2.2'
+version: '3.1'
 services:
   web:
-    build: .
-    # image: alerta/alerta-web
+    # build: .
+    image: alerta/alerta-web
     volumes:
-      # - $PWD/config/alertad.conf.example:/app/alertad.conf
+      - $PWD/config/alertad.conf.example:/app/alertad.conf
       - $PWD/config/alerta.conf.example:/app/alerta.conf
       - $PWD/config/config.js.example:/web/config.js
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - db
     environment:
