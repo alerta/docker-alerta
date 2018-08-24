@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
