@@ -4,8 +4,16 @@ Docker
 Building
 --------
 
-    $ docker-compose -f docker-compose.yml -f docker-compose.mongo.yml build
+    $ export VCS_REF=$(git rev-parse --short HEAD)
+    $ export BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    $ export VERSION=$(cat VERSION)
 
+    $ docker-compose -f docker-compose.yml -f docker-compose.mongo.yml build \
+      --build-arg VCS_REF=$VCS_REF \
+      --build-arg BUILD_DATE=$BUILD_DATE \
+      --build-arg VERSION=$VERSION
+
+    $ docker-compose -f docker-compose.yml -f docker-compose.mongo.yml up
 
 Testing
 -------

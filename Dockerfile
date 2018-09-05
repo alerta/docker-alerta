@@ -15,6 +15,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc.1"
 
 RUN apt-get update && apt-get install -y \
+    gettext-base \
     git \
     libffi-dev \
     libpq-dev \
@@ -54,12 +55,22 @@ ENV ALERTA_WEB_CONF_FILE /web/config.js
 
 ENV BASE_URL /api
 ENV PROVIDER basic
+ENV GITHUB_URL "https://github.com"
+ENV GITLAB_URL "https://gitlab.com"
+ENV KEYCLOAK_URL "https://keycloak.example.org"
+ENV KEYCLOAK_REALM "master"
+ENV PINGFEDERATE_URL "https://pingfederate.example.org"
+ENV COLORS {}
+ENV SEVERITY {}
+ENV AUDIO {}
+ENV TRACKING_ID ""
 ENV INSTALL_PLUGINS ""
 
 EXPOSE 8080
 
+COPY config.js.template /web/config.js.template
 COPY docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
 COPY supervisord.conf /app/supervisord.conf
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["supervisord", "-c", "/app/supervisord.conf"]

@@ -1,0 +1,17 @@
+'use strict';
+
+angular.module('config', [])
+  .constant('config', {
+    'endpoint'        : "${BASE_URL}",
+    'provider'        : "${PROVIDER}", // google, github, gitlab, keycloak, pingfederate, saml2 or basic
+    'client_id'       : "${OAUTH2_CLIENT_ID}",
+    'github_url'      : "${GITHUB_URL}",
+    'gitlab_url'      : "${GITLAB_URL}",
+    'keycloak_url'    : "${KEYCLOAK_URL}",
+    'keycloak_realm'  : "${KEYCLOAK_REALM}",
+    'pingfederate_url': "${PINGFEDERATE_URL}",
+    'colors'          : ${COLORS},
+    'severity'        : ${SEVERITY},
+    'audio'           : ${AUDIO},
+    'tracking_id'     : "${TRACKING_ID}"  // Google Analytics tracking ID eg. UA-NNNNNN-N
+  });
