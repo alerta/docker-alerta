@@ -9,4 +9,3 @@ docker build \
   --build-arg BUILD_DATE=$BUILD_DATE \
   --build-arg VERSION=$VERSION \
   -t $IMAGE_NAME .
-

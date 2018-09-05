@@ -5,16 +5,7 @@ RUN_ONCE=/app/.run_once
 
 # Generate web console config, if not supplied
 if [ ! -f "${ALERTA_WEB_CONF_FILE}" ]; then
-  cat >"${ALERTA_WEB_CONF_FILE}" << EOF
-'use strict';
-angular.module('config', [])
-  .constant('config', {
-    'endpoint'    : "${BASE_URL}",
-    'provider'    : "${PROVIDER}",
-    'client_id'   : "${OAUTH2_CLIENT_ID}",
-    'colors'      : {}
-  });
-EOF
+  envsubst < /web/config.js.template > "${ALERTA_WEB_CONF_FILE}"
 fi
 
 # Generate server config, if not supplied
