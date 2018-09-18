@@ -35,7 +35,7 @@ ENV PATH $PATH:/venv/bin
 ADD https://github.com/alerta/angular-alerta-webui/archive/v$VERSION.tar.gz /tmp/web.tar.gz
 RUN tar zxvf /tmp/web.tar.gz -C /tmp && \
     mv /tmp/angular-alerta-webui-$VERSION/app /web && \
-    mv /web/config.js /web/config.js.orig
+    mv /web/config.json /web/config.json.orig
 
 COPY wsgi.py /app/wsgi.py
 COPY uwsgi.ini /app/uwsgi.ini
@@ -51,24 +51,14 @@ USER 1001
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
-ENV ALERTA_WEB_CONF_FILE /web/config.js
+ENV ALERTA_WEB_CONF_FILE /web/config.json
 
 ENV BASE_URL /api
-ENV PROVIDER basic
-ENV GITHUB_URL "https://github.com"
-ENV GITLAB_URL "https://gitlab.com"
-ENV KEYCLOAK_URL "https://keycloak.example.org"
-ENV KEYCLOAK_REALM "master"
-ENV PINGFEDERATE_URL "https://pingfederate.example.org"
-ENV COLORS {}
-ENV SEVERITY {}
-ENV AUDIO {}
-ENV TRACKING_ID ""
 ENV INSTALL_PLUGINS ""
 
 EXPOSE 8080
 
-COPY config.js.template /web/config.js.template
+COPY config.json.template /web/config.json.template
 COPY docker-entrypoint.sh /
 COPY supervisord.conf /app/supervisord.conf
 
