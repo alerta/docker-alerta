@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
@@ -15,6 +15,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc.1"
 
 RUN apt-get update && apt-get install -y \
+    gettext-base \
     git \
     libffi-dev \
     libpq-dev \
@@ -31,10 +32,10 @@ RUN pip install --no-cache-dir virtualenv && \
     /venv/bin/pip install uwsgi alerta alerta-server==$VERSION
 ENV PATH $PATH:/venv/bin
 
-ADD https://github.com/alerta/angular-alerta-webui/archive/master.tar.gz /tmp/web.tar.gz
+ADD https://github.com/alerta/angular-alerta-webui/archive/v$VERSION.tar.gz /tmp/web.tar.gz
 RUN tar zxvf /tmp/web.tar.gz -C /tmp && \
-    mv /tmp/angular-alerta-webui-master/app /web && \
-    mv /web/config.js /web/config.js.orig
+    mv /tmp/angular-alerta-webui-$VERSION/app /web && \
+    mv /web/config.json /web/config.json.orig
 
 COPY wsgi.py /app/wsgi.py
 COPY uwsgi.ini /app/uwsgi.ini
@@ -50,16 +51,16 @@ USER 1001
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
-ENV ALERTA_WEB_CONF_FILE /web/config.js
+ENV ALERTA_WEB_CONF_FILE /web/config.json
 
 ENV BASE_URL /api
-ENV PROVIDER basic
 ENV INSTALL_PLUGINS ""
 
 EXPOSE 8080
 
+COPY config.json.template /web/config.json.template
 COPY docker-entrypoint.sh /
-ENTRYPOINT ["/docker-entrypoint.sh"]
-
 COPY supervisord.conf /app/supervisord.conf
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["supervisord", "-c", "/app/supervisord.conf"]

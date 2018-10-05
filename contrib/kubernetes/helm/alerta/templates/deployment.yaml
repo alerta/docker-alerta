@@ -1,0 +1,78 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ include "alerta.fullname" . }}
+  labels:
+    app: {{ include "alerta.name" . }}
+    chart: {{ include "alerta.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "alerta.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "alerta.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+              {{- if .Values.alertaAdminUsers }}
+            - name: ADMIN_USERS
+              value: {{ range $index, $element := .Values.alertaAdminUsers }}{{- if $index}}', '{{- end }}{{ $element }}{{- end }}
+              {{- end }}
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "alerta.fullname" . }}
+                  key: alerta-admin-password
+              {{- if .Values.alertaInstallPlugins }}
+            - name: INSTALL_PLUGINS
+              value: {{ range $index, $element := .Values.alertaInstallPlugins }}{{- if $index}},{{- end }}{{ $element }}{{- end }}
+              {{- end }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          volumeMounts:
+            - name: alerta-config
+              mountPath: /app/alertad.conf
+              subPath: alertad.conf
+              {{- if .Values.alertaWebUIConfig }}
+            - name: alerta-config
+              mountPath: /app/config.js
+              subPath: config.js
+              {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: alerta-config
+          configMap:
+            name: {{ include "alerta.fullname" . }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
