@@ -1,4 +1,4 @@
-FROM python:3.6.5
+FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 
 ARG VERSION
@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir virtualenv && \
     virtualenv --python=python3 /venv && \
     /venv/bin/pip install uwsgi alerta alerta-server==$VERSION
+
 ENV PATH $PATH:/venv/bin
 
 WORKDIR /app
@@ -22,11 +23,10 @@ RUN chgrp -R 0 /app /venv && \
 USER 1001
 
 COPY wsgi.py /app/wsgi.py
-COPY uwsgi.ini.template /app/uwsgi.ini.template
+COPY uwsgi.ini /app/uwsgi.ini
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
-ENV ALERTA_WEB_CONF_FILE /web/config.js
 
 ENV BASE_URL /
 ENV INSTALL_PLUGINS ""
