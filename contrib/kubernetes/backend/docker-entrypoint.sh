@@ -39,13 +39,13 @@ if [ ! -f "${ALERTA_CONF_FILE}" ]; then
   if [ -n "${API_KEY}" ]; then
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
-endpoint = http://localhost:8080${BASE_URL}
+endpoint = http://localhost:8080${MOUNT_PATH}
 key = ${API_KEY}
 EOF
   else
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
-endpoint = http://localhost:8080${BASE_URL}
+endpoint = http://localhost:8080${MOUNT_PATH}
 EOF
   fi
 fi
