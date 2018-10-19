@@ -16,13 +16,15 @@ EOF
 fi
 
 if [ ! -f "${RUN_ONCE}" ]; then
-  # Set BASE_URL
-  sed -i 's@!BASE_URL!@'"$BASE_URL"'@' /app/nginx.conf
-  sed -i 's@!BASE_URL!@'"$BASE_URL"'@' /app/supervisord.conf
+  # Set base path
+  BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
+  sed -i 's@!BASE_PATH!@'"$BASE_PATH"'@' /app/uwsgi.ini
+  sed -i 's@!BASE_PATH!@'"$BASE_PATH"'@' /app/nginx.conf
+  sed -i 's@!BASE_PATH!@'"$BASE_PATH"'@' /app/supervisord.conf
 
   # Set Web URL
-  WEB_URL=${BASE_URL%/api}
-  sed -i 's@!WEB_URL!@'"${WEB_URL:=/}"'@' /app/nginx.conf
+  WEB_PATH=${BASE_PATH%/api}
+  sed -i 's@!WEB_PATH!@'"${WEB_PATH:=/}"'@' /app/nginx.conf
 
   # Init admin users and API keys
   if [ -n "${ADMIN_USERS}" ]; then
@@ -51,13 +53,13 @@ if [ ! -f "${ALERTA_CONF_FILE}" ]; then
   if [ -n "${API_KEY}" ]; then
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
-endpoint = http://localhost:8080${BASE_URL}
+endpoint = http://localhost:8080${BASE_PATH}
 key = ${API_KEY}
 EOF
   else
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
-endpoint = http://localhost:8080${BASE_URL}
+endpoint = http://localhost:8080${BASE_PATH}
 EOF
   fi
 fi
