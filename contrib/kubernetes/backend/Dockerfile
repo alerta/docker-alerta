@@ -27,8 +27,8 @@ COPY uwsgi.ini /app/uwsgi.ini
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
-ENV MOUNT_PATH /
 ENV BASE_URL /
+ENV BASE_PATH /
 ENV INSTALL_PLUGINS ""
 
 EXPOSE 8080
