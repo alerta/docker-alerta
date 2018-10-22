@@ -3,9 +3,9 @@ services:
   web:
     build: .
     # image: alerta/alerta-web
-    volumes:
-      - $PWD/config/alertad.conf.example:/app/alertad.conf
-      - $PWD/config/alerta.conf.example:/app/alerta.conf
+    # volumes:
+      # - $PWD/config/alertad.conf.example:/app/alertad.conf
+      # - $PWD/config/alerta.conf.example:/app/alerta.conf
       # - $PWD/config/config.js.example:/web/config.js
     ports:
       - 8080:8080
@@ -13,7 +13,7 @@ services:
       - db
     environment:
       - DEBUG=1  # remove this line to turn DEBUG off
-      # - BASE_URL=/alerta/api  # => web_url=/alerta
+      # - BASE_URL=/alerta/api  # NOTE: must end in '/api' then web URL will be '/alerta'
       - AUTH_REQUIRED=True
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       # - ADMIN_USERS=admin@alerta.io
