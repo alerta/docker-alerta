@@ -1,0 +1,33 @@
+version: '3.1'
+services:
+  snmptrap:
+    #image: alerta/alerta-snmptrap
+    build: .
+    volumes:
+     - $PWD/config/snmptrapd.conf:/etc/snmp/snmptrapd.conf
+    ports:
+      - "1662:162/udp"
+    environment:
+      - ALERTA_ENDPOINT=http://alerta:8080/api
+    command: ["snmptrapd", "-f", "-Lo", "-n", "-m+ALL", "-Dtrap"]
+
+  alerta:
+    image: alerta/alerta-web
+    ports:
+      - 8081:8080
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+    restart: always
+
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
