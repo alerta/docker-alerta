@@ -11,6 +11,9 @@ EOF
 fi
 
 if [ ! -f "${RUN_ONCE}" ]; then
+
+  BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
+  sed -i 's@!BASE_PATH!@'"$BASE_PATH"'@' /app/uwsgi.ini
   
   # Init admin users and API keys
   if [ -n "${ADMIN_USERS}" ]; then
