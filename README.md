@@ -118,7 +118,7 @@ configuration files instead. For example:
       -v $PWD/config/config.js:/app/config.js \
       -p <port>:8080 alerta/alerta-web
 
-For a full list of server configuration options see http://docs.alerta.io.
+For a full list of server configuration options see https://docs.alerta.io.
 
 Installing Plugins
 ------------------
@@ -168,7 +168,7 @@ environment variable as follows:
 GitHub and GitLab can also be used as the OAuth2 providers by setting the
 `PROVIDER` environment variable to `github` and `gitlab` respectively. For
 more information on using GitHub, GitHub Enterprise or GitLab as th OAuth2
-provider see http://docs.alerta.io
+provider see https://docs.alerta.io
 
 Docker Compose
 --------------
