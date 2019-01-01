@@ -18,7 +18,9 @@ RUN apt-get update && apt-get install -y \
     gettext-base \
     git \
     libffi-dev \
+    libldap2-dev \
     libpq-dev \
+    libsasl2-dev \
     mongodb-clients \
     nginx \
     postgresql-client \
@@ -29,7 +31,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --no-cache-dir virtualenv && \
     virtualenv --python=python3 /venv && \
-    /venv/bin/pip install uwsgi alerta alerta-server==$VERSION
+    /venv/bin/pip install uwsgi alerta alerta-server==$VERSION python-ldap
 ENV PATH $PATH:/venv/bin
 
 ADD https://github.com/alerta/angular-alerta-webui/archive/v$VERSION.tar.gz /tmp/web.tar.gz
