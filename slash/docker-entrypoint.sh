@@ -12,7 +12,6 @@ fi
 if [ ! -f "${ALERTA_SVR_CONF_FILE}" ]; then
   cat >"${ALERTA_SVR_CONF_FILE}" << EOF
 SECRET_KEY = '$(< /dev/urandom tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -c 32)'
-LOG_FILE = '/app/alertad.log'
 EOF
 fi
 
