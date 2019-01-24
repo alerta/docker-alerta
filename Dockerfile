@@ -1,9 +1,5 @@
 FROM python:3.6
 
-ARG BUILD_DATE
-ARG VCS_REF
-ARG VERSION
-
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>" \
       org.label-schema.build-date=${BUILD_DATE} \
       org.label-schema.url="https://alerta.io" \
@@ -12,13 +8,17 @@ LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>" \
       org.label-schema.version=${VERSION} \
       org.label-schema.schema-version="1.0.0-rc.1"
 
-ENV PATH ${PATH}:/venv/bin \
-    ALERTA_SVR_CONF_FILE /app/alertad.conf \
-    ALERTA_CONF_FILE     /app/alerta.conf \
-    ALERTA_WEB_CONF_FILE /web/config.json \
-    BASE_URL             /api \
-    INSTALL_PLUGINS      "" \
-    PYTHONUNBUFFERED     1
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+
+ENV PATH ${PATH}:/venv/bin
+ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
+ENV ALERTA_CONF_FILE     /app/alerta.conf
+ENV ALERTA_WEB_CONF_FILE /web/config.json
+ENV BASE_URL             /api
+ENV INSTALL_PLUGINS      ""
+ENV PYTHONUNBUFFERED     1
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
