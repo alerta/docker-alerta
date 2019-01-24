@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.6-alpine
 
 ARG BUILD_DATE
 ARG VCS_REF
@@ -20,24 +20,29 @@ ENV PATH ${PATH}:/venv/bin \
     INSTALL_PLUGINS      "" \
     PYTHONUNBUFFERED     1
 
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      gettext-base \
-      libffi-dev \
-      libldap2-dev \
-      libpq-dev \
-      libsasl2-dev \
-      mongodb-clients \
-      nginx-light \
+RUN apk --no-cache add \
+      bash \
+      gettext \
+      mongodb-tools\
+      nginx \
       postgresql-client \
-      python3-dev \
       supervisor \
       wget \
- && rm -rf /var/lib/apt/lists/*
-
-RUN pip install --no-cache-dir virtualenv \
- && virtualenv --python=python3 /venv \
- && /venv/bin/pip install uwsgi alerta alerta-server==${VERSION}
+      libuuid \
+      git \
+ && apk --no-cache add --virtual .build-deps \
+      build-base \
+      cyrus-sasl-dev \
+      gcc \
+      libffi-dev \
+      linux-headers \
+      openldap-dev \
+      postgresql-dev \
+      python3-dev \
+    && pip install --no-cache-dir virtualenv \
+    && virtualenv --python=python3 /venv \
+    && /venv/bin/pip install uwsgi alerta alerta-server==${VERSION} \
+    && apk del .build-deps
 
 RUN wget -q -O - "https://github.com/alerta/angular-alerta-webui/archive/v${VERSION}.tar.gz" |  tar xzf - -C /tmp/  \
  && mv /tmp/angular-alerta-webui-${VERSION}/app /web \
@@ -46,9 +51,9 @@ RUN wget -q -O - "https://github.com/alerta/angular-alerta-webui/archive/v${VERS
 
 COPY slash/ /
 
-RUN chgrp -R 0 /app /venv /web \
- && chmod -R g=u /app /venv /web \
- && useradd -r -d /app -u 1001 -g 0 alerta
+RUN adduser -S -h /app -u 1001 -g 0 alerta \
+ && chgrp -R 0 /app /venv /web \
+ && chmod -R g=u /app /venv /web
 
 USER 1001
 EXPOSE 8080
