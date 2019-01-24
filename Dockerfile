@@ -1,8 +1,8 @@
 FROM python:3.6
 
-ARG BUILD_DATE \
-    VCS_REF \
-    VERSION
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
 
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>" \
       org.label-schema.build-date=${BUILD_DATE} \
