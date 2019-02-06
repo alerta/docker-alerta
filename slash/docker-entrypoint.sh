@@ -18,9 +18,9 @@ fi
 if [ ! -f "${RUN_ONCE}" ]; then
   # Set base path
   BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
-  sed -i 's@!BASE_PATH!@'"$BASE_PATH"'@' /app/uwsgi.ini
-  sed -i 's@!BASE_PATH!@'"$BASE_PATH"'@' /app/nginx.conf
-  sed -i 's@!BASE_PATH!@'"$BASE_PATH"'@' /app/supervisord.conf
+  sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/uwsgi.ini
+  sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/nginx.conf
+  sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/supervisord.conf
 
   # Set Web URL
   WEB_PATH=${BASE_PATH%/api}
@@ -38,13 +38,14 @@ if [ ! -f "${RUN_ONCE}" ]; then
   fi
 
   # Install plugins
+  IFS_BCK=${IFS}
   IFS=","
-  for plugin in ${INSTALL_PLUGINS}
-  do
+  for plugin in ${INSTALL_PLUGINS}; do
     echo "Installing plugin '${plugin}'"
     /venv/bin/pip install git+https://github.com/alerta/alerta-contrib.git#subdirectory=plugins/$plugin
   done
-  touch ${RUN_ONCE}
+  echo "BASE_URL=${BASE_URL}" > ${RUN_ONCE}
+  IFS=${IFS_BCK}
 fi
 
 # Generate client config, if not supplied
