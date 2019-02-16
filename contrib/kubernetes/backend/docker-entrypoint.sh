@@ -11,6 +11,9 @@ EOF
 fi
 
 if [ ! -f "${RUN_ONCE}" ]; then
+
+  BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
+  sed -i 's@!BASE_PATH!@'"$BASE_PATH"'@' /app/uwsgi.ini
   
   # Init admin users and API keys
   if [ -n "${ADMIN_USERS}" ]; then
@@ -39,13 +42,13 @@ if [ ! -f "${ALERTA_CONF_FILE}" ]; then
   if [ -n "${API_KEY}" ]; then
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
-endpoint = http://localhost:8080${BASE_URL}
+endpoint = http://localhost:8080${BASE_PATH}
 key = ${API_KEY}
 EOF
   else
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
-endpoint = http://localhost:8080${BASE_URL}
+endpoint = http://localhost:8080${BASE_PATH}
 EOF
   fi
 fi

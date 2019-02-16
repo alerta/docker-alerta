@@ -27,7 +27,6 @@ COPY uwsgi.ini /app/uwsgi.ini
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
-
 ENV BASE_URL /
 ENV INSTALL_PLUGINS ""
 
