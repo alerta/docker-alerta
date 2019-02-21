@@ -108,6 +108,9 @@ the `alerta-web` container:
 `INSTALL_PLUGINS`
     - list of plugins to automatically install.
 
+`HEARTBEAT_ALERT_SEVERITY`
+    - severity used to create alerts for stale heartbeats
+
 Configuration Files
 -------------------
 
