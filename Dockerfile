@@ -19,7 +19,7 @@ ENV ALERTA_WEB_CONF_FILE /web/config.json
 ENV BASE_URL             /api
 ENV INSTALL_PLUGINS      ""
 ENV PYTHONUNBUFFERED     1
-ENV HEARTBEAT_ALERT_SEVERITY major
+ENV HEARTBEAT_SEVERITY major
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
