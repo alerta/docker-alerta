@@ -31,7 +31,22 @@ Environment Variables
 ---------------------
 
 The following environment variables are supported for configuring
-the `alerta-web` container:
+the `alerta-web` container specifically for Docker deployments:
+
+`ADMIN_PASSWORD`
+    - sets the password of all admins. Should be changed at first login.
+
+`ADMIN_KEY`
+    - sets an admin API key.
+
+`INSTALL_PLUGINS`
+    - list of plugins to automatically install.
+
+`HEARTBEAT_SEVERITY`
+    - severity used to create alerts for stale heartbeats
+
+The following environment variables are supported by the Alerta
+API to ease deployment more generally:
 
 `DEBUG`
     - debug mode for increased logging. (eg. `DEBUG=1`)
@@ -53,12 +68,6 @@ the `alerta-web` container:
 
 `ADMIN_USERS`
     - comma-separated list of logins that will be created with "admin" role.
-
-`ADMIN_PASSWORD`
-    - sets the password of all admins. Should be changed at first login.
-
-`ADMIN_KEY`
-    - sets an admin API key.
 
 `CUSTOMER_VIEWS`
     - enable alert views partitioned by customer. (default:``False``)
@@ -104,12 +113,6 @@ the `alerta-web` container:
 
 `PLUGINS`
     - list of plugins to enable.
-
-`INSTALL_PLUGINS`
-    - list of plugins to automatically install.
-
-`HEARTBEAT_ALERT_SEVERITY`
-    - severity used to create alerts for stale heartbeats
 
 Configuration Files
 -------------------
