@@ -36,9 +36,12 @@ RUN apt-get update \
       wget \
  && rm -rf /var/lib/apt/lists/*
 
+ENV FOO 2
+
 RUN pip install --no-cache-dir virtualenv \
  && virtualenv --python=python3 /venv \
- && /venv/bin/pip install uwsgi alerta alerta-server==${VERSION}
+ && /venv/bin/pip install uwsgi alerta \
+ && /venv/bin/pip install https://github.com/alerta/alerta/archive/fix-redirect-500.zip
 
 RUN wget -q -O - "https://github.com/alerta/angular-alerta-webui/archive/v${VERSION}.tar.gz" |  tar xzf - -C /tmp/  \
  && mv /tmp/angular-alerta-webui-${VERSION}/app /web \
