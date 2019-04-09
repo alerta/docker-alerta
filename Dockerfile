@@ -29,9 +29,12 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     wget
 
+COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir virtualenv && \
     virtualenv --python=python3 /venv && \
-    /venv/bin/pip install uwsgi alerta alerta-server==$VERSION
+    /venv/bin/pip install -r /app/requirements.txt
+
+RUN /venv/bin/pip install alerta alerta-server==$VERSION
 ENV PATH $PATH:/venv/bin
 
 ADD https://github.com/alerta/angular-alerta-webui/archive/v$VERSION.tar.gz /tmp/web.tar.gz
@@ -67,4 +70,3 @@ COPY supervisord.conf /app/supervisord.conf
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["supervisord", "-c", "/app/supervisord.conf"]
-
