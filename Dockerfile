@@ -37,10 +37,10 @@ RUN pip install --no-cache-dir virtualenv && \
 RUN /venv/bin/pip install alerta alerta-server==$VERSION
 ENV PATH $PATH:/venv/bin
 
-ADD https://github.com/alerta/angular-alerta-webui/archive/v$VERSION.tar.gz /tmp/web.tar.gz
-RUN tar zxvf /tmp/web.tar.gz -C /tmp && \
-    mv /tmp/angular-alerta-webui-$VERSION/app /web && \
-    mv /web/config.json /web/config.json.orig
+ADD https://github.com/alerta/alerta-webui/releases/download/v${VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
+RUN tar zxvf /tmp/webui.tar.gz -C /tmp && \
+    mv /tmp/dist /web
+COPY config.json.template /web/config.json.template
 
 COPY wsgi.py /app/wsgi.py
 COPY uwsgi.ini /app/uwsgi.ini
@@ -64,7 +64,6 @@ ENV INSTALL_PLUGINS ""
 
 EXPOSE 8080
 
-COPY config.json.template /web/config.json.template
 COPY docker-entrypoint.sh /
 COPY supervisord.conf /app/supervisord.conf
 
