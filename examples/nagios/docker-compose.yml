@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+  alerta:
+    image: alerta/alerta-web
+    ports:
+      - 9080:8080
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=mongodb://db:27017/monitoring
+      - AUTH_REQUIRED=True
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - ADMIN_PASSWORD=password
+      - ADMIN_KEY=demo-key
+      - TRACKING_ID=UA-44644195-6
+      - PLUGINS=reject,heartbeat,blackout,normalise,enhance
+      - INSTALL_PLUGINS=normalise,enhance
+    restart: always
+
+  db:
+    image: mongo
+    volumes:
+      - ./data/mongodb:/data/db
+    restart: always
+
+  nagios:
+    # image: jasonrivers/nagios
+    build: .
+    volumes:
+      - ./config/nagios.cfg:/opt/nagios/etc/nagios.cfg
+      # - ./config/alerta-neb.o:/opt/nagios/libexec/alerta-neb.o
+      - ./config/heartbeat.cfg:/opt/nagios/etc/conf.d/heartbeat.cfg
+    ports:
+      - 8100:80
+    restart: always

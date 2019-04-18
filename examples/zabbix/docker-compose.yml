@@ -1,0 +1,13 @@
+version: '3.1'
+
+services:
+  zabbix:
+    image: zabbix/zabbix-appliance
+    volumes:
+      - ./config/alertscripts:/usr/lib/zabbix/alertscripts
+    ports:
+      - 10051:10051
+      - 10080:10080
+    environment:
+      - ZBX_DEBUGLEVEL=3
+    restart: always

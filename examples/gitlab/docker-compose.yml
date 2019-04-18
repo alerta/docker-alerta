@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  alerta:
+    image: alerta/alerta-web
+    ports:
+      - 9080:8080
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - AUTH_REQUIRED=True
+      - CUSTOMER_VIEWS=True
+      - ADMIN_USERS=satterly
+      - AUTH_PROVIDER=gitlab
+      - OAUTH2_CLIENT_ID=73cb4a5e279b85caf4ae39e7c0a3a88a07d9a099da1bd84958b63b7195ae3768
+      - OAUTH2_CLIENT_SECRET=06b850ce35a171397e31b8ae85253450a5127049886e42cc670722ca2aa837ed
+      - GOOGLE_TRACKING_ID=UA-44644195-6
+      - PLUGINS=remote_ip,reject,heartbeat,blackout,normalise,enhance
+      - INSTALL_PLUGINS=normalise,enhance
+    restart: always
+
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always

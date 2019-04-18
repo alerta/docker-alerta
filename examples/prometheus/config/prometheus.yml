@@ -8,6 +8,8 @@ global:
     monitor: codelab
     environment: Production
     service: Prometheus
+    region: EU
+    dc: eu-west-1
 
 alerting:
   alertmanagers:
@@ -48,7 +50,14 @@ scrape_configs:
     static_configs:
       - targets: ['node:9100']
 
-  - job_name: alerta
-    metrics_path: '/api/management/metrics'
+  - job_name: collectd
     static_configs:
-    - targets: ['alerta:80']
+    - targets: ['collectd:9103']
+
+  - job_name: alerta
+    metrics_path: /api/management/metrics
+    static_configs:
+    - targets: ['alerta:8080']
+    basic_auth:
+      username: admin@alerta.io
+      password: alerta

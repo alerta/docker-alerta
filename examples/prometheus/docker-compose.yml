@@ -1,4 +1,4 @@
-version: '2.1'
+version: '3.1'
 
 services:
   prometheus:
@@ -34,6 +34,7 @@ services:
     ports:
       - 9093:9093
     networks:
+      - alerta_sharednet
       - promnet
 
   cadvisor:
@@ -47,38 +48,9 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
     networks:
       - promnet
-
-  alerta:
-    image: alerta/alerta-web
-    ports:
-      - 9080:8080
-    depends_on:
-      - db
-    environment:
-      - DEBUG=1  # remove this line to turn DEBUG off
-      - DATABASE_URL=mongodb://db:27017/monitoring
-      - AUTH_REQUIRED=True
-      - ADMIN_USERS=admin@alerta.io
-      - ALLOWED_EMAIL_DOMAIN=${ALLOWED_EMAIL_DOMAIN:-*}
-      - PLUGINS=reject,blackout,prometheus
-      - INSTALL_PLUGINS=prometheus
-      - ALERTMANAGER_API_URL=http://alertmanager:9093
-    restart: always
-    networks:
-      - promnet
-      - dbnet
-
-  db:
-    image: mongo
-    volumes:
-      - ./data/mongodb:/data/db
-    restart: always
-    networks:
-      - dbnet
-
+      
 networks:
+  alerta_sharednet:
+    external: true
   promnet:
     driver: bridge
-  dbnet:
-    driver: bridge
-
