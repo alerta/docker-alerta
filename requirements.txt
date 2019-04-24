@@ -12,4 +12,5 @@ pytz==2019.1
 PyYAML==5.1
 raven==6.10.0
 requests==2.21.0
+uWSGI==2.0.18
 
