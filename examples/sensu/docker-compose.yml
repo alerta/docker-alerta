@@ -1,0 +1,36 @@
+version: '3.1'
+
+services:
+  sensu:
+    image: sensu/sensu
+    volumes:
+      - ./data/sensu:/var/lib/sensu
+    ports:
+      - 2379:2379
+      - 2380:2380
+      - 3000:3000
+      - 3080:8080
+      - 3081:8081
+    command: sensu-backend start --etcd-listen-client-urls http://0.0.0.0:2379 --etcd-name sensu --etcd-advertise-client-urls http://sensu:2379 --etcd-initial-cluster sensu=http://sensu:2380 --etcd-initial-cluster-state new --etcd-initial-advertise-peer-urls http://sensu:2380 --state-dir /var/lib/sensu/sensu/etcd1 --etcd-listen-peer-urls http://0.0.0.0:2380 --log-level info --debug
+    restart: always
+    networks:
+      - alerta_sharednet
+      - sensunet
+
+  agent:
+    image: sensu/sensu
+    volumes:
+      - ./data/sensu:/var/lib/sensu
+    depends_on:
+      - sensu
+    command: sensu-agent start --backend-url ws://sensu:8081 --subscriptions webserver,system
+    restart: always
+    networks:
+      - alerta_sharednet
+      - sensunet
+
+networks:
+  alerta_sharednet:
+    external: true
+  sensunet:
+    driver: bridge

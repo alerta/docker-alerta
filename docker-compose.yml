@@ -22,6 +22,6 @@ services:
       - "COLORS={'severity': {'fatal': '#303030'}, 'text': 'white'}"
       - "SEVERITY={'fatal': 0}"
       - TRACKING_ID=UA-44644195-6
-      - PLUGINS=reject,blackout,normalise,enhance
+      - PLUGINS=reject,heartbeat,blackout,normalise,enhance
       - INSTALL_PLUGINS=normalise,enhance
     restart: always

@@ -1,0 +1,32 @@
+version: '3.1'
+
+services:
+  icinga2:
+    image: jordan/icinga2
+    volumes:
+      - ./data/icinga/cache:/var/cache/icinga2
+      - ./data/icinga/certs:/etc/apache2/ssl
+      - ./data/icinga/etc/icinga2:/etc/icinga2
+      - ./data/icinga/etc/icingaweb2:/etc/icingaweb2
+      - ./data/icinga/lib/icinga:/var/lib/icinga2
+      - ./data/icinga/lib/php/sessions:/var/lib/php/sessions
+      - ./data/icinga/log/apache2:/var/log/apache2
+      - ./data/icinga/log/icinga2:/var/log/icinga2
+      - ./data/icinga/log/icingaweb2:/var/log/icingaweb2
+      - ./data/icinga/log/mysql:/var/log/mysql
+      - ./data/icinga/spool:/var/spool/icinga2
+    ports:
+      - 5080:80
+      - 5443:443
+      - 5665:5665
+    environment:
+      # icingaadmin / icinga
+      - ICINGAWEB2_ADMIN_USER=icingaadmin
+      - ICINGAWEB2_ADMIN_PASS=icinga
+    restart: always
+    networks:
+      - alerta_sharednet
+
+networks:
+  alerta_sharednet:
+    external: true
