@@ -4,9 +4,12 @@ set -x
 RUN_ONCE=/app/.run_once
 
 # Set base path
-BASE_URL=${BASE_URL:=/}
-BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
+URL_PATH=${URL_PATH:=/}
+BASE_PATH=$(echo "/"${URL_PATH#*//*/} | tr -s /)
 API_PATH=$(echo ${BASE_PATH}/api | tr -s /)
+
+#export api path as BASE_URL for the api response url
+export BASE_URL=${API_PATH}
 
 # Generate web console config, if not supplied
 if [ ! -f "${ALERTA_WEB_CONF_FILE}" ]; then

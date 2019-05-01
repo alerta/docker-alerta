@@ -42,6 +42,12 @@ the `alerta-web` container specifically for Docker deployments:
 `INSTALL_PLUGINS`
     - list of plugins to automatically install.
 
+`CUSTOM_PLUGINS`
+    - list of plugins to automatically install from custom urls. List of full urls (comma separated) are expected (eg. git+https://some/repo.git#subdirectory=plugins/pluginname)
+
+`URL_PATH`
+    - defines the base path to access the web ui and API (default: `/`). API path will be ${URL_PATH}/api (eg. `/alerta` and `/alerta/api`)
+
 `HEARTBEAT_SEVERITY`
     - severity used to create alerts for stale heartbeats
 
@@ -52,7 +58,7 @@ API to ease deployment more generally:
     - debug mode for increased logging. (eg. `DEBUG=1`)
 
 `BASE_URL`
-    - defines the base path to access the web ui and API (default: `/`). API path will be ${BASE_URL}/api (eg, `/alert` and `/alerta/api`)
+    - used to make links in API responses relative. (default: /api)
 
 `SECRET_KEY`
     - a unique, randomly generated sequence of ASCII characters.
