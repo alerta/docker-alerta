@@ -6,6 +6,7 @@ LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
 ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION
+ARG PROXY
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="https://alerta.io" \
@@ -14,7 +15,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=$VERSION \
       org.label-schema.schema-version="1.0.0-rc.1"
 
-RUN apt-get update && apt-get install -y \
+RUN export http_proxy=$PROXY && export https_proxy=$PROXY && apt-get update && apt-get install -y \
     gettext-base \
     git \
     libffi-dev \
@@ -27,14 +28,15 @@ RUN apt-get update && apt-get install -y \
     postgresql-client-common \
     python3-dev \
     supervisor \
-    wget
+    wget \
+    && apt-get clean
 
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir virtualenv && \
+RUN export http_proxy=$PROXY && export https_proxy=$PROXY && pip install --no-cache-dir virtualenv && \
     virtualenv --python=python3 /venv && \
     /venv/bin/pip install -r /app/requirements.txt
 
-RUN /venv/bin/pip install alerta alerta-server==$VERSION
+RUN export http_proxy=$PROXY && export https_proxy=$PROXY && /venv/bin/pip install alerta alerta-server==$VERSION
 ENV PATH $PATH:/venv/bin
 
 ADD https://github.com/alerta/alerta-webui/releases/download/v${VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
@@ -59,7 +61,7 @@ ENV ALERTA_CONF_FILE /app/alerta.conf
 ENV ALERTA_WEB_CONF_FILE /web/config.json
 ENV HEARTBEAT_SEVERITY major
 
-ENV BASE_URL /api
+ENV BASE_URL /
 ENV INSTALL_PLUGINS ""
 
 EXPOSE 8080

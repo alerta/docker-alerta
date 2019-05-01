@@ -52,7 +52,7 @@ API to ease deployment more generally:
     - debug mode for increased logging. (eg. `DEBUG=1`)
 
 `BASE_URL`
-    - used to make links in API responses relative. (default: `/api`)
+    - defines the base path to access the web ui and API (default: `/`). API path will be ${BASE_URL}/api (eg, `/alert` and `/alerta/api`)
 
 `SECRET_KEY`
     - a unique, randomly generated sequence of ASCII characters.

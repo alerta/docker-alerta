@@ -20,6 +20,7 @@ help:
 
 build:
 	docker-compose -f docker-compose.yml -f docker-compose.mongo.yml build \
+	--build-arg PROXY=$(http_proxy) \
 	--build-arg VCS_REF=$(VCS_REF) \
 	--build-arg BUILD_DATE=$(BUILD_DATE) \
 	--build-arg VERSION=$(VERSION)
