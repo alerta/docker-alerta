@@ -18,7 +18,6 @@ services:
       - OAUTH2_CLIENT_SECRET=06b850ce35a171397e31b8ae85253450a5127049886e42cc670722ca2aa837ed
       - GOOGLE_TRACKING_ID=UA-44644195-6
       - PLUGINS=remote_ip,reject,heartbeat,blackout,normalise,enhance
-      - INSTALL_PLUGINS=normalise,enhance
     restart: always
 
   db:

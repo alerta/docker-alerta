@@ -16,7 +16,6 @@ services:
       - ADMIN_KEY=demo-key
       - TRACKING_ID=UA-44644195-6
       - PLUGINS=reject,heartbeat,blackout,normalise,enhance
-      - INSTALL_PLUGINS=normalise,enhance
     restart: always
 
   db:
