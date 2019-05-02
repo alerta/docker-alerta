@@ -14,7 +14,8 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=$VERSION \
       org.label-schema.schema-version="1.0.0-rc.1"
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y \
     gettext-base \
     git \
     libffi-dev \
@@ -27,7 +28,9 @@ RUN apt-get update && apt-get install -y \
     postgresql-client-common \
     python3-dev \
     supervisor \
-    wget
+    wget && \
+    apt-get -y clean && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir virtualenv && \
