@@ -1,7 +1,5 @@
 #!/bin/bash
-set -x
-
-RUN_ONCE=/app/.run_once
+set -e
 
 # Generate web console config, if not supplied
 if [ ! -f "${ALERTA_WEB_CONF_FILE}" ]; then
@@ -15,7 +13,10 @@ SECRET_KEY = '$(< /dev/urandom tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -
 EOF
 fi
 
+RUN_ONCE=/app/.run_once
+
 if [ ! -f "${RUN_ONCE}" ]; then
+  touch ${RUN_ONCE}
   # Set base path
   BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
   sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/uwsgi.ini
@@ -38,16 +39,6 @@ if [ ! -f "${RUN_ONCE}" ]; then
       alertad key --username $(echo ${ADMIN_USERS} | cut -d, -f1)  --key ${ADMIN_KEY}
     fi
   fi
-
-  # Install plugins
-  IFS_BCK=${IFS}
-  IFS=","
-  for plugin in ${INSTALL_PLUGINS}; do
-    echo "Installing plugin '${plugin}'"
-    /venv/bin/pip install git+https://github.com/alerta/alerta-contrib.git#subdirectory=plugins/$plugin
-  done
-  echo "BASE_URL=${BASE_URL}" > ${RUN_ONCE}
-  IFS=${IFS_BCK}
 fi
 
 # Generate client config, if not supplied

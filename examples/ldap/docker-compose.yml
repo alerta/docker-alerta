@@ -16,7 +16,6 @@ services:
       - AUTH_REQUIRED=True
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       - PLUGINS=reject,blackout,normalise,enhance
-      - INSTALL_PLUGINS=normalise,enhance
     restart: always
   db:
     image: postgres

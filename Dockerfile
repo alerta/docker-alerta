@@ -33,9 +33,12 @@ COPY requirements.txt /app/requirements.txt
 RUN pip install --no-cache-dir virtualenv && \
     virtualenv --python=python3 /venv && \
     /venv/bin/pip install -r /app/requirements.txt
+ENV PATH $PATH:/venv/bin
 
 RUN /venv/bin/pip install alerta alerta-server==$VERSION
-ENV PATH $PATH:/venv/bin
+COPY install-plugins.sh /app/install-plugins.sh
+COPY plugins.txt /app/plugins.txt
+RUN /app/install-plugins.sh
 
 ADD https://github.com/alerta/alerta-webui/releases/download/v${VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
 RUN tar zxvf /tmp/webui.tar.gz -C /tmp && \
@@ -60,7 +63,6 @@ ENV ALERTA_WEB_CONF_FILE /web/config.json
 ENV HEARTBEAT_SEVERITY major
 
 ENV BASE_URL /api
-ENV INSTALL_PLUGINS ""
 
 EXPOSE 8080
 

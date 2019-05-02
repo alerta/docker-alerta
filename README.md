@@ -39,9 +39,6 @@ the `alerta-web` container specifically for Docker deployments:
 `ADMIN_KEY`
     - sets an admin API key.
 
-`INSTALL_PLUGINS`
-    - list of plugins to automatically install.
-
 `HEARTBEAT_SEVERITY`
     - severity used to create alerts for stale heartbeats
 
@@ -121,26 +118,23 @@ To set configuration settings not supported by environment variables use
 configuration files instead. For example:
 
     $ docker run -v $PWD/config/alertad.conf:/app/alertad.conf \
-      -v $PWD/config/config.js:/app/config.js \
+      -v $PWD/config/config.json:/web/config.json \
       -p <port>:8080 alerta/alerta-web
 
 For a full list of server configuration options see https://docs.alerta.io.
 
-Installing Plugins
-------------------
+Plugins
+-------
 
-Plugins listed in the `INSTALL_PLUGINS` environment variable will be installed
-automatically at container start time. Only plugins listed in `PLUGINS` will be
-enabled. This allows plugins to be installed and enabled at a later time.
+All built-in and contributed plugins are installed at image build time. Only
+plugins listed in `PLUGINS` environment variabled will be enabled.
 
-In the example below, the `reject` and `blackout` plugins are installed by
-default, the `slack` and `prometheus` plugins are also installed but of the
-two only the `slack` plugin is enabled:
+In the example below, of all the plugins installed only those listed will
+be enabled at container start time:
 
-    PLUGINS=reject,blackout,slack
-    INSTALL_PLUGINS=slack,prometheus
+    PLUGINS=remote_ip,reject,heartbeat,blackout,slack,prometheus
 
-Alternatively, install all wanted plugins as an additional image layer.
+Custom plugins should be installed as an additional image layer.
 
 Authentication
 --------------
@@ -201,7 +195,6 @@ services:
       - AUTH_REQUIRED=True
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       - PLUGINS=reject,blackout,normalise,enhance
-      - INSTALL_PLUGINS=normalise,enhance
     restart: always
   db:
     image: postgres
