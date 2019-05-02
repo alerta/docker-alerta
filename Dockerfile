@@ -15,17 +15,15 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc.1"
 
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     gettext-base \
-    git \
     libffi-dev \
     libldap2-dev \
     libpq-dev \
     libsasl2-dev \
     mongodb-clients \
-    nginx \
+    nginx-light \
     postgresql-client \
-    postgresql-client-common \
     python3-dev \
     supervisor \
     wget && \
