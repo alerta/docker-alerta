@@ -1,1 +1,1 @@
-{"endpoint": "${BASE_URL}"}
+{"endpoint": "${BASE_URL}", "base_path": "${WEB_PATH}"}

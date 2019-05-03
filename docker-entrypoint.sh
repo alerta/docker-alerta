@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+export BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
+export WEB_PATH=$(echo ${BASE_PATH%/api}"/" | tr -s /)
+
 # Generate web console config, if not supplied
 if [ ! -f "${ALERTA_WEB_CONF_FILE}" ]; then
   envsubst < /web/config.json.template > "${ALERTA_WEB_CONF_FILE}"
@@ -18,14 +21,14 @@ RUN_ONCE=/app/.run_once
 if [ ! -f "${RUN_ONCE}" ]; then
   touch ${RUN_ONCE}
   # Set base path
-  BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
   sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/uwsgi.ini
   sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/nginx.conf
   sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/supervisord.conf
 
   # Set Web URL
-  WEB_PATH=${BASE_PATH%/api}
-  sed -i 's@!WEB_PATH!@'"${WEB_PATH:=/}"'@' /app/nginx.conf
+  sed -i 's@!WEB_PATH!@'"${WEB_PATH}"'@' /app/nginx.conf
+  sed -i 's@href=/@href='"${WEB_PATH}"'@g' /web/index.html
+  sed -i 's@src=/@src='"${WEB_PATH}"'@g' /web/index.html
 
   # Init admin users and API keys
   if [ -n "${ADMIN_USERS}" ]; then
