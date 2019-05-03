@@ -19,19 +19,19 @@ help:
 	@echo ""
 
 build:
-	docker-compose -f docker-compose.yml -f docker-compose.mongo.yml build \
+	docker-compose -f docker-compose.simple.yml build \
 	--build-arg VCS_REF=$(VCS_REF) \
 	--build-arg BUILD_DATE=$(BUILD_DATE) \
 	--build-arg VERSION=$(VERSION)
 
 up:
-	docker-compose -f docker-compose.yml -f docker-compose.mongo.yml up
+	docker-compose -f docker-compose.simple.yml up
 
 down:
-	docker-compose -f docker-compose.yml -f docker-compose.mongo.yml down
+	docker-compose -f docker-compose.simple.yml down
 
 clean:
-	docker-compose -f docker-compose.yml -f docker-compose.mongo.yml rm
+	docker-compose -f docker-compose.simple.yml rm
 
 version:
 	@docker-compose version

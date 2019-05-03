@@ -1,17 +1,20 @@
 version: '3.1'
 services:
   web:
+    build: .
     image: alerta/alerta-web
-    # build: .
+    # volumes:
+      # - $PWD/config/config.json:/web/config.json
     ports:
       - 8080:8080
     depends_on:
       - db
     environment:
       - DEBUG=1  # remove this line to turn DEBUG off
+      - BASE_URL=/alerta2/api
       - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
-      - AUTH_REQUIRED=True
-      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      # - AUTH_REQUIRED=True
+      # - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       - PLUGINS=reject,blackout,normalise,enhance
     restart: always
   db:
