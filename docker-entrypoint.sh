@@ -46,8 +46,8 @@ fi
 
 # Generate client config, if not supplied
 if [ ! -f "${ALERTA_CONF_FILE}" ]; then
-  API_KEY=${ADMIN_KEY:-$(alertad keys 2>/dev/null | tail -1 | cut -d" " -f1)}
-  if [ -n "${API_KEY}" ]; then
+  if [ "${AUTH_REQUIRED}" == "True" ]; then
+    API_KEY=${ADMIN_KEY:-$(alertad keys 2>/dev/null | tail -1 | cut -d" " -f1)}
     cat >${ALERTA_CONF_FILE} << EOF
 [DEFAULT]
 endpoint = http://localhost:8080${BASE_PATH}
