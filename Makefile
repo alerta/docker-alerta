@@ -12,6 +12,7 @@ help:
 	@echo "Usage: make <command>"
 	@echo "Commands:"
 	@echo "   build    Build container"
+	@echo "   pull     Pull latest containers"
 	@echo "   up       Create and start containers"
 	@echo "   down     Stop and remove containers"
 	@echo "   clean    Remove stopped containers"
@@ -23,6 +24,9 @@ build:
 	--build-arg VCS_REF=$(VCS_REF) \
 	--build-arg BUILD_DATE=$(BUILD_DATE) \
 	--build-arg VERSION=$(VERSION)
+
+pull:
+	docker-compose -f docker-compose.simple.yml pull
 
 up:
 	docker-compose -f docker-compose.simple.yml up
