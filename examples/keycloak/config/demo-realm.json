@@ -1,0 +1,155 @@
+{
+  "realm": "demo",
+  "enabled": true,
+  "groups": [
+    {
+      "name": "devops",
+      "path": "/devops",
+      "attributes": {
+        "Team": [
+          "DevOps"
+        ]
+      },
+      "realmRoles": [
+        "admin"
+      ],
+      "clientRoles": {},
+      "subGroups": []
+    }
+  ],
+  "users": [
+    {
+      "username": "alice",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "alice"
+        }
+      ],
+      "realmRoles": [
+        "user"
+      ]
+    },
+    {
+      "username": "jdoe",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "jdoe"
+        }
+      ],
+      "realmRoles": [
+        "user",
+        "user_premium"
+      ]
+    },
+    {
+      "username": "admin",
+      "enabled": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin"
+        }
+      ],
+      "realmRoles": [
+        "user",
+        "admin"
+      ],
+      "clientRoles": {
+        "realm-management": [
+          "realm-admin"
+        ]
+      }
+    },
+    {
+      "username" : "user",
+      "enabled": true,
+      "email" : "sample-user@example.com",
+      "firstName": "Sample",
+      "lastName": "User",
+      "credentials" : [
+          { "type" : "password",
+            "value" : "password" }
+      ],
+      "realmRoles": [ "user" ]
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "user",
+        "description": "User privileges"
+      },
+      {
+        "name": "admin",
+        "description": "Administrator privileges"
+      },
+      {
+        "name": "user_premium",
+        "description": "User Premium privileges"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "id": "16e7f9f8-abba-4bb1-8d66-85f95e011c2e",
+      "clientId": "alerta-webui",
+      "rootUrl": "http://local.alerta.io:8005",
+      "adminUrl": "http://local.alerta.io:8005",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "fa134126-222b-4fc3-a8dd-070a28f39e88",
+      "redirectUris": [
+        "http://local.alerta.io:8005/*"
+      ],
+      "webOrigins": [
+        "http://local.alerta.io:8005"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "saml.assertion.signature": "false",
+        "saml.force.post.binding": "false",
+        "saml.multivalued.roles": "false",
+        "saml.encrypt": "false",
+        "saml.server.signature": "false",
+        "saml.server.signature.keyinfo.ext": "false",
+        "exclude.session.state.from.auth.response": "false",
+        "saml_force_name_id_format": "false",
+        "saml.client.signature": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "saml.authnstatement": "false",
+        "display.on.consent.screen": "false",
+        "saml.onetimeuse.condition": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "role_list",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    }
+  ]
+}
