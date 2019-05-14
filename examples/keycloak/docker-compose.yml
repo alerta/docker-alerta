@@ -7,21 +7,23 @@ services:
     volumes:
       - $PWD/config/alertad.conf:/app/alertad.conf
     ports:
-      - 8080:8080
+      - 8005:8080
     depends_on:
-      - alerta-db
+      - db
     environment:
       - DEBUG=1  # remove this line to turn DEBUG off
-      - DATABASE_URL=postgres://postgres:postgres@alerta-db:5432/monitoring
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
       - AUTH_REQUIRED=True
       - AUTH_PROVIDER=keycloak
-      - KEYCLOAK_URL=http://keycloak.local.alerta.io:9090
-      - KEYCLOAK_REALM=master
-      - ALLOWED_KEYCLOAK_ROLES=admin,devops,readonly
-      - OAUTH2_CLIENT_ID=alerta-oidc
-      - OAUTH2_CLIENT_SECRET=9d43f0ad-d215-442e-9b75-5a1a4343be07
+      - ADMIN_USERS=alice  # password=alice
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=demo
+      # - ALLOWED_OIDC_ROLES=devops
+      # - ALLOWED_EMAIL_DOMAINS=alerta.io,alerta.dev
+      - OAUTH2_CLIENT_ID=alerta-webui
+      - OAUTH2_CLIENT_SECRET=fa134126-222b-4fc3-a8dd-070a28f39e88
     restart: always
-  alerta-db:
+  db:
     image: postgres
     container_name: alerta-db
     volumes:
@@ -35,13 +37,13 @@ services:
   keycloak:
       image: jboss/keycloak
       container_name: keycloak
+      volumes:
+        - $PWD/config/demo-realm.json:/tmp/demo-realm.json
       environment:
         DB_VENDOR: h2
         KEYCLOAK_USER: admin
         KEYCLOAK_PASSWORD: Pa55w0rd
-        # KEYCLOAK_IMPORT: /tmp/alerta-realm.json
+        KEYCLOAK_IMPORT: /tmp/demo-realm.json
         # JDBC_PARAMS: "ssl=true"
-      volumes:
-        - $PWD/config/alerta-realm.json:/tmp/alerta-realm.json
       ports:
-        - 9090:8080
+        - 8080:8080
