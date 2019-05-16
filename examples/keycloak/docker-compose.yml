@@ -2,22 +2,27 @@ version: '3'
 
 services:
   alerta:
+    build:
+      context: ../../
+      dockerfile: ./Dockerfile
     image: alerta/alerta-web
     container_name: alerta-web
     volumes:
       - $PWD/config/alertad.conf:/app/alertad.conf
     ports:
-      - 8005:8080
+      - 8015:8080
     depends_on:
       - db
     environment:
       - DEBUG=1  # remove this line to turn DEBUG off
       - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
       - AUTH_REQUIRED=True
-      - AUTH_PROVIDER=keycloak
       - ADMIN_USERS=alice  # password=alice
-      - KEYCLOAK_URL=http://keycloak:8080
-      - KEYCLOAK_REALM=demo
+      - AUTH_PROVIDER=openid
+      - OIDC_ISSUER_URL=http://keycloak:8080/auth/realms/demo
+      # - AUTH_PROVIDER=keycloak
+      # - KEYCLOAK_URL=http://keycloak:8080
+      # - KEYCLOAK_REALM=demo
       # - ALLOWED_OIDC_ROLES=devops
       # - ALLOWED_EMAIL_DOMAINS=alerta.io,alerta.dev
       - OAUTH2_CLIENT_ID=alerta-webui
