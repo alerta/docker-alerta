@@ -32,9 +32,7 @@ if [ ! -f "${RUN_ONCE}" ]; then
 
   # Init admin users and API keys
   if [ -n "${ADMIN_USERS}" ]; then
-    if [ "${AUTH_PROVIDER}" = "basic" ]; then
-      alertad user --password ${ADMIN_PASSWORD:-alerta} --all
-    fi
+    alertad user --password ${ADMIN_PASSWORD:-alerta} --all || true
     alertad key --all
 
     # Create user-defined API key, if required
