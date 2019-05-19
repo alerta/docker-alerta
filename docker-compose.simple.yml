@@ -13,8 +13,8 @@ services:
       - DEBUG=1  # remove this line to turn DEBUG off
       - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
       # - AUTH_REQUIRED=True
-      # - ADMIN_USERS=admin@alerta.io,devops@alerta.io
-      - PLUGINS=reject,blackout,normalise,enhance
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - PLUGINS=remote_ip,reject,heartbeat,blackout,normalise,enhance
     restart: always
   db:
     image: postgres

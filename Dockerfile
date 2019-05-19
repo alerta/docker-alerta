@@ -3,7 +3,7 @@ ENV PYTHONUNBUFFERED 1
 
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
 
-ARG BUILD_DATE
+ARG BUILD_DATE=now
 ARG VCS_REF
 ARG VERSION
 
@@ -65,10 +65,10 @@ ENV ALERTA_WEB_CONF_FILE /web/config.json
 ENV BASE_URL /api
 ENV HEARTBEAT_SEVERITY major
 
-EXPOSE 8080
-
-COPY docker-entrypoint.sh /
+COPY docker-entrypoint.sh /usr/local/bin/
 COPY supervisord.conf /app/supervisord.conf
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+EXPOSE 8080
 CMD ["supervisord", "-c", "/app/supervisord.conf"]
