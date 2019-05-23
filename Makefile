@@ -20,21 +20,21 @@ help:
 	@echo ""
 
 build:
-	docker-compose -f docker-compose.simple.yml build \
+	docker-compose -f docker-compose.yml build \
 	--build-arg VCS_REF=$(VCS_REF) \
 	--build-arg VERSION=$(VERSION)
 
 pull:
-	docker-compose -f docker-compose.simple.yml pull
+	docker-compose -f docker-compose.yml pull
 
 up:
-	docker-compose -f docker-compose.simple.yml up
+	docker-compose -f docker-compose.yml up
 
 down:
-	docker-compose -f docker-compose.simple.yml down
+	docker-compose -f docker-compose.yml down
 
 clean:
-	docker-compose -f docker-compose.simple.yml rm
+	docker-compose -f docker-compose.yml rm
 
 version:
 	@docker-compose version

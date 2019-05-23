@@ -2,22 +2,24 @@
 set -e
 
 export BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
-export WEB_PATH=$(echo ${BASE_PATH%/api}"/" | tr -s /)
+export WEB_PATH=$(echo "/"${BASE_PATH%/api} | tr -s /)
 
 RUN_ONCE=/app/.run_once
 
 if [ ! -f "${RUN_ONCE}" ]; then
   touch ${RUN_ONCE}
 
-  # Set base path
+  # Fix web server config
   sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/uwsgi.ini
-  sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/nginx.conf
-  sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/supervisord.conf
-
-  # Set Web URL
   sed -i 's@!WEB_PATH!@'"${WEB_PATH}"'@' /app/nginx.conf
+  sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/nginx.conf
+
+  # Update static assets
   sed -i 's@href=/@href='"${WEB_PATH}"'@g' /web/index.html
   sed -i 's@src=/@src='"${WEB_PATH}"'@g' /web/index.html
+
+  # Update supervisor config
+  sed -i 's@!BASE_PATH!@'"${BASE_PATH}"'@' /app/supervisord.conf
 
   # Generate web console config, if not supplied
   if [ ! -f "${ALERTA_WEB_CONF_FILE}" ]; then
