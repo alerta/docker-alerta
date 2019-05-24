@@ -39,7 +39,7 @@ ENV PATH $PATH:/venv/bin
 RUN /venv/bin/pip install alerta alerta-server==$VERSION
 COPY install-plugins.sh /app/install-plugins.sh
 COPY plugins.txt /app/plugins.txt
-# RUN /app/install-plugins.sh
+RUN /app/install-plugins.sh
 
 ADD https://github.com/alerta/alerta-webui/releases/download/v${VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
 RUN tar zxvf /tmp/webui.tar.gz -C /tmp && \
