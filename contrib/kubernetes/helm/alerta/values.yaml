@@ -76,6 +76,9 @@ affinity: {}
   
 postgresql:
   enabled: true
-  postgresUser: alerta
-  postgresDatabase: monitoring
-  postgresPassword: "changeme" # provide a password here, otherwise it will be randomly generated inside postgresql helm chart and will not be available as a variable in the alerta helm chart
+  postgresqlUsername: alerta
+  postgresqlDatabase: monitoring
+  postgresqlPassword: "changeme" # provide a password here, otherwise it will be randomly generated inside postgresql helm chart and will not be available as a variable in the alerta helm chart
+  persistence:
+    enabled: true
+    size: 10Gi
