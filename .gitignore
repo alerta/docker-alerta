@@ -1,3 +1,4 @@
 .env
 mongodb
 pg-data
+contrib/kubernetes/helm/alerta/charts
