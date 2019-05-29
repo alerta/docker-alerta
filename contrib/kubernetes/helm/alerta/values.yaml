@@ -50,6 +50,8 @@ affinity: {}
 # alertaAdminPassword: "" # if not provided will be randomly generated
 # alertaAdminUsers: # list of email addresses
 #   - "admin@alerta.io"
+# alertaAdminKey: "<your_api_key_here>"
+# alertaApiKey: "<your_api_key_here>" # you probably want to set this to the same value as 'alertaAdminKey'
 
 # Alerta plugins to install
 # alertaInstallPlugins:
