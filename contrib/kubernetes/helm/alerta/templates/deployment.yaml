@@ -26,13 +26,25 @@ spec:
           env:
               {{- if .Values.alertaAdminUsers }}
             - name: ADMIN_USERS
-              value: {{ range $index, $element := .Values.alertaAdminUsers }}{{- if $index}}', '{{- end }}{{ $element }}{{- end }}
+              value: {{ range $index, $element := .Values.alertaAdminUsers }}{{- if $index}}, {{- end }}{{ $element }}{{- end }}
               {{- end }}
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ template "alerta.fullname" . }}
                   key: alerta-admin-password
+              {{- if .Values.alertaAdminKey }}
+            - name: ADMIN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "alerta.fullname" . }}
+                  key: alerta-admin-key
+            - name: ALERTA_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "alerta.fullname" . }}
+                  key: alerta-api-key
+              {{- end }}
               {{- if .Values.alertaInstallPlugins }}
             - name: INSTALL_PLUGINS
               value: {{ range $index, $element := .Values.alertaInstallPlugins }}{{- if $index}},{{- end }}{{ $element }}{{- end }}
