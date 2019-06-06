@@ -2,7 +2,7 @@
 set -e
 
 export BASE_PATH=$(echo "/"${BASE_URL#*//*/} | tr -s /)
-export WEB_PATH=$(echo "/"${BASE_PATH%/api} | tr -s /)
+export WEB_PATH=$(echo ${BASE_PATH%/api}"/" | tr -s /)
 
 RUN_ONCE=/app/.run_once
 
