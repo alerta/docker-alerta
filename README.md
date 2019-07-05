@@ -34,7 +34,7 @@ The following environment variables are supported for configuring
 the `alerta-web` container specifically for Docker deployments:
 
 `ADMIN_PASSWORD`
-    - sets the password of all admins. Should be changed at first login.
+    - sets the password of all admins. Should be changed at first login. default: alerta
 
 `ADMIN_KEY`
     - sets an admin API key.
@@ -193,7 +193,7 @@ services:
       - DEBUG=1  # remove this line to turn DEBUG off
       - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
       - AUTH_REQUIRED=True
-      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io #default password: alerta
       - PLUGINS=reject,blackout,normalise,enhance
     restart: always
   db:
