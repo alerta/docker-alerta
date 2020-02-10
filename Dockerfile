@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM python:3.7
 ENV PYTHONUNBUFFERED 1
 
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
@@ -14,29 +14,21 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.version=$VERSION \
       org.label-schema.schema-version="1.0.0-rc.1"
 
-RUN apt-get update && \
+RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
+    echo "deb https://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
     gettext-base \
     libffi-dev \
     libldap2-dev \
     libpq-dev \
     libsasl2-dev \
-    mongodb-clients \
     nginx-light \
     postgresql-client \
     python3-dev \
     supervisor \
-    gnupg \
-    wget && \
-    apt-get -y clean && \
-    apt-get -y autoremove && \
-    rm -rf /var/lib/apt/lists/*
-    
-RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
-    echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    mongodb-org-shell
+    wget \
+    mongodb-org-shell && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
