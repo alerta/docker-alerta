@@ -2,7 +2,7 @@ version: '3'
 
 services:
   sut:
-    build: .
+    image: alerta/alerta-web
     ports:
       - 8080
     depends_on:
@@ -15,13 +15,13 @@ services:
       - PLUGINS=reject,blackout,normalise,enhance
 
   tester:
-    image: ubuntu
+    image: tutum/curl:latest
     volumes:
       - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
-      - ./tests.sh:/usr/local/bin/tests.sh
+      - ./tests.sh:/tests.sh
     depends_on:
       - sut
-    command: ["wait-for-it.sh", "sut:8080", "--", "sh", "tests.sh"]
+    command: ["wait-for-it.sh", "sut:8080", "-t", "240", "--", "sh", "/tests.sh"]
 
   db:
     image: postgres

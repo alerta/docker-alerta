@@ -7,6 +7,10 @@ ARG BUILD_DATE=now
 ARG VCS_REF
 ARG VERSION
 
+ARG SERVER_VERSION=${VERSION}
+ARG CLIENT_VERSION=7.4.0
+ARG WEBUI_VERSION=${VERSION}
+
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="https://alerta.io" \
       org.label-schema.vcs-url="https://github.com/alerta/docker-alerta" \
@@ -34,17 +38,18 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir virtualenv && \
-    virtualenv --python=python3 /venv && \
+RUN pip install --no-cache-dir virtualenv==20.0.1 && \
+    python3 -m venv /venv && \
+    /venv/bin/pip install --upgrade setuptools==45.2.0 && \
     /venv/bin/pip install -r /app/requirements.txt
 ENV PATH $PATH:/venv/bin
 
-RUN /venv/bin/pip install alerta alerta-server==$VERSION
+RUN /venv/bin/pip install alerta==${CLIENT_VERSION} alerta-server==${SERVER_VERSION}
 COPY install-plugins.sh /app/install-plugins.sh
 COPY plugins.txt /app/plugins.txt
 RUN /app/install-plugins.sh
 
-ADD https://github.com/alerta/alerta-webui/releases/download/v${VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
+ADD https://github.com/alerta/alerta-webui/releases/download/v${WEBUI_VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
 RUN tar zxvf /tmp/webui.tar.gz -C /tmp && \
     mv /tmp/dist /web
 COPY config.json.template /web/config.json.template
