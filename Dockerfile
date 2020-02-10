@@ -1,4 +1,4 @@
-FROM python:3.6-stretch
+FROM python:3.8
 ENV PYTHONUNBUFFERED 1
 
 LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
@@ -26,8 +26,19 @@ RUN apt-get update && \
     postgresql-client \
     python3-dev \
     supervisor \
+    gnupg \
     wget && \
     apt-get -y clean && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
+    
+RUN wget -qO - https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
+    echo "deb http://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    mongodb-org-shell
+    apt-get -y clean && \
+    apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.txt
