@@ -1,2 +1,5 @@
+#!/bin/bash
+
+echo "post_push hook starting..."
 make push
 echo "post_push hook completed."

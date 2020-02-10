@@ -1,7 +1,5 @@
 #!/bin/bash
 
-VCS_REF=$(git rev-parse --short HEAD)
-BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-VERSION=$(cat VERSION)
-
+echo "test hook starting..."
 make test
+echo "test hook completed."

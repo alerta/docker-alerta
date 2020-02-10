@@ -1,1 +1,5 @@
+#!/bin/bash
+
+echo "build hook starting..."
 make build
+echo "build hook completed."
