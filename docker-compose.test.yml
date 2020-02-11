@@ -2,7 +2,11 @@ version: '3'
 
 services:
   sut:
-    build: .
+    build:
+      context: .
+      args:
+        VCS_REF: ${VCS_REF}
+        VERSION: ${VERSION}
     image: alerta/alerta-web
     ports:
       - 8080

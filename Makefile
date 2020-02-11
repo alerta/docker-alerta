@@ -32,11 +32,15 @@ help:
 lint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
-test:
+test: env
+	@echo "IMAGE_NAME=${IMAGE_NAME}" >.env
+	@echo "VCS_REF=${VCS_REF}" >>.env
+	@echo "VERSION=${VERSION}" >>.env
 	docker-compose -f docker-compose.test.yml up \
 	--renew-anon-volumes \
 	--no-color \
 	--exit-code-from tester
+	@echo "IMAGE_NAME=${IMAGE_NAME}" >.env
 
 build:
 	docker build \
@@ -69,3 +73,6 @@ version:
 
 shell:
 	docker-compose -f docker-compose.test.yml run --rm sut bash
+
+env:
+	env

@@ -41,7 +41,7 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir virtualenv==20.0.1 && \
+RUN pip install --no-cache-dir pip==20.0.2 virtualenv==20.0.1 && \
     python3 -m venv /venv && \
     /venv/bin/pip install --upgrade setuptools==45.2.0 && \
     /venv/bin/pip install -r /app/requirements.txt
