@@ -63,6 +63,9 @@ API to ease deployment more generally:
 `AUTH_REQUIRED`
     - require users to authenticate when using web UI or `alerta` CLI.
 
+`AUTH_PROVIDER`
+    - authentication provider eg. basic, ldap, openid, saml2, keycloak
+
 `ADMIN_USERS`
     - comma-separated list of logins that will be created with "admin" role.
 
@@ -151,7 +154,7 @@ and `CLIENT_SECRET` environment variables on the command line as follows:
 
 Now pass in the defined environment variables to the `docker run` command:
 
-    $ docker run --name alerta-web  -e PROVIDER=google -e CLIENT_ID=$CLIENT_ID \
+    $ docker run --name alerta-web  -e AUTH_PROVIDER=google -e CLIENT_ID=$CLIENT_ID \
     -e CLIENT_SECRET=$CLIENT_SECRET -d -p <port>:8080 alerta/alerta-web
 
 This will allow users to login but will only make it optional. To enforce
@@ -166,7 +169,7 @@ environment variable as follows:
     $ docker run --name alerta-web -e ALLOWED_EMAIL_DOMAIN=example.com ...
 
 GitHub and GitLab can also be used as the OAuth2 providers by setting the
-`PROVIDER` environment variable to `github` and `gitlab` respectively. For
+`AUTH_PROVIDER` environment variable to `github` and `gitlab` respectively. For
 more information on using GitHub, GitHub Enterprise or GitLab as th OAuth2
 provider see https://docs.alerta.io
 
