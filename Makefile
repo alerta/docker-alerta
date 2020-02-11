@@ -49,8 +49,7 @@ build:
 	-t $(IMAGE_NAME):latest .
 
 push:
-	docker tag $IMAGE_NAME ${DOCKER_REPO}:$VERSION
-	docker push ${DOCKER_REPO}:$VERSION
+	docker push $(IMAGE_NAME)
 
 pull:
 	docker-compose -f docker-compose.yml pull

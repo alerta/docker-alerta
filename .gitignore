@@ -1,4 +1,6 @@
-.env
 mongodb
 pg-data
 contrib/kubernetes/helm/alerta/charts
+
+.env.local
+.env.*.local
