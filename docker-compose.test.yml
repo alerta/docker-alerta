@@ -3,6 +3,7 @@ version: '3'
 services:
   sut:
     build: .
+    image: alerta/alerta-web
     ports:
       - 8080
     depends_on:
