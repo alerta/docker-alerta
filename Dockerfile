@@ -19,8 +19,6 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc.1"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# hadolint ignore=DL3008
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
     echo "deb https://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
     apt-get update && \
@@ -52,28 +50,28 @@ COPY install-plugins.sh /app/install-plugins.sh
 COPY plugins.txt /app/plugins.txt
 RUN /app/install-plugins.sh
 
+ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
+ENV ALERTA_CONF_FILE /app/alerta.conf
+
 ADD https://github.com/alerta/alerta-webui/releases/download/v${WEBUI_VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
 RUN tar zxvf /tmp/webui.tar.gz -C /tmp && \
     mv /tmp/dist /web
-COPY config.json.template /web/config.json.template
+COPY config.json /web/config.json
 
 COPY wsgi.py /app/wsgi.py
 COPY uwsgi.ini /app/uwsgi.ini
 COPY nginx.conf /app/nginx.conf
 
-RUN ln -sf /dev/stdout /var/log/nginx/access.log
-RUN ln -sf /dev/stdout /var/log/nginx/error.log
+# forward nginx request and error logs to docker log collector
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
 RUN chgrp -R 0 /app /venv /web && \
     chmod -R g=u /app /venv /web && \
     useradd -u 1001 -g 0 alerta
 
 USER 1001
 
-ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
-ENV ALERTA_CONF_FILE /app/alerta.conf
-ENV ALERTA_WEB_CONF_FILE /web/config.json
-
-ENV BASE_URL /api
 ENV HEARTBEAT_SEVERITY major
 
 COPY docker-entrypoint.sh /usr/local/bin/
