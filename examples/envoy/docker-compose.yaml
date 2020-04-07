@@ -1,0 +1,58 @@
+version: '3.7'
+
+services:
+  front:
+    image: envoyproxy/envoy:v1.13.1
+    volumes:
+      - ./proxy/front-proxy.yaml:/etc/envoy/envoy.yaml
+    expose:
+      - "80"
+      - "8001"
+    ports:
+      - "8000:80"
+      - "8001:8001"
+    networks:
+      - envoymesh
+
+  webui:
+    build:
+      context: webui
+    networks:
+      envoymesh:
+        aliases:
+          - web
+
+  api:
+    image: alerta/alerta-web  # use API in "alerta-web" image
+    depends_on:
+      - db
+    volumes:
+      - ./api/alertad.conf:/app/alertad.conf
+    environment:
+      DEBUG: 1  # remove this line to turn DEBUG off
+      DATABASE_URL: postgres://postgres:postgres@db:5432/monitoring
+      AUTH_REQUIRED: True
+      ADMIN_USERS: admin@alerta.io,devops@alerta.io #default password: alerta
+      ADMIN_KEY: demo-key  # assigned to first user in ADMIN_USERS list
+      # PLUGINS: reject,blackout,normalise,enhance
+    networks:
+      envoymesh:
+        aliases:
+          - api
+
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      envoymesh:
+        aliases:
+          - db
+    restart: always
+
+networks:
+  envoymesh: {}
