@@ -21,9 +21,12 @@ the web UI and Alerta API on a non-root URL sub-path using Traefik.
 ## Endpoints
 
 - web UI => <http://local.alerta.io:8000/web>
-- API    => <http://api.alerta.io:8000>
+- API    => <http://api.local.alerta.io:8000>
 - Traefik => <http://traefik.local.alerta.io:8080>
 
 ## References
 
 <https://docs.traefik.io/getting-started/quick-start/>
+<https://docs.traefik.io/v2.0/middlewares/addprefix/>
+<https://docs.traefik.io/v2.0/middlewares/stripprefix/>
+
