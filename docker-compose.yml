@@ -16,6 +16,7 @@ services:
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       - ADMIN_PASSWORD=super-secret # default is "alerta"
       - ADMIN_KEY=demo-key  # assigned to first user in ADMIN_USERS
+      - ADMIN_KEY_MAXAGE=500
       # - PLUGINS=remote_ip,reject,heartbeat,blackout,normalise,enhance
     restart: always
   db:
