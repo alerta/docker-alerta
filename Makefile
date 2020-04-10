@@ -36,7 +36,7 @@ test: env
 	@echo "IMAGE_NAME=${IMAGE_NAME}" >.env
 	@echo "VCS_REF=${VCS_REF}" >>.env
 	@echo "VERSION=${VERSION}" >>.env
-	docker-compose -f docker-compose.test.yml up \
+	docker-compose -f docker-compose.ci.yml up \
 	--renew-anon-volumes \
 	--no-color \
 	--exit-code-from tester
@@ -72,7 +72,7 @@ version:
 	@echo "alerta version $(VERSION)"
 
 shell:
-	docker-compose -f docker-compose.test.yml run --rm sut bash
+	docker-compose -f docker-compose.ci.yml run --rm sut bash
 
 env:
 	env

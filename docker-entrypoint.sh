@@ -37,7 +37,7 @@ EOF
 
   # Add API key to client config, if required
   if [ "${AUTH_REQUIRED}" == "True" ]; then
-    echo "# Auth enabled; create admin API key for client."
+    echo "# Auth enabled; add admin API key to client configuration."
     API_KEY=$(alertad key --username "${ADMIN_USER}")
     echo ${API_KEY}
     cat >>${ALERTA_CONF_FILE} << EOF
