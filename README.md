@@ -39,6 +39,9 @@ the `alerta-web` container specifically for Docker deployments:
 `ADMIN_KEY`
     - sets an admin API key.
 
+`ADMIN_KEY_MAXAGE`
+    - sets the duration of the admin key (seconds) default: 10 years
+
 `HEARTBEAT_SEVERITY`
     - severity used to create alerts for stale heartbeats
 
@@ -194,6 +197,7 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
       - AUTH_REQUIRED=True
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io #default password: alerta
+      - ADMIN_KEY=demo-key
       - PLUGINS=reject,blackout,normalise,enhance
     restart: always
   db:
@@ -235,6 +239,6 @@ More information about Alerta can be found at http://docs.alerta.io
 License
 -------
 
-Copyright (c) 2014-2018 Nick Satterly. Available under the MIT License.
+Copyright (c) 2014-2020 Nick Satterly. Available under the MIT License.
 
 [1]: <https://console.developers.google.com> "Google Developer Console"
