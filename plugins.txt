@@ -1,5 +1,7 @@
+plugins/alertops master
 plugins/amqp master
 plugins/cachet master
+plugins/dingtalk master
 plugins/enhance master
 plugins/forward master
 plugins/geoip master
