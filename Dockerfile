@@ -11,8 +11,8 @@ ARG VCS_REF
 ARG VERSION
 
 ARG SERVER_VERSION=${VERSION}
-ARG CLIENT_VERSION=7.4.0
-ARG WEBUI_VERSION=${VERSION}
+ARG CLIENT_VERSION=7.4.5
+ARG WEBUI_VERSION=7.4.5
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="https://alerta.io" \
@@ -44,6 +44,7 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.txt
+# hadolint ignore=DL3013
 RUN pip install pip virtualenv && \
     python3 -m venv /venv && \
     /venv/bin/pip install --upgrade setuptools && \
@@ -67,7 +68,6 @@ COPY wsgi.py /app/wsgi.py
 COPY uwsgi.ini /app/uwsgi.ini
 COPY nginx.conf /app/nginx.conf
 
-# forward nginx request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
