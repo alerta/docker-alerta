@@ -37,6 +37,7 @@ test: env
 	@echo "VCS_REF=${VCS_REF}" >>.env
 	@echo "VERSION=${VERSION}" >>.env
 	docker-compose -f docker-compose.ci.yml up \
+	--build \
 	--renew-anon-volumes \
 	--no-color \
 	--exit-code-from tester
