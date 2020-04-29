@@ -57,10 +57,12 @@ spec:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 300  
           readinessProbe:
             httpGet:
               path: /
               port: http
+            initialDelaySeconds: 300  
           volumeMounts:
             - name: alerta-config
               mountPath: /app/alertad.conf
