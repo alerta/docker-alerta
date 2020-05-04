@@ -1,1 +1,2 @@
-from alerta import app
+from alerta import create_app
+app = create_app()
