@@ -38,7 +38,6 @@ EOF
   # Add API key to client config, if required
   if [ "${AUTH_REQUIRED}" == "True" ]; then
     echo "# Auth enabled; add admin API key to client configuration."
-    unset DEBUG
     API_KEY=$(alertad key \
     --username "${ADMIN_USER}" \
     --scope "read" \
