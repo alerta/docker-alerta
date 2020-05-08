@@ -16,13 +16,26 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - uses: alerta/actions/slacky@master
+        with: 
+          status: starting
+          channel: '#workflows'
+        if: always()
       - uses: actions/checkout@v2
       - name: Run tests
+        id: smoketest
         run: |
           docker-compose -f docker-compose.test.yml build \
             --build-arg VCS_REF=${{ github.sha }} \
             --build-arg VERSION=$(cat VERSION)
           docker-compose -f docker-compose.test.yml up --exit-code-from tester
+
+      - uses: alerta/actions/slacky@master
+        with: 
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
+        if: always()
 
   push:
     needs: test
