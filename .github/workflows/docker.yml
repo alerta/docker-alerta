@@ -32,12 +32,18 @@ jobs:
       REPOSITORY_URL: registry.hub.docker.com
       IMAGE_NAME: alerta/alerta-web
     steps:
+      - uses: alerta/actions/slacky@master
+        with: 
+          status: starting
+          channel: '#workflows'
+        if: always()
       - name: Checkout
         uses: actions/checkout@v2
       - name: Variables
         id: vars
         run: echo "::set-output name=SHORT_COMMIT_ID::$(git rev-parse --short HEAD)"
       - name: Build Image
+        id: docker-build
         run: >-
           docker build
           --build-arg VCS_REF=${{ github.sha }}
@@ -53,10 +59,12 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: echo "$DOCKER_PASSWORD" | docker login $REPOSITORY_URL --username "$DOCKER_USERNAME" --password-stdin
       - name: Publish Image
+        id: docker-push
         run: docker push $REPOSITORY_URL/$IMAGE_NAME
 
-      - name: Notify Slack
-        uses: alerta/actions/slacky@master
-        with:
+      - uses: alerta/actions/slacky@master
+        with: 
           status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#workflows'
         if: always()
