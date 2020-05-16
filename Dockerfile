@@ -11,8 +11,8 @@ ARG VCS_REF
 ARG VERSION
 
 ARG SERVER_VERSION=${VERSION}
-ARG CLIENT_VERSION=7.5.0
-ARG WEBUI_VERSION=7.5.0
+ARG CLIENT_VERSION=7.5.1
+ARG WEBUI_VERSION=7.5.1
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="https://alerta.io" \
