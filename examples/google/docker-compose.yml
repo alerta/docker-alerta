@@ -1,0 +1,31 @@
+version: '3.1'
+services:
+  web:
+    image: alerta/alerta-web
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - AUTH_REQUIRED=True
+      - AUTH_PROVIDER=google
+      # - AUTH_PROVIDER=openid
+      # - OIDC_ISSUER_URL=https://accounts.google.com
+      - OAUTH2_CLIENT_ID=736147134702-gspe3a3v9b98drelu32uio4a0tuurkj3.apps.googleusercontent.com
+      - OAUTH2_CLIENT_SECRET=xNwEm5sgJFeqpKZVN_tdsjYe
+      - OIDC_VERIFY_TOKEN=True
+      - ALLOWED_EMAIL_DOMAINS=gmail.com
+      - ADMIN_USERS=nfsatterly@gmail.com
+      - ADMIN_KEY=demo-key
+    restart: always
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
