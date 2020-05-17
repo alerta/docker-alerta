@@ -16,7 +16,7 @@ fi
 # Init admin users and API keys
 if [ -n "${ADMIN_USERS}" ]; then
   echo "# Create admin users."
-  alertad user --all --password "${ADMIN_PASSWORD}"
+  alertad user --all --password "${ADMIN_PASSWORD}" || true
   echo "# Create admin API keys."
   alertad key --all
 
