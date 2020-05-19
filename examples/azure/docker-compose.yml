@@ -1,0 +1,38 @@
+version: '3.1'
+services:
+  web:
+    image: alerta/alerta-web
+    ports:
+      - 8080:8080
+      # => http://localhost:8080/alerts
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - AUTH_REQUIRED=True
+      - AUTH_PROVIDER=azure
+
+      # Azure (Common)
+      - AZURE_TENANT=common
+      - OAUTH2_CLIENT_ID=00bb046a-36d9-4411-b93a-2f10fb35f0b5
+      - OAUTH2_CLIENT_SECRET=7GWBR~bYQT0d5MG9Rfs_Ca9-r2YB.6nSG-
+
+      # Azure (Tenant ID)
+      # - AZURE_TENANT=f24341ef-7a6f-4cff-abb7-99a11ab11127
+      # - OAUTH2_CLIENT_ID=38ba6223-a887-43e2-9f7d-8d539df55f67
+      # - OAUTH2_CLIENT_SECRET=/FZ.Sp?-5J4Wt8EdJr1ZWPBz1:t5wYY6
+
+      - ALLOWED_EMAIL_DOMAINS=gmail.com
+      - ADMIN_USERS=nfsatterly@gmail.com
+      - ADMIN_KEY=demo-key
+    restart: always
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
