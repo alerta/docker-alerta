@@ -56,6 +56,10 @@ COPY install-plugins.sh /app/install-plugins.sh
 COPY plugins.txt /app/plugins.txt
 RUN /app/install-plugins.sh
 
+COPY install-webhooks.sh /app/install-webhooks.sh
+COPY webhooks.txt /app/webhooks.txt
+RUN /app/install-webhooks.sh
+
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
 

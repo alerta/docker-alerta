@@ -1,0 +1,6 @@
+webhooks/azuremonitor master
+webhooks/fail2ban master
+webhooks/mailgun master
+webhooks/msteams master
+webhooks/sentry master
+webhooks/statuscake master
