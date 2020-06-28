@@ -11,6 +11,7 @@ services:
     depends_on:
       - db
     environment:
+      - DEBUG=1
       - AUTH_REQUIRED=True  # FIXME should not have to declare this twice
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io,admin@alerta.dev
       - ADMIN_PASSWORD=super-secret
