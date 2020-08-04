@@ -29,7 +29,7 @@ spec:
           env:
               {{- if .Values.alertaAdminUsers }}
             - name: ADMIN_USERS
-              value: {{ range $index, $element := .Values.alertaAdminUsers }}{{- if $index}}, {{- end }}{{ $element }}{{- end }}
+              value: {{ .Values.alertaAdminUsers | join ", " }}
               {{- end }}
             - name: ADMIN_PASSWORD
               valueFrom:
@@ -50,7 +50,7 @@ spec:
               {{- end }}
               {{- if .Values.alertaInstallPlugins }}
             - name: INSTALL_PLUGINS
-              value: {{ range $index, $element := .Values.alertaInstallPlugins }}{{- if $index}},{{- end }}{{ $element }}{{- end }}
+              value: {{ .Values.alertaInstallPlugins | join "," }}
               {{- end }}
           ports:
             - name: http
