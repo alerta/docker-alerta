@@ -73,7 +73,7 @@ RUN ln -sf /dev/stdout /var/log/nginx/access.log \
 
 RUN chgrp -R 0 /app /venv /web && \
     chmod -R g=u /app /venv /web && \
-    useradd -u 1001 -g 0 alerta
+    useradd -u 1001 -g 0 -d /app alerta
 
 USER 1001
 
