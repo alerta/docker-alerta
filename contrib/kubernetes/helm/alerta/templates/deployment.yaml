@@ -18,6 +18,9 @@ spec:
       labels:
         app: {{ include "alerta.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -57,12 +60,12 @@ spec:
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 300  
+            initialDelaySeconds: 300
           readinessProbe:
             httpGet:
               path: /
               port: http
-            initialDelaySeconds: 300  
+            initialDelaySeconds: 15
           volumeMounts:
             - name: alerta-config
               mountPath: /app/alertad.conf
