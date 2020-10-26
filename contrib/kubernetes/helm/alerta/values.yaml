@@ -35,7 +35,7 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #  cpu: 100m
+  #  cpu: 1
   #  memory: 128Mi
   # requests:
   #  cpu: 100m
@@ -63,7 +63,7 @@ affinity: {}
 #   DEBUG: "True"
 #   AUTH_REQUIRED: "True"
 #   PLUGINS: "['normalise', 'enhance']"
-#   DATABASE_URL: "" # provide db url here if you're not using the postgres chart 
+#   DATABASE_URL: "" # provide db url here if you're not using the postgres chart
 
 # ref: http://docs.alerta.io/en/latest/webui.html
 # alertaWebUIConfig: |
@@ -75,7 +75,7 @@ affinity: {}
 #       'provider'    : "basic"
 #     })
 #     .constant('colors', {});
-  
+
 postgresql:
   enabled: true
   postgresqlUsername: alerta
