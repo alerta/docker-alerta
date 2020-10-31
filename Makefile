@@ -1,5 +1,10 @@
 #!make
 
+DOCKER=docker
+DOCKER_COMPOSE=docker-compose
+
+.DEFAULT_GOAL:=help
+
 -include .env .env.local .env.*.local
 
 VCS_REF=$(shell git rev-parse --short HEAD)
@@ -14,37 +19,25 @@ endif
 
 all:	help
 
-help:
-	@echo ""
-	@echo "Usage: make <command>"
-	@echo "Commands:"
-	@echo "   lint     Lint Dockerfile"
-	@echo "   test     Test container"
-	@echo "   build    Build container"
-	@echo "   pull     Pull latest containers"
-	@echo "   up       Create and start containers"
-	@echo "   down     Stop and remove containers"
-	@echo "   clean    Remove stopped containers"
-	@echo "   version  Show versions"
-	@echo "   shell    Container shell prompt"
-	@echo ""
-
+## lint			- Lint Dockerfile.
 lint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
+## test			- Run integration tests.
 test: env
 	@echo "IMAGE_NAME=${IMAGE_NAME}" >.env
 	@echo "VCS_REF=${VCS_REF}" >>.env
 	@echo "VERSION=${VERSION}" >>.env
-	docker-compose -f docker-compose.test.yml up \
+	$(DOCKER_COMPOSE) -f docker-compose.test.yml up \
 	--build \
 	--renew-anon-volumes \
 	--no-color \
 	--exit-code-from tester
 	@echo "IMAGE_NAME=${IMAGE_NAME}" >.env
 
+## build			- Build docker image.
 build:
-	docker build \
+	$(DOCKER) build \
 	--build-arg VCS_REF=$(VCS_REF) \
 	--build-arg BUILD_DATE=$(BUILD_DATE) \
 	--build-arg VERSION=$(VERSION) \
@@ -53,27 +46,50 @@ build:
 	-t $(IMAGE_NAME):$(VCS_REF) \
 	-t $(IMAGE_NAME):latest .
 
+## push			- Push docker image to repository.
 push:
-	docker push $(IMAGE_NAME)
+	$(DOCKER) push $(IMAGE_NAME)
 
+## pull			- Pull docker images.
 pull:
-	docker-compose -f docker-compose.yml pull
+	$(DOCKER_COMPOSE) -f docker-compose.yml pull
 
+## up			- Create and start up docker containers.
 up:
-	docker-compose -f docker-compose.yml up
+	$(DOCKER_COMPOSE) -f docker-compose.yml up
 
+## down			- Stop and remove docker containers.
 down:
-	docker-compose -f docker-compose.yml down
+	$(DOCKER_COMPOSE) -f docker-compose.yml down
 
+## clean			- Clean up docker containers.
 clean:
-	docker-compose -f docker-compose.yml rm
+	$(DOCKER_COMPOSE) -f docker-compose.yml rm
 
+## version		- Show version.
 version:
-	@docker-compose version
+	@$(DOCKER_COMPOSE) version
 	@echo "alerta version $(VERSION)"
 
+## shell			- Container shell prompt.
 shell:
-	docker-compose -f docker-compose.test.yml run --rm sut bash
+	$(DOCKER_COMPOSE) -f docker-compose.test.yml run --rm sut bash
 
+## env			- Print environment variables.
 env:
 	env
+
+## help			- Show this help.
+help: Makefile
+	@echo ''
+	@echo 'Usage:'
+	@echo '  make [TARGET]'
+	@echo ''
+	@echo 'Targets:'
+	@sed -n 's/^##//p' $<
+	@echo ''
+
+	@echo 'Add project-specific env variables to .env file:'
+	@echo 'PROJECT=$(PROJECT)'
+
+.PHONY: help lint test build sdist wheel clean all
