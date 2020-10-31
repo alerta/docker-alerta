@@ -1,0 +1,41 @@
+version: '3.1'
+#
+# NOTE: You must add the following entry to /etc/hosts for this to work:
+#
+#   127.0.0.1 host.docker.internal
+#
+services:
+  web:
+    image: alerta/alerta-web
+    volumes:
+      - $PWD/config/alertad.conf:/app/alertad.conf
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    environment:
+      BASE_URL: http://host.docker.internal:8080/api
+      DATABASE_URL: postgres://postgres:postgres@db:5432/monitoring
+      # SAML2 config not supported as environment variables, see config/alertad.conf
+    restart: always
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
+  idp:
+    image: jamedjo/test-saml-idp  # http://host.docker.internal:9080/simplesaml  admin/secret
+    ports:
+      - 9080:8080
+      - 8443:8443
+    environment:
+      SIMPLESAMLPHP_SP_ENTITY_ID: http://host.docker.internal:8080/api
+      SIMPLESAMLPHP_SP_ASSERTION_CONSUMER_SERVICE: http://host.docker.internal:8080/api/auth/saml
+
+networks:
+  default:
+    name: dev
