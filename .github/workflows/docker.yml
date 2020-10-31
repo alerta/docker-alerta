@@ -22,6 +22,10 @@ jobs:
           channel: '#workflows'
         if: always()
       - uses: actions/checkout@v2
+      - name: Docker Lint
+        id: docker-lint
+        run: |
+          docker run --rm -i hadolint/hadolint < Dockerfile
       - name: Run tests
         id: smoketest
         run: |

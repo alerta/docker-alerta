@@ -4,3 +4,5 @@ contrib/kubernetes/helm/alerta/charts
 
 .env.local
 .env.*.local
+
+.idea/*

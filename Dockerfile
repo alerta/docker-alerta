@@ -33,12 +33,13 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     libldap2-dev \
     libpq-dev \
     libsasl2-dev \
+    mongodb-org-shell \
     nginx-light \
     postgresql-client \
     python3-dev \
     supervisor \
     wget \
-    mongodb-org-shell && \
+    xmlsec1 && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
