@@ -4,6 +4,22 @@ services:
     image: alerta/alerta-web
     container_name: alerta-web
     volumes:
+      - $PWD/config/config.json:/web/config.json
+    ports:
+      - 8000:8080
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - AUTH_REQUIRED=True
+      - AUTH_PROVIDER=ldap
+      # LDAP configuration not support by environment variables, see config/alertad.conf
+    restart: always
+  api:
+    image: docker.pkg.github.com/alerta/alerta/alerta-api:latest
+    container_name: alerta-api
+    volumes:
       - $PWD/config/alertad.conf:/app/alertad.conf
     ports:
       - 8080:8080
@@ -14,8 +30,7 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
       - AUTH_REQUIRED=True
       - AUTH_PROVIDER=ldap
-      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
-      - PLUGINS=reject,blackout,normalise,enhance
+      # LDAP configuration not support by environment variables, see config/alertad.conf
     restart: always
   db:
     image: postgres
@@ -28,15 +43,11 @@ services:
       POSTGRES_PASSWORD: postgres
     restart: always
   openldap:
-    image: osixia/openldap
+    image: rroemhild/test-openldap
     container_name: openldap
     ports:
       - 389:389
       - 636:636
-    environment:
-      LDAP_ORGANISATION: My Domain Co.
-      LDAP_DOMAIN: my-domain.com
-      LDAP_ADMIN_PASSWORD: "1234"  # admin/1234
   phpldapadmin:
     image: osixia/phpldapadmin:latest
     container_name: ldapadmin
