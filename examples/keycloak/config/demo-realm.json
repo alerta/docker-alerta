@@ -97,17 +97,17 @@
     {
       "id": "16e7f9f8-abba-4bb1-8d66-85f95e011c2e",
       "clientId": "alerta-webui",
-      "rootUrl": "http://local.alerta.io:8005",
-      "adminUrl": "http://local.alerta.io:8005",
+      "rootUrl": "http://host.docker.internal:8000",
+      "adminUrl": "http://host.docker.internal:8000",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "fa134126-222b-4fc3-a8dd-070a28f39e88",
       "redirectUris": [
-        "http://local.alerta.io:8005/*"
+        "http://host.docker.internal:8000/*"
       ],
       "webOrigins": [
-        "http://local.alerta.io:8005"
+        "http://host.docker.internal:8000"
       ],
       "notBefore": 0,
       "bearerOnly": false,
