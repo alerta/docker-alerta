@@ -7,7 +7,7 @@ services:
     volumes:
       - $PWD/config/alertad.conf:/app/alertad.conf
     ports:
-      - 8005:8080
+      - 8000:8080
     depends_on:
       - db
       - keycloak
@@ -17,7 +17,7 @@ services:
       - AUTH_REQUIRED=True
       - ADMIN_USERS=alice  # password=alice
       - AUTH_PROVIDER=keycloak
-      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_URL=http://host.docker.internal:8080
       - KEYCLOAK_REALM=demo
       # - ALLOWED_OIDC_ROLES=devops
       # - ALLOWED_EMAIL_DOMAINS=alerta.io,alerta.dev
