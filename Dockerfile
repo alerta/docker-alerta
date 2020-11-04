@@ -44,12 +44,13 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt /app/requirements.txt
+COPY requirements*.txt /app/
 # hadolint ignore=DL3013
 RUN pip install pip virtualenv && \
     python3 -m venv /venv && \
     /venv/bin/pip install --upgrade setuptools && \
-    /venv/bin/pip install -r /app/requirements.txt
+    /venv/bin/pip install -r /app/requirements.txt && \
+    /venv/bin/pip install -r /app/requirements-prod.txt
 ENV PATH $PATH:/venv/bin
 
 RUN /venv/bin/pip install alerta==${CLIENT_VERSION} alerta-server==${SERVER_VERSION}
