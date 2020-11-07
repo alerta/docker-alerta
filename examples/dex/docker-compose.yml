@@ -1,0 +1,77 @@
+version: '3.1'
+services:
+  web:
+    image: alerta/alerta-web:8.1.0
+    container_name: alerta-web
+    volumes:
+      - ./config/config.json:/web/config.json
+    ports:
+      - 8000:8080
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+    restart: always
+
+  api:
+    image: alerta-local:latest
+    container_name: alerta-api
+    volumes:
+      - $PWD/config/alertad.conf:/app/alertad.conf
+    ports:
+      - 9080:8080
+    depends_on:
+      - db
+    environment:
+      - DEBUG=1
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - AUTH_REQUIRED=True
+      - AUTH_PROVIDER=openid
+      # - OIDC_ISSUER_URL=http://host.docker.internal:5556/dex
+      # - OAUTH2_CLIENT_ID=023fd00c-a5b2-40ba-8f69-b7b321b3147e
+      # - OAUTH2_CLIENT_SECRET=Yjg3OGYwMzk4ZmQ5Y2NjMjViY2E3ZjQ1ZjY0YjAwNjIK
+      - OIDC_ISSUER_URL=https://dev-66191jdr.eu.auth0.com/
+      - OAUTH2_CLIENT_ID=LMMEZSlPYKvM14cFxnWNWkC4DgvRk0dZ
+      - OAUTH2_CLIENT_SECRET=dAThXRiNL1GRnAMwf6z5W1zWM9TjmaxbKqE-drPnffNCEPtA_Dxa0IKHmzxXnRay
+      - OIDC_VERIFY_TOKEN=True
+      - ALLOWED_EMAIL_DOMAINS=gmail.com
+    restart: always
+
+  db:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+      - ./scripts:/docker-entrypoint-initdb.d
+    environment:
+      # POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    restart: always
+
+  dex:
+    image: dex-local
+    container_name: dexidp
+    volumes:
+      - $PWD/config/config-dex.yaml:/config/conf.yaml
+    depends_on:
+      - db
+    ports:
+      - 5556:5556
+    command: ["serve", "config/conf.yaml"]
+    restart: always
+
+  # openldap:
+  #   image: rroemhild/test-openldap
+  #   container_name: openldap
+  # phpldapadmin:
+  #   image: osixia/phpldapadmin:latest
+  #   container_name: ldapadmin
+  #   environment:
+  #     PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+  #     PHPLDAPADMIN_HTTPS=false:
+  #   ports:
+  #     - "8081:80"
+  #   depends_on:
+  #     - openldap

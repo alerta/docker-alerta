@@ -1,0 +1,145 @@
+# The base path of dex and the external name of the OpenID Connect service.
+# This is the canonical URL that all clients MUST use to refer to dex. If a
+# path is provided, dex's HTTP service will listen at a non-root URL.
+issuer: http://host.docker.internal:5556/dex
+
+# The storage configuration determines where dex stores its state. Supported
+# options include SQL flavors and Kubernetes third party resources.
+#
+# See the storage document at Documentation/storage.md for further information.
+storage:
+  type: postgres
+  config:
+    host: db
+    port: 5432
+    database: dex
+    user: postgres
+    password: postgres
+    ssl:
+      mode: disable
+
+  # type: etcd
+  # config:
+  #   endpoints:
+  #     - http://localhost:2379
+  #   namespace: dex/
+
+  # type: kubernetes
+  # config:
+  #   kubeConfigFile: $HOME/.kube/config
+
+# Configuration for the HTTP endpoints.
+web:
+  http: 0.0.0.0:5556
+  # Uncomment for HTTPS options.
+  # https: 127.0.0.1:5554
+  # tlsCert: /etc/dex/tls.crt
+  # tlsKey: /etc/dex/tls.key
+
+# Configuration for telemetry
+telemetry:
+  http: 0.0.0.0:5558
+
+# Uncomment this block to enable the gRPC API. This values MUST be different
+# from the HTTP endpoints.
+# grpc:
+#   addr: 127.0.0.1:5557
+#  tlsCert: examples/grpc-client/server.crt
+#  tlsKey: examples/grpc-client/server.key
+#  tlsClientCA: /etc/dex/client.crt
+
+# Uncomment this block to enable configuration for the expiration time durations.
+# expiry:
+#   deviceRequests: "5m"
+#   signingKeys: "6h"
+#   idTokens: "24h"
+
+# Options for controlling the logger.
+# logger:
+#   level: "debug"
+#   format: "text" # can also be "json"
+
+# Default values shown below
+# oauth2:
+    # use ["code", "token", "id_token"] to enable implicit flow for web-only clients
+#   responseTypes: [ "code" ] # also allowed are "token" and "id_token"
+    # By default, Dex will ask for approval to share data with application
+    # (approval for sharing data from connected IdP to Dex is separate process on IdP)
+#   skipApprovalScreen: false
+    # If only one authentication method is enabled, the default behavior is to
+    # go directly to it. For connected IdPs, this redirects the browser away
+    # from application to upstream provider such as the Google login page
+#   alwaysShowLoginScreen: false
+    # Uncommend the passwordConnector to use a specific connector for password grants
+#   passwordConnector: local
+
+# Instead of reading from an external storage, use this list of clients.
+#
+# If this option isn't chosen clients may be added through the gRPC API.
+staticClients:
+- name: 'Alerta Web UI'
+  id: 023fd00c-a5b2-40ba-8f69-b7b321b3147e
+  secret: Yjg3OGYwMzk4ZmQ5Y2NjMjViY2E3ZjQ1ZjY0YjAwNjIK
+  redirectURIs:
+  - 'http://local.alerta.io:8000'
+#  - id: example-device-client
+#    redirectURIs:
+#      - /device/callback
+#    name: 'Static Client for Device Flow'
+#    public: true
+
+connectors:
+- type: google
+  id: google
+  name: Google
+  config:
+    issuer: https://accounts.google.com
+    clientID: 736147134702-2lk9kqg6jueldtej10ajqo89jnbakr71.apps.googleusercontent.com
+    clientSecret: Hmkjh3DHAk85dtjGKvSKFF1E
+    redirectURI: http://idp.local.alerta.io:5556/dex/callback
+    # hostedDomains:
+    # - $GOOGLE_HOSTED_DOMAIN
+- type: microsoft
+  id: microsoft
+  name: Microsoft
+  config:
+    clientID: d8de5642-52e5-480e-abab-9db88e9e341fD
+    clientSecret: a7Xx6eV~-4XUjycF.-9Lxw53N46G.L_raO
+    tenant: f24341ef-7a6f-4cff-abb7-99a11ab11127
+    redirectURI: http://idp.local.alerta.io:5556/dex/callback
+
+- type: gitlab
+  # Required field for connector id.
+  id: gitlab
+  # Required field for connector name.
+  name: GitLab
+  config:
+    # optional, default = https://gitlab.com
+    baseURL: https://gitlab.com
+    # Credentials can be string literals or pulled from the environment.
+    clientID: bc3d6ec1e12a9f381c45233366158736dd095012fb7c97404379101545b0c7b6
+    clientSecret: 41921afe2147298f701a0fafae7245282718e39de897fc92eb322a8fe155ddac
+    redirectURI: http://idp.local.alerta.io:5556/dex/callback
+    # Optional groups whitelist, communicated through the "groups" scope.
+    # If `groups` is omitted, all of the user's GitLab groups are returned when the groups scope is present.
+    # If `groups` is provided, this acts as a whitelist - only the user's GitLab groups that are in the configured `groups` below will go into the groups claim.  Conversely, if the user is not in any of the configured `groups`, the user will not be authenticated.
+    # groups:
+    # - my-group
+    # flag which will switch from using the internal GitLab id to the users handle (@mention) as the user id.
+    # It is possible for a user to change their own user name but it is very rare for them to do so
+    useLoginAsID: false
+
+# Let dex keep a list of passwords which can be used to login to dex.
+enablePasswordDB: true
+
+# A static list of passwords to login the end user. By identifying here, dex
+# won't look in its underlying storage for passwords.
+#
+# If this option isn't chosen users may be added through the gRPC API.
+staticPasswords:
+- email: "nfsatterly@gmail.com"
+  # bcrypt hash of the string "password"
+  hash: "$2a$10$2b2cU8CPhOTaGrs1HRQuAueS7JTT5ZHsHSzYiFPm1leZck7Mc8T4W"
+  username: "nfsatterly@gmail.com"
+  userID: "08a8684b-db88-4b73-90a9-3cd1661f5466"
+
