@@ -16,11 +16,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: act10ns/slack@v1
-        with: 
-          status: starting
-          channel: '#actions'
-        if: always()
       - uses: actions/checkout@v2
       - name: Docker Lint
         id: docker-lint
@@ -38,7 +33,6 @@ jobs:
         with: 
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#actions'
         if: always()
 
   push:
@@ -49,11 +43,6 @@ jobs:
       REPOSITORY_URL: registry.hub.docker.com
       IMAGE_NAME: alerta/alerta-web
     steps:
-      - uses: act10ns/slack@v1
-        with: 
-          status: starting
-          channel: '#actions'
-        if: always()
       - name: Checkout
         uses: actions/checkout@v2
       - name: Variables
@@ -83,5 +72,5 @@ jobs:
         with: 
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-          channel: '#actions'
         if: always()
+
