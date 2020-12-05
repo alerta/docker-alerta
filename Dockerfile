@@ -23,6 +23,9 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
+    echo "deb https://nginx.org/packages/debian/ buster nginx" | tee /etc/apt/sources.list.d/nginx.list
+
 # hadolint ignore=DL3008
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
     echo "deb https://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
@@ -34,7 +37,7 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     libpq-dev \
     libsasl2-dev \
     mongodb-org-shell \
-    nginx-light \
+    nginx \
     postgresql-client \
     python3-dev \
     supervisor \
