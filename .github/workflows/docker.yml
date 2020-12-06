@@ -7,8 +7,7 @@ on:
     tags:
       - v*
 
-  pull_request_target:
-    types: [assigned, opened, synchronize, reopened]
+  pull_request:
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
