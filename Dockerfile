@@ -53,7 +53,7 @@ RUN pip install --no-cache-dir pip virtualenv && \
     python3 -m venv /venv && \
     /venv/bin/pip install --no-cache-dir --upgrade setuptools && \
     /venv/bin/pip install --no-cache-dir --requirement /app/requirements.txt && \
-    /venv/bin/pip install --no-cache-dir --requirement /app/requirements-prod.txt
+    /venv/bin/pip install --no-cache-dir --requirement /app/requirements-docker.txt
 ENV PATH $PATH:/venv/bin
 
 RUN /venv/bin/pip install alerta==${CLIENT_VERSION} alerta-server==${SERVER_VERSION}
