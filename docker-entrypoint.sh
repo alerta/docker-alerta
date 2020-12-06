@@ -52,6 +52,19 @@ EOF
 fi
 
 echo
+echo '# Checking versions.'
+echo Alerta Server ${SERVER_VERSION}
+echo Alerta Client ${CLIENT_VERSION}
+echo Alerta WebUI  ${WEBUI_VERSION}
+
+nginx -v
+echo uwsgi $(uwsgi --version)
+mongo --version | grep MongoDB
+psql --version
+python3 --version
+/venv/bin/pip list
+
+echo
 echo 'Alerta init process complete; ready for start up.'
 echo
 
