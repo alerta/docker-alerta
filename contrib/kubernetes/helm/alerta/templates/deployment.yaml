@@ -29,7 +29,7 @@ spec:
           env:
               {{- if .Values.alertaAdminUsers }}
             - name: ADMIN_USERS
-              value: {{ .Values.alertaAdminUsers | join ", " }}
+              value: {{ .Values.alertaAdminUsers | join "," }}
               {{- end }}
             - name: ADMIN_PASSWORD
               valueFrom:
