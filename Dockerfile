@@ -83,6 +83,8 @@ RUN chgrp -R 0 /app /venv /web && \
 USER 1001
 
 ENV HEARTBEAT_SEVERITY major
+ENV HK_EXPIRED_DELETE_HRS 2
+ENV HK_INFO_DELETE_HRS 12
 
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY supervisord.conf /app/supervisord.conf
