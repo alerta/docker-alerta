@@ -12,7 +12,7 @@ ARG VERSION
 
 ENV SERVER_VERSION=${VERSION}
 ENV CLIENT_VERSION=8.3.0
-ENV WEBUI_VERSION=8.3.0
+ENV WEBUI_VERSION=8.3.2
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="https://alerta.io" \
