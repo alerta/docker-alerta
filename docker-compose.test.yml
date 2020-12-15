@@ -15,7 +15,7 @@ services:
     environment:
       # - DEBUG=1  # remove this line to turn DEBUG off
       - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
-      - AUTH_REQUIRED=True
+      - AUTH_REQUIRED=tRuE
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io # default password: alerta
       - ADMIN_KEY=demo-key
       - ADMIN_KEY_MAXAGE=31536000 # 1 year in seconds
