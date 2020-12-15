@@ -36,7 +36,7 @@ endpoint = http://localhost:8080/api
 EOF
 
   # Add API key to client config, if required
-  if [ "${AUTH_REQUIRED}" == "True" ]; then
+  if [ "${AUTH_REQUIRED,,}" == "true" ]; then
     echo "# Auth enabled; add admin API key to client configuration."
     API_KEY=$(alertad key \
     --username "${ADMIN_USER}" \
