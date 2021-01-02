@@ -1,5 +1,7 @@
 #!/bin/bash
-set -e
+set -ex
+
+env | sort
 
 ADMIN_USER=${ADMIN_USERS%%,*}
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-alerta}
