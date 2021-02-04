@@ -10,9 +10,9 @@ ARG BUILD_DATE=now
 ARG VCS_REF
 ARG VERSION
 
-ARG SERVER_VERSION=${VERSION}
-ARG CLIENT_VERSION=8.0.0
-ARG WEBUI_VERSION=8.0.1
+ENV SERVER_VERSION=${VERSION}
+ENV CLIENT_VERSION=8.3.0
+ENV WEBUI_VERSION=8.4.0
 
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="https://alerta.io" \
@@ -22,6 +22,9 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.schema-version="1.0.0-rc.1"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
+    echo "deb https://nginx.org/packages/debian/ buster nginx" | tee /etc/apt/sources.list.d/nginx.list
 
 # hadolint ignore=DL3008
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
@@ -34,7 +37,7 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     libpq-dev \
     libsasl2-dev \
     mongodb-org-shell \
-    nginx-light \
+    nginx \
     postgresql-client \
     python3-dev \
     supervisor \
@@ -50,7 +53,7 @@ RUN pip install --no-cache-dir pip virtualenv && \
     python3 -m venv /venv && \
     /venv/bin/pip install --no-cache-dir --upgrade setuptools && \
     /venv/bin/pip install --no-cache-dir --requirement /app/requirements.txt && \
-    /venv/bin/pip install --no-cache-dir --requirement /app/requirements-prod.txt
+    /venv/bin/pip install --no-cache-dir --requirement /app/requirements-docker.txt
 ENV PATH $PATH:/venv/bin
 
 RUN /venv/bin/pip install alerta==${CLIENT_VERSION} alerta-server==${SERVER_VERSION}
@@ -80,6 +83,8 @@ RUN chgrp -R 0 /app /venv /web && \
 USER 1001
 
 ENV HEARTBEAT_SEVERITY major
+ENV HK_EXPIRED_DELETE_HRS 2
+ENV HK_INFO_DELETE_HRS 12
 
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY supervisord.conf /app/supervisord.conf

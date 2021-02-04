@@ -47,6 +47,13 @@ tolerations: []
 
 affinity: {}
 
+extraSecretMounts: []
+  # - name: secret-files
+  #   mountPath: /etc/secrets
+  #   subPath: ""
+  #   secretName: alertmanager-secret-files
+  #   readOnly: true
+
 # alertaAdminPassword: "" # if not provided will be randomly generated
 # alertaAdminUsers: # list of email addresses
 #   - "admin@alerta.io"

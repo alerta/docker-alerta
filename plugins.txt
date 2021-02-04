@@ -3,9 +3,7 @@ plugins/amqp master
 plugins/cachet master
 plugins/dingtalk master
 plugins/enhance master
-plugins/forward master
 plugins/geoip master
-plugins/hipchat master
 plugins/influxdb master
 plugins/logstash master
 plugins/mattermost master

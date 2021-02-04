@@ -1,5 +1,7 @@
 #!/bin/bash
-set -e
+set -ex
+
+env | sort
 
 ADMIN_USER=${ADMIN_USERS%%,*}
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-alerta}
@@ -36,7 +38,7 @@ endpoint = http://localhost:8080/api
 EOF
 
   # Add API key to client config, if required
-  if [ "${AUTH_REQUIRED}" == "True" ]; then
+  if [ "${AUTH_REQUIRED,,}" == "true" ]; then
     echo "# Auth enabled; add admin API key to client configuration."
     API_KEY=$(alertad key \
     --username "${ADMIN_USER}" \
@@ -50,6 +52,19 @@ key = ${API_KEY}
 EOF
   fi
 fi
+
+echo
+echo '# Checking versions.'
+echo Alerta Server ${SERVER_VERSION}
+echo Alerta Client ${CLIENT_VERSION}
+echo Alerta WebUI  ${WEBUI_VERSION}
+
+nginx -v
+echo uwsgi $(uwsgi --version)
+mongo --version | grep MongoDB
+psql --version
+python3 --version
+/venv/bin/pip list
 
 echo
 echo 'Alerta init process complete; ready for start up.'

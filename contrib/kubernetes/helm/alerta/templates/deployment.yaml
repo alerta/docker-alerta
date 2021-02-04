@@ -29,7 +29,7 @@ spec:
           env:
               {{- if .Values.alertaAdminUsers }}
             - name: ADMIN_USERS
-              value: {{ .Values.alertaAdminUsers | join ", " }}
+              value: {{ .Values.alertaAdminUsers | join "," }}
               {{- end }}
             - name: ADMIN_PASSWORD
               valueFrom:
@@ -67,6 +67,12 @@ spec:
               port: http
             initialDelaySeconds: 5
           volumeMounts:
+          {{- range .Values.extraSecretMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
             - name: alerta-config
               mountPath: /app/alertad.conf
               subPath: alertad.conf
@@ -81,6 +87,11 @@ spec:
         - name: alerta-config
           configMap:
             name: {{ include "alerta.fullname" . }}
+      {{- range .Values.extraSecretMounts }}
+        - name: {{ .name }}
+          secret:
+            secretName: {{ .secretName }}
+      {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}

@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  web:
+    build: .
+    image: alerta-web
+    ports:
+      - 9000:8080
+    volumes:
+      - ./alertad.conf:/app/alertad.conf
+    environment:
+      - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://alerta:8l3rt8@db:5432/monitoring
+      - AUTH_REQUIRED=True
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io #default password: alerta
+      - ADMIN_KEY=demo-key  # assigned to first user in ADMIN_USERS list
+      - PLUGINS=reject,blackout,normalise,enhance
+    networks:
+      - net
+    depends_on:
+      - db
+    restart: always
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: alerta
+      POSTGRES_PASSWORD: 8l3rt8
+    networks:
+      - net
+    restart: always
+networks:
+  net: {}
