@@ -2,6 +2,14 @@ version: '3.1'
 services:
   mom1:
     image: alerta/alerta-web
+<<<<<<< HEAD
+=======
+    # build:
+    #   context: ../..
+    #   args:
+    #     VCS_REF: 1
+    #     VERSION: 8.4.0
+>>>>>>> docs[examples]: add federated alerta example
     volumes:
       - $PWD/config/alertad-mom1.conf:/app/alertad.conf
       - $PWD/config/logging.conf:/app/logging.conf
@@ -25,6 +33,14 @@ services:
 
   mom2:
     image: alerta/alerta-web
+<<<<<<< HEAD
+=======
+    # build:
+    #   context: ../..
+    #   args:
+    #     VCS_REF: 1
+    #     VERSION: 8.4.0
+>>>>>>> docs[examples]: add federated alerta example
     volumes:
       - $PWD/config/alertad-mom2.conf:/app/alertad.conf
       - $PWD/config/logging.conf:/app/logging.conf
