@@ -3,7 +3,7 @@ What is Alerta?
 
 The alerta monitoring system is a tool used to consolidate and
 de-duplicate alerts from multiple sources for quick ‘at-a-glance’
-visualisation. With just one system you can monitor alerts from
+visualization. With just one system you can monitor alerts from
 many other monitoring tools on a single screen.
 
 How to use this image
@@ -79,19 +79,19 @@ API to ease deployment more generally:
     - client secret required by OAuth2 provider
 
 `ALLOWED_EMAIL_DOMAINS`
-    - list of authorised email domains when using Google
+    - list of authorized email domains when using Google
 
 `GITHUB_URL`
-    - GitHub Enteprise URL for privately run GitHub server
+    - GitHub Enterprise URL for privately run GitHub server
 
 `ALLOWED_GITHUB_ORGS`
-    - list of authorised GitHub organisations when using GitHub
+    - list of authorized GitHub organizations when using GitHub
 
 `GITLAB_URL`
     - GitLab website URL for public or privately run GitLab server
 
 `ALLOWED_GITLAB_GROUPS`
-    - list of authorised GitLab groups when using GitLab
+    - list of authorized GitLab groups when using GitLab
 
 `KEYCLOAK_URL`
     - Keycloak URL
