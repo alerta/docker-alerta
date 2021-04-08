@@ -67,7 +67,10 @@ jobs:
         run: echo "$DOCKER_PASSWORD" | docker login $REPOSITORY_URL --username "$DOCKER_USERNAME" --password-stdin
       - name: Publish Image
         id: docker-push
-        run: docker push $REPOSITORY_URL/$IMAGE_NAME
+        run: |
+          docker push $REPOSITORY_URL/$IMAGE_NAME:$(cat VERSION)
+          docker push $REPOSITORY_URL/$IMAGE_NAME:${{ steps.vars.outputs.SHORT_COMMIT_ID }}
+          docker push $REPOSITORY_URL/$IMAGE_NAME:latest
 
       - uses: act10ns/slack@v1
         with: 

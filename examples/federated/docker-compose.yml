@@ -1,0 +1,109 @@
+version: '3.1'
+
+services:
+  mom1:
+    image: alerta/alerta-web
+    volumes:
+      - $PWD/config/alertad-mom1.conf:/app/alertad.conf
+      - $PWD/config/logging.conf:/app/logging.conf
+      # - $PWD/config/alerta.conf.example:/app/alerta.conf
+      # - $PWD/config/config.json.example:/web/config.json
+    ports:
+      - 8080
+    depends_on:
+      - db
+    environment:
+      # - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/mom1
+      - AUTH_REQUIRED=True
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - ADMIN_KEY=demo-key  # assigned to first user in ADMIN_USERS
+    networks:
+      net:
+        aliases:
+          - mom1.local.alerta.io
+    restart: always
+
+  mom2:
+    image: alerta/alerta-web
+    volumes:
+      - $PWD/config/alertad-mom2.conf:/app/alertad.conf
+      - $PWD/config/logging.conf:/app/logging.conf
+      # - $PWD/config/alerta.conf.example:/app/alerta.conf
+      # - $PWD/config/config.json.example:/web/config.json
+    ports:
+      - 8080
+    depends_on:
+      - db
+    environment:
+      # - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/mom2
+      - AUTH_REQUIRED=True
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - ADMIN_KEY=demo-key  # assigned to first user in ADMIN_USERS
+    networks:
+      net:
+        aliases:
+          - mom2.local.alerta.io
+    restart: always
+
+  mlm1:
+    image: alerta/alerta-web
+    volumes:
+      - $PWD/config/alertad-mlm1.conf:/app/alertad.conf
+      - $PWD/config/logging.conf:/app/logging.conf
+      # - $PWD/config/alerta.conf.example:/app/alerta.conf
+      # - $PWD/config/config.json.example:/web/config.json
+    ports:
+      - 8080
+    depends_on:
+      - db
+    environment:
+      # - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/mlm1
+      - AUTH_REQUIRED=True
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - ADMIN_KEY=demo-key  # assigned to first user in ADMIN_USERS
+    networks:
+      net:
+        aliases:
+          - mlm1.local.alerta.io
+    restart: always
+
+  mlm2:
+    image: alerta/alerta-web
+    volumes:
+      - $PWD/config/alertad-mlm2.conf:/app/alertad.conf
+      - $PWD/config/logging.conf:/app/logging.conf
+      # - $PWD/config/alerta.conf.example:/app/alerta.conf
+      # - $PWD/config/config.json.example:/web/config.json
+    ports:
+      - 8080
+    depends_on:
+      - db
+    environment:
+      # - DEBUG=1  # remove this line to turn DEBUG off
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/mlm2
+      - AUTH_REQUIRED=True
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io
+      - ADMIN_KEY=demo-key  # assigned to first user in ADMIN_USERS
+    networks:
+      net:
+        aliases:
+          - mlm2.local.alerta.io
+    restart: always
+
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+      - ./scripts/:/docker-entrypoint-initdb.d/
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - net
+    restart: always
+
+networks:
+  net:
