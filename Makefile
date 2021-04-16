@@ -48,7 +48,7 @@ build:
 
 ## push			- Push docker image to repository.
 push:
-	$(DOCKER) push $(IMAGE_NAME)
+	$(DOCKER) push $(IMAGE_NAME):$(VERSION)
 
 ## pull			- Pull docker images.
 pull:
