@@ -34,6 +34,18 @@ while ! nc -z $db_host $db_port; do
 done
 echo "Database is ready."
 
+# preparement actions for PostgreSQL database
+if [ "$db_proto" == "postgres" ]; then
+  # export variables for psql CLI-tool to connect to db automatically
+  export PGUSER=$db_username
+  export PGPASSWORD=$db_password
+  export PGHOST=$db_host
+  export PGPORT=$db_port
+
+  echo "Create PostgreSQL database if it's not exist."
+  createdb $db_name 2>&1 1>&/dev/null || true
+fi
+
 # Generate minimal server config, if not supplied
 if [ ! -f "${ALERTA_SVR_CONF_FILE}" ]; then
   echo "# Create server configuration file."
