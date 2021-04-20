@@ -42,6 +42,7 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     python3-dev \
     supervisor \
     wget \
+    netcat \
     xmlsec1 && \
     apt-get -y clean && \
     apt-get -y autoremove && \

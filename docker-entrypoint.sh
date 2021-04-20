@@ -7,6 +7,33 @@ ADMIN_USER=${ADMIN_USERS%%,*}
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-alerta}
 MAXAGE=${ADMIN_KEY_MAXAGE:-315360000}  # default=10 years
 
+# check that database url passed
+if [ -z "$DATABASE_URL" ]; then
+  echo "[WARNING] Not all ENV-variables have been passed!"
+  echo "[WARNING] Here are required ENV-variables:"
+  echo "[WARNING] - DATABASE_URL: $DATABASE_URL"
+  exit 1
+fi
+
+# parse database url
+db_proto="$(echo $DATABASE_URL | grep :// | sed -e's,^\(.*\)://.*,\1,g')"
+db_protoslash="$(echo $DATABASE_URL | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+db_url=$(echo $DATABASE_URL | sed -e s,$db_protoslash,,g)
+db_userpass="$(echo $db_url | grep @ | cut -d@ -f1)"
+db_username="$(echo $db_userpass | cut -d':' -f1)"
+db_password="$(echo $db_userpass | cut -d':' -f2)"
+db_hostport=$(echo $db_url | sed -e s,$db_userpass@,,g | cut -d/ -f1)
+db_host="$(echo $db_hostport | sed -e 's,:.*,,g')"
+db_port="$(echo $db_hostport | cut -d':' -s -f2)"
+db_name="$(echo $db_url | grep / | cut -d/ -f2-)"
+
+# wait for database readiness
+while ! nc -z $db_host $db_port; do
+  echo "Waiting for database to be available... $db_host:$db_port"
+  sleep 5
+done
+echo "Database is ready."
+
 # Generate minimal server config, if not supplied
 if [ ! -f "${ALERTA_SVR_CONF_FILE}" ]; then
   echo "# Create server configuration file."
