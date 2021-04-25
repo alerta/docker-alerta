@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.7-slim-buster
 
 ENV PYTHONUNBUFFERED 1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -23,26 +23,38 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    gnupg2 \
+    libldap2-dev \
+    libpq-dev \
+    libsasl2-dev \
+    postgresql-client \
+    python3-dev \
+    supervisor \
+    xmlsec1 && \
+    apt-get -y clean && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
-    echo "deb https://nginx.org/packages/debian/ buster nginx" | tee /etc/apt/sources.list.d/nginx.list
+    echo "deb https://nginx.org/packages/debian/ buster nginx" | tee /etc/apt/sources.list.d/nginx.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    nginx && \
+    apt-get -y clean && \
+    apt-get -y autoremove && \
+    rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3008
 RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
     echo "deb https://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    gettext-base \
-    libffi-dev \
-    libldap2-dev \
-    libpq-dev \
-    libsasl2-dev \
-    mongodb-org-shell \
-    nginx \
-    postgresql-client \
-    python3-dev \
-    supervisor \
-    wget \
-    xmlsec1 && \
+    mongodb-org-shell && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*

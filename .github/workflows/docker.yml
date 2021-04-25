@@ -21,7 +21,10 @@ jobs:
       - name: Docker Lint
         id: docker-lint
         run: |
-          docker run --rm -i hadolint/hadolint < Dockerfile
+          docker run --rm -i ghcr.io/hadolint/hadolint hadolint \
+          --ignore DL3008 \
+          --ignore DL3059 \
+          - < Dockerfile
       - name: Run tests
         id: smoketest
         run: |
