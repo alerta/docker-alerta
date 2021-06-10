@@ -114,6 +114,9 @@ API to ease deployment more generally:
 `PLUGINS`
     - list of plugins to enable.
 
+`SUPERVISORD_LOG_LEVEL`
+    - log level of the main stdout / stderr output of the container controlled by supervisord (default:`debug`)
+
 Configuration Files
 -------------------
 

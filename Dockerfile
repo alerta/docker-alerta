@@ -97,6 +97,7 @@ USER 1001
 ENV HEARTBEAT_SEVERITY major
 ENV HK_EXPIRED_DELETE_HRS 2
 ENV HK_INFO_DELETE_HRS 12
+ENV SUPERVISORD_LOG_LEVEL debug
 
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY supervisord.conf /app/supervisord.conf
