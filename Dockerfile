@@ -24,6 +24,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     build-essential \
     curl \
