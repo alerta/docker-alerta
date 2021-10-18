@@ -117,6 +117,15 @@ API to ease deployment more generally:
 `SUPERVISORD_LOG_LEVEL`
     - log level of the main stdout / stderr output of the container controlled by supervisord (default:`debug`)
 
+`UWSGI_PROCESSES`
+    - number of processes for uWSGI (default:`5`)
+
+`UWSGI_LISTEN`
+    - max number of concurrent connections (default:`256`)
+
+`UWSGI_BUFFER_SIZE`
+    - size of the unix socket buffer (default:`8192`)
+
 Configuration Files
 -------------------
 

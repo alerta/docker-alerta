@@ -24,6 +24,7 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     build-essential \
     curl \
@@ -94,6 +95,9 @@ RUN chgrp -R 0 /app /venv /web && \
 
 USER 1001
 
+ENV UWSGI_PROCESSES=5
+ENV UWSGI_LISTEN=256
+ENV UWSGI_BUFFER_SIZE=8192
 ENV HEARTBEAT_SEVERITY major
 ENV HK_EXPIRED_DELETE_HRS 2
 ENV HK_INFO_DELETE_HRS 12
