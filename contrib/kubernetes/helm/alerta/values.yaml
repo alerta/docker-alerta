@@ -91,3 +91,15 @@ postgresql:
   persistence:
     enabled: true
     size: 10Gi
+
+  # If deploying on OpenShift
+  # volumePermissions:
+  #   securityContext:
+  #     runAsUser: "auto"
+  # securityContext:
+  #  enabled: false
+  # containerSecurityContext:
+  #  enabled: false,
+  # shmVolume:
+  #  chmod:
+  #    enabled: false
