@@ -17,7 +17,7 @@ services:
       # LDAP configuration not support by environment variables, see config/alertad.conf
     restart: always
   api:
-    image: docker.pkg.github.com/alerta/alerta/alerta-api:latest
+    image: ghcr.io/alerta/alerta-api:latest
     container_name: alerta-api
     volumes:
       - $PWD/config/alertad.conf:/app/alertad.conf
