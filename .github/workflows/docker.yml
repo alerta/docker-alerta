@@ -1,4 +1,4 @@
-name: Docker Build and Push
+name: docker-build-push
 
 on:
   push:
@@ -7,10 +7,8 @@ on:
     tags:
       - v*
 
-  pull_request:
-    types: [assigned, opened, synchronize, reopened]
-
 env:
+  REPOSITORY_URL: registry.hub.docker.com
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 jobs:
@@ -25,6 +23,11 @@ jobs:
           --ignore DL3008 \
           --ignore DL3059 \
           - < Dockerfile
+      - uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REPOSITORY_URL }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Run tests
         id: smoketest
         run: |
@@ -37,14 +40,13 @@ jobs:
         with: 
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-        if: failure()
+        if: always()
 
   push:
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     env:
-      REPOSITORY_URL: registry.hub.docker.com
       IMAGE_NAME: alerta/alerta-web
     steps:
       - name: Checkout
@@ -63,11 +65,11 @@ jobs:
           -t $REPOSITORY_URL/$IMAGE_NAME:$(cat VERSION)
           -t $REPOSITORY_URL/$IMAGE_NAME:${{ steps.vars.outputs.SHORT_COMMIT_ID }}
           -t $REPOSITORY_URL/$IMAGE_NAME:latest .
-      - name: Docker Login
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run: echo "$DOCKER_PASSWORD" | docker login $REPOSITORY_URL --username "$DOCKER_USERNAME" --password-stdin
+      - uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REPOSITORY_URL }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Publish Image
         id: docker-push
         run: |
@@ -79,5 +81,4 @@ jobs:
         with: 
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
-        if: failure()
-
+        if: always()

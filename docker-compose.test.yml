@@ -22,13 +22,13 @@ services:
       - PLUGINS=reject,blackout,normalise,enhance
 
   tester:
-    image: tutum/curl:latest
+    image: curlimages/curl:latest
     volumes:
-      - ./wait-for-it.sh:/usr/local/bin/wait-for-it.sh
+      - ./wait-for:/wait-for
       - ./tests.sh:/tests.sh
     depends_on:
       - sut
-    command: ["wait-for-it.sh", "sut:8080", "-t", "240", "--", "sh", "/tests.sh"]
+    command: sh -c './wait-for sut:8080 -t 240 -- ./tests.sh'
 
   db:
     image: postgres
