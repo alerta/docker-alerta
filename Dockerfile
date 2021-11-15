@@ -88,8 +88,8 @@ ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf
 ENV ALERTA_WEB_CONF_FILE /web/config.json
 
-COPY config/templates/app/ app/
-COPY config/templates/web/ web/
+COPY config/templates/app/ /app
+COPY config/templates/web/ /web
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log

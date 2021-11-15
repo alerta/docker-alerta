@@ -1,9 +1,7 @@
-name: docker-build-push
+name: docker-push
 
 on:
   push:
-    branches:
-      - master
     tags:
       - v*
 
