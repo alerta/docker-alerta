@@ -1,18 +1,25 @@
 #!/bin/bash
-set -ex
+set -e
 
-env | sort
+JINJA2="import os, sys, jinja2; sys.stdout.write(jinja2.Template(sys.stdin.read()).render(env=os.environ)+'\n')"
+
+ALERTA_CONF_FILE=${ALERTA_CONF_FILE:-/app/alerta.conf}
+ALERTA_SVR_CONF_FILE=${ALERTA_SVR_CONF_FILE:-/app/alertad.conf}
+ALERTA_WEB_CONF_FILE=${ALERTA_WEB_CONF_FILE:-/web/config.json}
+NGINX_CONF_FILE=/app/nginx.conf
+SUPERVISORD_CONF_FILE=/app/supervisord.conf
 
 ADMIN_USER=${ADMIN_USERS%%,*}
 ADMIN_PASSWORD=${ADMIN_PASSWORD:-alerta}
 MAXAGE=${ADMIN_KEY_MAXAGE:-315360000}  # default=10 years
 
+env | sort
+
 # Generate minimal server config, if not supplied
 if [ ! -f "${ALERTA_SVR_CONF_FILE}" ]; then
   echo "# Create server configuration file."
-  cat >"${ALERTA_SVR_CONF_FILE}" << EOF
-SECRET_KEY = '$(< /dev/urandom tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -c 32)'
-EOF
+  export SECRET_KEY=${SECRET_KEY:-$(< /dev/urandom tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -c 32)}
+  python3 -c "${JINJA2}" < ${ALERTA_SVR_CONF_FILE}.j2 >${ALERTA_SVR_CONF_FILE}
 fi
 
 # Init admin users and API keys
@@ -31,27 +38,30 @@ fi
 
 # Generate minimal client config, if not supplied
 if [ ! -f "${ALERTA_CONF_FILE}" ]; then
-  echo "# Create client configuration file."
-  cat >${ALERTA_CONF_FILE} << EOF
-[DEFAULT]
-endpoint = http://localhost:8080/api
-EOF
-
   # Add API key to client config, if required
   if [ "${AUTH_REQUIRED,,}" == "true" ]; then
     echo "# Auth enabled; add admin API key to client configuration."
-    API_KEY=$(alertad key \
+    export API_KEY=$(alertad key \
     --username "${ADMIN_USER}" \
     --scope "read" \
     --scope "write:alerts" \
     --scope "admin:management" \
     --duration "${MAXAGE}" \
     --text "Housekeeping")
-    cat >>${ALERTA_CONF_FILE} << EOF
-key = ${API_KEY}
-EOF
   fi
+  echo "# Create client configuration file."
+  python3 -c "${JINJA2}" < ${ALERTA_CONF_FILE}.j2 >${ALERTA_CONF_FILE}
 fi
+
+echo "# Create supervisord configuration file."
+python3 -c "${JINJA2}" < ${SUPERVISORD_CONF_FILE}.j2 >${SUPERVISORD_CONF_FILE}
+
+echo "# Create nginx configuration file."
+python3 -c "${JINJA2}" < ${NGINX_CONF_FILE}.j2 >${NGINX_CONF_FILE}
+nginx -t -c ${NGINX_CONF_FILE}
+
+echo "# Create web configuration file."
+python3 -c "${JINJA2}" < ${ALERTA_WEB_CONF_FILE}.j2 >${ALERTA_WEB_CONF_FILE}
 
 echo
 echo '# Checking versions.'

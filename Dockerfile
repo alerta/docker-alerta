@@ -4,8 +4,6 @@ ENV PYTHONUNBUFFERED 1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PIP_NO_CACHE_DIR=1
 
-LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
-
 ARG BUILD_DATE=now
 ARG VCS_REF
 ARG VERSION
@@ -14,6 +12,14 @@ ENV SERVER_VERSION=${VERSION}
 ENV CLIENT_VERSION=8.5.0
 ENV WEBUI_VERSION=8.5.0
 
+ENV UWSGI_PROCESSES=5
+ENV UWSGI_LISTEN=256
+ENV UWSGI_BUFFER_SIZE=8192
+ENV HEARTBEAT_SEVERITY=major
+ENV HK_EXPIRED_DELETE_HRS=2
+ENV HK_INFO_DELETE_HRS=12
+
+LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
 LABEL org.label-schema.build-date=$BUILD_DATE \
       org.label-schema.url="https://alerta.io" \
       org.label-schema.vcs-url="https://github.com/alerta/docker-alerta" \
@@ -62,7 +68,7 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
 
 COPY requirements*.txt /app/
 # hadolint ignore=DL3013
-RUN pip install --no-cache-dir pip virtualenv && \
+RUN pip install --no-cache-dir pip virtualenv jinja2 && \
     python3 -m venv /venv && \
     /venv/bin/pip install --no-cache-dir --upgrade setuptools && \
     /venv/bin/pip install --no-cache-dir --requirement /app/requirements.txt && \
@@ -74,17 +80,16 @@ COPY install-plugins.sh /app/install-plugins.sh
 COPY plugins.txt /app/plugins.txt
 RUN /app/install-plugins.sh
 
-ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
-ENV ALERTA_CONF_FILE /app/alerta.conf
-
 ADD https://github.com/alerta/alerta-webui/releases/download/v${WEBUI_VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
 RUN tar zxvf /tmp/webui.tar.gz -C /tmp && \
     mv /tmp/dist /web
-COPY config.json /web/config.json
 
-COPY wsgi.py /app/wsgi.py
-COPY uwsgi.ini /app/uwsgi.ini
-COPY nginx.conf /app/nginx.conf
+ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
+ENV ALERTA_CONF_FILE /app/alerta.conf
+ENV ALERTA_WEB_CONF_FILE /web/config.json
+
+COPY config/templates/app/ app/
+COPY config/templates/web/ web/
 
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
@@ -95,15 +100,7 @@ RUN chgrp -R 0 /app /venv /web && \
 
 USER 1001
 
-ENV UWSGI_PROCESSES=5
-ENV UWSGI_LISTEN=256
-ENV UWSGI_BUFFER_SIZE=8192
-ENV HEARTBEAT_SEVERITY major
-ENV HK_EXPIRED_DELETE_HRS 2
-ENV HK_INFO_DELETE_HRS 12
-
 COPY docker-entrypoint.sh /usr/local/bin/
-COPY supervisord.conf /app/supervisord.conf
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 

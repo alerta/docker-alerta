@@ -1,0 +1,9 @@
+[DEFAULT]
+sslverify = no
+output = presto
+endpoint = http://localhost:8080/api
+timezone = Europe/London
+{%- if env.API_KEY %}
+key = {{ env.API_KEY }}
+{%- endif %}
+debug = {{ 'yes' if env.DEBUG else 'no' }}
