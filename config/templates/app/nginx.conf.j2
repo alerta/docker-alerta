@@ -3,7 +3,11 @@ worker_processes 4;
 pid /tmp/nginx.pid;
 
 daemon off;
-error_log /dev/stderr warn;
+{%- if env.DEBUG %}
+error_log /dev/stderr debug;
+{%- else %}
+error_log /dev/stderr {{ env.LOG_LEVEL|lower or 'warn' }};
+{%- endif %}
 
 events {
         worker_connections 1024;
@@ -31,7 +35,6 @@ http {
 
         server {
                 listen 8080 default_server;
-
 
                 access_log /dev/stdout main;
                 access_log /dev/stdout scripts;
