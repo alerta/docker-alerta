@@ -1,5 +1,8 @@
 #!/bin/sh
 
+curl http://sut:8080/api/management/properties?api-key=demo-key
+curl -sv http://sut:8080/api/management/properties?api-key=demo-key | grep X-Forwarded-For || exit 9
+
 curl -sf http://sut:8080/ || (echo "ERROR: no response from web UI" && exit 11)
 curl -sf http://sut:8080/api/_ || (echo "ERROR: no response from API endpoint" && exit 12)
 curl -sf http://sut:8080/api/management/gtg || (echo "ERROR: no response from API good-to-go healthcheck" && exit 13)
