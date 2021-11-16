@@ -33,6 +33,10 @@ http {
 
         default_type application/octet-stream;
 
+        upstream backend {
+                server 127.0.0.1:29000;
+        }
+
         server {
                 listen 8080 default_server;
 
@@ -41,11 +45,12 @@ http {
 
                 location ~ /api {
                         include /etc/nginx/uwsgi_params;
-                        uwsgi_pass unix:/tmp/uwsgi.sock;
+                        uwsgi_pass backend;
 
-                        proxy_set_header Host $host:$server_port;
-                        proxy_set_header X-Real-IP $remote_addr;
-                        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                        uwsgi_param Host $host;
+                        uwsgi_param X-Real-IP $remote_addr;
+                        uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
+                        uwsgi_param X-Forwarded-Proto $http_x_forwarded_proto;
                 }
 
                 root /web;
