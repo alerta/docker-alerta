@@ -1,4 +1,4 @@
-name: "build-test"
+name: "performance"
 
 on:
   pull_request:
@@ -20,22 +20,10 @@ jobs:
       - name: Load Test
         id: load-test
         run: |
-          docker run --rm -i ghcr.io/hadolint/hadolint hadolint \
-          --ignore DL3008 \
-          --ignore DL3059 \
-          - < Dockerfile
-      - uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REPOSITORY_URL }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Run tests
-        id: smoketest
-        run: |
-          docker-compose -f docker-compose.test.yml build \
+          docker-compose -f docker-compose.performance.yml build \
             --build-arg VCS_REF=${{ github.sha }} \
             --build-arg VERSION=$(cat VERSION)
-          docker-compose -f docker-compose.test.yml up --exit-code-from tester
+          docker-compose -f docker-compose.performance.yml up --exit-code-from tester
 
       - uses: act10ns/slack@v1
         with: 

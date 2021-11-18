@@ -32,7 +32,7 @@ http {
 
         log_format scripts '$document_root | $uri | > $request';
 
-        sendfile        on;
+        sendfile           on;
         keepalive_timeout  65;
 
         server {

@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  sut:
+    build:
+      context: .
+      args:
+        VCS_REF: ${VCS_REF}
+        VERSION: ${VERSION}
+    # image: alerta/alerta-web
+    ports:
+      - 8080
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - NGINX_WORKER_PROCESSES=1
+      - NGINX_WORKER_CONNECTIONS=1024
+      - UWSGI_PROCESSES=4
+      - UWSGI_LISTEN=256
+      - UWSGI_BUFFER_SIZE=8192
+
+  tester:
+    image: curlimages/curl:latest
+    volumes:
+      - ./wait-for:/wait-for
+      - ./tests.sh:/tests.sh
+    depends_on:
+      - sut
+    command: sh -c './wait-for sut:8080 -t 240 -- ./tests.sh'
+
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+

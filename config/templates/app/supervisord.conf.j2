@@ -9,7 +9,7 @@ loglevel={{ env.LOG_LEVEL|lower or 'warn' }}
 pidfile=/tmp/supervisord.pid
 
 [program:uwsgi]
-command=/venv/bin/uwsgi --ini /app/uwsgi.ini --strict --stats :1717 --stats-http
+command=/venv/bin/uwsgi --ini /app/uwsgi.ini --stats :1717 --stats-http
 redirect_stderr=true
 
 [program:nginx]
