@@ -7,6 +7,7 @@ ALERTA_CONF_FILE=${ALERTA_CONF_FILE:-/app/alerta.conf}
 ALERTA_SVR_CONF_FILE=${ALERTA_SVR_CONF_FILE:-/app/alertad.conf}
 ALERTA_WEB_CONF_FILE=${ALERTA_WEB_CONF_FILE:-/web/config.json}
 NGINX_CONF_FILE=/app/nginx.conf
+UWSGI_CONF_FILE=/app/uwsgi.ini
 SUPERVISORD_CONF_FILE=/app/supervisord.conf
 
 ADMIN_USER=${ADMIN_USERS%%,*}
@@ -59,6 +60,9 @@ python3 -c "${JINJA2}" < ${SUPERVISORD_CONF_FILE}.j2 >${SUPERVISORD_CONF_FILE}
 echo "# Create nginx configuration file."
 python3 -c "${JINJA2}" < ${NGINX_CONF_FILE}.j2 >${NGINX_CONF_FILE}
 nginx -t -c ${NGINX_CONF_FILE}
+
+echo "# Create uWSGI configuration file."
+python3 -c "${JINJA2}" < ${UWSGI_CONF_FILE}.j2 >${UWSGI_CONF_FILE}
 
 echo "# Create web configuration file."
 python3 -c "${JINJA2}" < ${ALERTA_WEB_CONF_FILE}.j2 >${ALERTA_WEB_CONF_FILE}

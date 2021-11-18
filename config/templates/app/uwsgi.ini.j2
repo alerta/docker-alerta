@@ -1,0 +1,22 @@
+[uwsgi]
+chdir = /app
+module = wsgi
+manage-script-name = true
+mount = /api=wsgi:app
+master = true
+processes = {{ env.UWSGI_PROCESSES }}
+listen = {{ env.UWSGI_LISTEN }}
+
+socket = /tmp/uwsgi.sock
+buffer-size = {{ env.UWSGI_BUFFER_SIZE }}
+chmod-socket = 664
+uid = alerta
+gid = root
+vacuum = true
+
+die-on-term = true
+disable-logging = True
+max-worker-lifetime = 30
+
+show-config = true
+memory-report = true

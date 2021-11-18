@@ -1,5 +1,5 @@
 
-worker_processes 4;
+worker_processes {{ env.NGINX_WORKER_PROCESSES }};
 pid /tmp/nginx.pid;
 
 daemon off;
@@ -10,7 +10,7 @@ error_log /dev/stderr {{ env.LOG_LEVEL|lower or 'warn' }};
 {%- endif %}
 
 events {
-        worker_connections 1024;
+        worker_connections {{ env.NGINX_WORKER_CONNECTIONS }};
 }
 
 http {
@@ -21,6 +21,7 @@ http {
         uwsgi_temp_path /tmp/uwsgi_temp;
 
         include /etc/nginx/mime.types;
+        default_type application/octet-stream;
 
         gzip on;
         gzip_disable "msie6";
@@ -31,21 +32,17 @@ http {
 
         log_format scripts '$document_root | $uri | > $request';
 
-        default_type application/octet-stream;
-
-        upstream backend {
-                server 127.0.0.1:29000;
-        }
+        sendfile        on;
+        keepalive_timeout  65;
 
         server {
                 listen 8080 default_server;
 
                 access_log /dev/stdout main;
-                access_log /dev/stdout scripts;
 
-                location ~ /api {
+                location /api {
                         include /etc/nginx/uwsgi_params;
-                        uwsgi_pass backend;
+                        uwsgi_pass unix:///tmp/uwsgi.sock;
 
                         uwsgi_param Host $host;
                         uwsgi_param X-Real-IP $remote_addr;
