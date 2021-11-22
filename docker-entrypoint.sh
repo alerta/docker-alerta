@@ -53,15 +53,24 @@ if [ ! -f "${ALERTA_CONF_FILE}" ]; then
   python3 -c "${JINJA2}" < ${ALERTA_CONF_FILE}.j2 >${ALERTA_CONF_FILE}
 fi
 
-echo "# Create supervisord configuration file."
-python3 -c "${JINJA2}" < ${SUPERVISORD_CONF_FILE}.j2 >${SUPERVISORD_CONF_FILE}
+# Generate supervisord config, if not supplied
+if [ ! -f "${SUPERVISORD_CONF_FILE}" ]; then
+  echo "# Create supervisord configuration file."
+  python3 -c "${JINJA2}" < ${SUPERVISORD_CONF_FILE}.j2 >${SUPERVISORD_CONF_FILE}
+fi
 
-echo "# Create nginx configuration file."
-python3 -c "${JINJA2}" < ${NGINX_CONF_FILE}.j2 >${NGINX_CONF_FILE}
+# Generate nginx config, if not supplied.
+if [ ! -f "${NGINX_CONF_FILE}" ]; then
+  echo "# Create nginx configuration file."
+  python3 -c "${JINJA2}" < ${NGINX_CONF_FILE}.j2 >${NGINX_CONF_FILE}
+fi
 nginx -t -c ${NGINX_CONF_FILE}
 
-echo "# Create web configuration file."
-python3 -c "${JINJA2}" < ${ALERTA_WEB_CONF_FILE}.j2 >${ALERTA_WEB_CONF_FILE}
+# Generate web config, if not supplied.
+if [ ! -f "${ALERTA_WEB_CONF_FILE}" ]; then
+  echo "# Create web configuration file."
+  python3 -c "${JINJA2}" < ${ALERTA_WEB_CONF_FILE}.j2 >${ALERTA_WEB_CONF_FILE}
+fi
 
 echo
 echo '# Checking versions.'
