@@ -12,19 +12,44 @@ services:
     volumes:
       - $PWD/config/alertad.conf:/app/alertad.conf
     depends_on:
-      - db
+      - db0
     environment:
       # - DEBUG=1  # remove this line to turn DEBUG off
-      - DATABASE_URL=mongodb://db:27017/monitoring
+      - DATABASE_URL=mongodb://db0:27017/monitoring?replicaSet=rs0
+      - MONGO_INITDB_DATABASE=monitoring
       - AUTH_REQUIRED=True
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io
       - ADMIN_PASSWORD=super-secret # default is "alerta"
       - ADMIN_KEY=demo-key  # assigned to first user in ADMIN_USERS
-      - ADMIN_KEY_MAXAGE=500
       # - PLUGINS=remote_ip,reject,heartbeat,blackout,normalise,enhance
     restart: always
-  db:
+
+  db0:
     image: mongo
+    ports:
+      - 27017
     volumes:
-      - ./data/mongodb:/data/db
+      - ./mongodb/0:/data/db
+    command: ["--replSet", "rs0", "--bind_ip_all"]
     restart: always
+
+  db1:
+    image: mongo
+    ports:
+      - 27017
+    volumes:
+      - ./mongodb/1:/data/db
+    command: ["--replSet", "rs0", "--bind_ip_all" ]
+    restart: always
+
+  db2:
+    image: mongo
+    ports:
+      - 27017
+    volumes:
+      - ./mongodb/2:/data/db
+    command: ["--replSet", "rs0", "--bind_ip_all" ]
+    restart: always
+
+networks:
+  net:

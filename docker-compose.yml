@@ -1,8 +1,7 @@
 version: '3.1'
 services:
   web:
-    build: .
-    # image: alerta/alerta-web
+    image: alerta/alerta-web
     # volumes:
       # - $PWD/config/config.json:/web/config.json
     ports:
@@ -19,6 +18,7 @@ services:
       - ADMIN_KEY_MAXAGE=500
       # - PLUGINS=remote_ip,reject,heartbeat,blackout,normalise,enhance
     restart: always
+
   db:
     image: postgres
     volumes:
