@@ -3,11 +3,10 @@ version: '3'
 services:
   sut:
     build:
-      context: .
+      context: ../..
       args:
         VCS_REF: ${VCS_REF}
         VERSION: ${VERSION}
-    # image: alerta/alerta-web
     ports:
       - 8080
     depends_on:
@@ -16,7 +15,7 @@ services:
       # - DEBUG=1  # remove this line to turn DEBUG off
       - LOG_LEVEL=error  # debug, info, warn (default), or error
       - SECRET_KEY=super-secret
-      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - DATABASE_URL=mongodb://db:27017/monitoring
       - AUTH_REQUIRED=tRuE
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io # default password: alerta
       - ADMIN_KEY=demo-key
@@ -41,11 +40,7 @@ services:
     command: sh -c './wait-for sut:8080 -t 240 -- ./tests.sh'
 
   db:
-    image: postgres
+    image: mongo
     volumes:
-      - ./pg-data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: monitoring
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
+      - ./mongodb:/data/db
+    restart: always

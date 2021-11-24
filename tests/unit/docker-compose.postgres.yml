@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  sut:
+    build:
+      context: ../..
+      args:
+        VCS_REF: ${VCS_REF}
+        VERSION: ${VERSION}
+    # image: alerta/alerta-web
+    ports:
+      - 8080
+    depends_on:
+      - db
+    environment:
+      # - DEBUG=1  # remove this line to turn DEBUG off
+      - LOG_LEVEL=error  # debug, info, warn (default), or error
+      - SECRET_KEY=super-secret
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/monitoring
+      - AUTH_REQUIRED=tRuE
+      - ADMIN_USERS=admin@alerta.io,devops@alerta.io # default password: alerta
+      - ADMIN_KEY=demo-key
+      - ADMIN_KEY_MAXAGE=31536000 # 1 year in seconds
+      - PLUGINS=reject,blackout,normalise,enhance
+      - HK_EXPIRED_DELETE_HRS=39
+      - HK_INFO_DELETE_HRS=17
+      - HEARTBEAT_SEVERITY=warning
+      # Disable Housekeeping by setting one or both of HK env vars to a empty string
+      # - HK_EXPIRED_DELETE_HRS=
+      # - HK_INFO_DELETE_HRS=
+      # Disable hearbeat alerts by setting below env var to empty string
+      # - HEARTBEAT_SEVERITY=
+
+  tester:
+    image: curlimages/curl:latest
+    volumes:
+      - ./wait-for:/wait-for
+      - ./tests.sh:/tests.sh
+    depends_on:
+      - sut
+    command: sh -c './wait-for sut:8080 -t 240 -- ./tests.sh'
+
+  db:
+    image: postgres
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: monitoring
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+

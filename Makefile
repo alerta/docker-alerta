@@ -23,12 +23,24 @@ all:	help
 lint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
-## test			- Run integration tests.
-test: env
+## test.postgres		- Run unit tests (Postgres).
+test.postgres:
 	@echo "IMAGE_NAME=${IMAGE_NAME}" >.env
 	@echo "VCS_REF=${VCS_REF}" >>.env
 	@echo "VERSION=${VERSION}" >>.env
-	$(DOCKER_COMPOSE) -f docker-compose.test.yml up \
+	$(DOCKER_COMPOSE) -f tests/unit/docker-compose.postgres.yml up \
+	--build \
+	--renew-anon-volumes \
+	--no-color \
+	--exit-code-from tester
+	@echo "IMAGE_NAME=${IMAGE_NAME}" >.env
+
+## test.mongodb		- Run unit tests (MongoDB).
+test.mongodb:
+	@echo "IMAGE_NAME=${IMAGE_NAME}" >.env
+	@echo "VCS_REF=${VCS_REF}" >>.env
+	@echo "VERSION=${VERSION}" >>.env
+	$(DOCKER_COMPOSE) -f tests/unit/docker-compose.mongodb.yml up \
 	--build \
 	--renew-anon-volumes \
 	--no-color \
