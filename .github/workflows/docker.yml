@@ -1,4 +1,4 @@
-name: docker-push
+name: Push to DockerHub
 
 on:
   push:
@@ -11,7 +11,7 @@ env:
 
 jobs:
   test:
-    uses: alerta/docker-alerta/.github/workflows/test.yml@510f1fa51a7f60c4a782a4e40acae679126b8c02
+    uses: alerta/docker-alerta/.github/workflows/test.yml@master
     secrets: 
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
