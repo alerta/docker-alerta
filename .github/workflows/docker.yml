@@ -11,7 +11,7 @@ env:
 
 jobs:
   test:
-    uses: alerta/docker-alerta/.github/workflows/test.yml@5110005632a94c3319ee8743e885767510f2f4c9
+    uses: alerta/docker-alerta/.github/workflows/test.yml@510f1fa
 
   push:
     needs: test
