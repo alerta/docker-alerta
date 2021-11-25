@@ -9,6 +9,8 @@ on:
     tags:
       - 'v*'
   workflow_call:
+    inputs:
+    secrets:
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
