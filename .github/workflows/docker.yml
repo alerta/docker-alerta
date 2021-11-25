@@ -13,7 +13,6 @@ jobs:
   test:
     uses: alerta/docker-alerta/.github/workflows/test.yml@master
     secrets: 
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   push:
