@@ -11,6 +11,9 @@ on:
   workflow_call:
     inputs:
     secrets:
+      SLACK_WEBHOOK_URL:
+      DOCKERHUB_TOKEN:
+        required: true
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
