@@ -10,7 +10,6 @@ on:
       - 'v*'
   workflow_call:
     secrets:
-      SLACK_WEBHOOK_URL:
       DOCKERHUB_TOKEN:
         required: true
 
