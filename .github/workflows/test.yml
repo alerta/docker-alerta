@@ -1,6 +1,6 @@
-name: "build-test"
+name: Build and Test
 
-on: # rebuild any PRs and main branch changes
+on:
   pull_request:
   push:
     branches:
@@ -8,6 +8,7 @@ on: # rebuild any PRs and main branch changes
       - 'releases/*'
     tags:
       - 'v*'
+  workflow_call:
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
