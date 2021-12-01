@@ -114,11 +114,17 @@ API to ease deployment more generally:
 `PLUGINS`
     - list of plugins to enable.
 
+`NGINX_WORKER_PROCESSES`
+    - number of worker processes (default:`1`)
+
+`NGINX_WORKER_CONNECTIONS`
+    - maximum number of simultaneous connections that can be opened by a worker process (default:`1024`)
+
 `UWSGI_PROCESSES`
     - number of processes for uWSGI (default:`5`)
 
 `UWSGI_LISTEN`
-    - max number of concurrent connections (default:`256`)
+    - max number of concurrent connections (default:`100`)
 
 `UWSGI_BUFFER_SIZE`
     - size of the unix socket buffer (default:`8192`)

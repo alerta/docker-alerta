@@ -9,12 +9,13 @@ loglevel={{ env.LOG_LEVEL|lower or 'warn' }}
 pidfile=/tmp/supervisord.pid
 
 [program:uwsgi]
-command=/venv/bin/uwsgi --ini /app/uwsgi.ini -l {{ env.UWSGI_LISTEN }} -b {{ env.UWSGI_BUFFER_SIZE }} -p {{ env.UWSGI_PROCESSES }}
+command=/venv/bin/uwsgi --ini /app/uwsgi.ini --strict
 redirect_stderr=true
 
 [program:nginx]
 command=nginx -c /app/nginx.conf
 redirect_stderr=true
+stopsignal=QUIT
 
 {% if env.HK_EXPIRED_DELETE_HRS and env.HK_INFO_DELETE_HRS -%}
 [program:housekeeping]
