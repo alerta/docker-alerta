@@ -6,7 +6,7 @@ services:
       context: ../..
       args:
         VCS_REF: 1
-        VERSION: 8.3.1
+        VERSION: 8.6.4
     volumes:
       - $PWD/config/alertad.conf:/app/alertad.conf
       # - $PWD/config/alerta.conf:/app/alerta.conf
@@ -16,6 +16,8 @@ services:
     depends_on:
       - db
     environment:
+      - DEBUG=1
+      - LOG_LEVEL=info  # debug,info,notice,warn,error,crit,alert,emerg
       - AUTH_REQUIRED=True  # FIXME should not have to declare this twice
       - ADMIN_USERS=admin@alerta.io,devops@alerta.io,admin@alerta.dev
       - ADMIN_PASSWORD=super-secret
