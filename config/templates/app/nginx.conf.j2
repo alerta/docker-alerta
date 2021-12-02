@@ -29,7 +29,7 @@ http {
                         '"$request" $status $body_bytes_sent '
                         '"$http_referer" "$http_user_agent" - $request_time '
                         'x_forwarded_for=$http_x_forwarded_for host=$host '
-                        '$request_id $http_x_request_id';
+                        '$request_id $sent_http_x_request_id';
 
         default_type application/octet-stream;
 
