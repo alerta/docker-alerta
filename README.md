@@ -49,7 +49,13 @@ The following environment variables are supported by the Alerta
 API to ease deployment more generally:
 
 `DEBUG`
-    - debug mode for increased logging. (eg. `DEBUG=1`)
+    - debug mode for increased logging. equivalent of setting `LOG_LEVEL=debug` (eg. `DEBUG=1`)
+
+`LOG_LEVEL`
+    - log level of Alerta application and nginx (default:`warn`)
+
+`SUPERVISORD_LOG_LEVEL`
+    - log level of supervisord, must be `debug` or lower to see appliation logs (default:`debug`)
 
 `SECRET_KEY`
     - a unique, randomly generated sequence of ASCII characters.

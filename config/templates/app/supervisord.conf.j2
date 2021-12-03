@@ -1,11 +1,7 @@
 [supervisord]
 nodaemon=true
 logfile=/tmp/supervisord.log
-{%- if env.DEBUG %}
-loglevel=debug
-{%- else %}
-loglevel={{ env.LOG_LEVEL|lower or 'warn' }}
-{%- endif %}
+loglevel={{ env.SUPERVISORD_LOG_LEVEL|lower or 'debug' }}
 pidfile=/tmp/supervisord.pid
 
 [program:uwsgi]
