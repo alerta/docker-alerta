@@ -36,10 +36,10 @@ jobs:
       - name: Run tests
         id: smoketest
         run: |
-          docker-compose -f docker-compose.postgres.yml build \
+          docker-compose -f tests/docker-compose.test.postgres.yml build \
             --build-arg VCS_REF=${{ github.sha }} \
             --build-arg VERSION=$(cat VERSION)
-          docker-compose -f docker-compose.postgres.yml up --exit-code-from tester
+          docker-compose -f tests/docker-compose.test.postgres.yml up --exit-code-from tester
 
       - uses: act10ns/slack@v1
         with:
@@ -66,10 +66,10 @@ jobs:
       - name: Run tests
         id: smoketest
         run: |
-          docker-compose -f docker-compose.mongo.yml build \
+          docker-compose -f tests/docker-compose.test.mongodb.yml build \
             --build-arg VCS_REF=${{ github.sha }} \
             --build-arg VERSION=$(cat VERSION)
-          docker-compose -f docker-compose.mongo.yml up --exit-code-from tester
+          docker-compose -f tests/docker-compose.test.mongodb.yml up --exit-code-from tester
 
       - uses: act10ns/slack@v1
         with: 
