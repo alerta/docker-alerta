@@ -28,11 +28,6 @@ jobs:
           --ignore DL3008 \
           --ignore DL3059 \
           - < Dockerfile
-      - uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REPOSITORY_URL }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Run tests
         id: smoketest
         run: |
@@ -58,11 +53,6 @@ jobs:
           --ignore DL3008 \
           --ignore DL3059 \
           - < Dockerfile
-      - uses: docker/login-action@v1
-        with:
-          registry: ${{ env.REPOSITORY_URL }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Run tests
         id: smoketest
         run: |
