@@ -11,6 +11,8 @@ VCS_REF=$(shell git rev-parse --short HEAD)
 BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 VERSION:=$(shell cat VERSION)
 
+BACKEND ?= postgres
+
 ifndef IMAGE_NAME
 $(error IMAGE_NAME is not set)
 endif
@@ -23,23 +25,14 @@ all:	help
 lint:
 	docker run --rm -i hadolint/hadolint < Dockerfile
 
-## test.postgres		- Run unit tests (Postgres).
-test.postgres:
+## test.unit		- Run unit tests.
+test.unit:
 	IMAGE_NAME=${IMAGE_NAME} \
 	VCS_REF=${VCS_REF} \
 	VERSION=${VERSION} \
-	$(DOCKER_COMPOSE) -f docker-compose.postgres.yml up \
-	--build \
-	--renew-anon-volumes \
-	--no-color \
-	--exit-code-from tester
-
-## test.mongodb		- Run unit tests (MongoDB).
-test.mongodb:
-	IMAGE_NAME=${IMAGE_NAME} \
-	VCS_REF=${VCS_REF} \
-	VERSION=${VERSION} \
-	$(DOCKER_COMPOSE) -f docker-compose.mongodb.yml up \
+	$(DOCKER_COMPOSE) \
+	-f tests/docker-compose.test.${BACKEND}.yml \
+	up \
 	--build \
 	--renew-anon-volumes \
 	--no-color \

@@ -1,5 +1,0 @@
-#!/bin/bash
-
-echo "test hook starting..."
-make test
-echo "test hook completed."

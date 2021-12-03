@@ -6,3 +6,5 @@ contrib/kubernetes/helm/alerta/charts
 .env.*.local
 
 .idea/*
+
+/.bundle/
