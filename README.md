@@ -135,6 +135,9 @@ API to ease deployment more generally:
 `UWSGI_BUFFER_SIZE`
     - size of the unix socket buffer (default:`8192`)
 
+`UWSGI_WORKER_LIFETIME_DELTA`
+    - time in seconds to space out UWSGI worker respawns (default:`10`)
+
 Configuration Files
 -------------------
 
