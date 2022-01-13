@@ -7,7 +7,7 @@ master = true
 processes = {{ env.UWSGI_PROCESSES }}
 listen = {{ env.UWSGI_LISTEN }}
 max-worker-lifetime = 30
-max-worker-lifetime-delta = 10
+max-worker-lifetime-delta = {{ env.UWSGI_WORKER_LIFETIME_DELTA }}
 
 {%- if env.UWSGI_THREADS %}
 threads = {{ env.UWSGI_THREADS }}
