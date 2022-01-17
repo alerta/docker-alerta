@@ -3,7 +3,7 @@ data:
   alertad.conf: |
     {{- if .Values.alertaConfig }}
     {{ range $key, $value := .Values.alertaConfig }}
-    {{ $key }} = {{ $value }}
+    {{ $key }} = {{ $value | nindent 4 | trim }}
     {{- end }}
     {{- end }}
     {{ if .Values.postgresql.enabled -}}
