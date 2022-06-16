@@ -1,0 +1,82 @@
+FROM python:3.8-alpine3.16
+
+ENV PYTHONUNBUFFERED 1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV PIP_NO_CACHE_DIR=1
+
+ARG BUILD_DATE=now
+ARG VCS_REF
+ARG VERSION
+
+ENV SERVER_VERSION=8.7.0
+ENV CLIENT_VERSION=8.5.1
+ENV WEBUI_VERSION=8.7.0
+
+ENV NGINX_WORKER_PROCESSES=1
+ENV NGINX_WORKER_CONNECTIONS=1024
+
+ENV UWSGI_PROCESSES=5
+ENV UWSGI_LISTEN=100
+ENV UWSGI_BUFFER_SIZE=8192
+
+ENV HEARTBEAT_SEVERITY=major
+ENV HK_EXPIRED_DELETE_HRS=2
+ENV HK_INFO_DELETE_HRS=12
+
+LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.url="https://alerta.io" \
+      org.label-schema.vcs-url="https://github.com/alerta/docker-alerta" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0.0-rc.1"
+
+SHELL ["/bin/sh", "-o", "pipefail", "-c"]
+
+RUN apk add --virtual build-dependencies make bash build-base curl git nginx supervisor xmlsec postgresql-client python3-dev gnupg libpq-dev libsasl libldap libffi-dev libxml2-dev libxslt-dev openldap-dev build-dependencies pcre pcre-dev
+
+COPY requirements*.txt /app/
+
+RUN echo 'INPUT ( libldap.so )' > /usr/lib/libldap_r.so
+
+COPY requirements*.txt /app/
+# hadolint ignore=DL3013
+RUN pip install --no-cache-dir pip virtualenv jinja2 && \
+    python3 -m venv /venv && \
+    /venv/bin/pip install --no-cache-dir --upgrade setuptools && \
+    /venv/bin/pip install --no-cache-dir --requirement /app/requirements.txt && \
+    /venv/bin/pip install --no-cache-dir --requirement /app/requirements-docker.txt
+ENV PATH $PATH:/venv/bin
+
+RUN /venv/bin/pip install alerta==${CLIENT_VERSION} alerta-server==${SERVER_VERSION}
+COPY install-plugins.sh /app/install-plugins.sh
+COPY plugins.txt /app/plugins.txt
+RUN /app/install-plugins.sh
+
+ADD https://github.com/alerta/alerta-webui/releases/download/v${WEBUI_VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
+RUN tar zxvf /tmp/webui.tar.gz -C /tmp && \
+    mv /tmp/dist /web
+
+ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
+ENV ALERTA_CONF_FILE /app/alerta.conf
+ENV ALERTA_WEB_CONF_FILE /web/config.json
+
+COPY config/templates/app/ /app
+COPY config/templates/web/ /web
+
+RUN ln -sf /dev/stdout /var/log/nginx/access.log \
+    && ln -sf /dev/stderr /var/log/nginx/error.log
+
+RUN chgrp -R root /app /venv /web && \
+    chmod -R g=u /app /venv /web && \
+    adduser -u 1001 -G root -h / -D alerta
+
+
+USER 1001
+
+COPY docker-entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+EXPOSE 8080 1717
+CMD ["supervisord", "-c", "/app/supervisord.conf"]
