@@ -1,7 +1,6 @@
 # build stage
-FROM node:lts-alpine as build-stage
+FROM node:14-buster as build-stage
 
-RUN apk add --no-cache git
 WORKDIR /app
 ADD https://github.com/alerta/alerta-webui/archive/master.tar.gz /tmp/webui.tar.gz
 RUN tar zxvf /tmp/webui.tar.gz -C /app --strip-components=1
