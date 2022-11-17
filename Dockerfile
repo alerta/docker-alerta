@@ -8,7 +8,7 @@ ARG BUILD_DATE=now
 ARG VCS_REF
 ARG VERSION
 
-ENV SERVER_VERSION=${VERSION}
+ENV SERVER_VERSION=8.7.0
 ENV CLIENT_VERSION=8.5.1
 ENV WEBUI_VERSION=8.7.0
 
@@ -72,14 +72,14 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
 
 COPY requirements*.txt /app/
 # hadolint ignore=DL3013
-RUN pip install --no-cache-dir pip virtualenv jinja2 && \
-    python3 -m venv /venv && \
-    /venv/bin/pip install --no-cache-dir --upgrade setuptools && \
-    /venv/bin/pip install --no-cache-dir --requirement /app/requirements.txt && \
-    /venv/bin/pip install --no-cache-dir --requirement /app/requirements-docker.txt
-ENV PATH $PATH:/venv/bin
+RUN pip install --no-cache-dir pip jinja2 && \
+    # python3 -m venv /venv && \
+    pip install --no-cache-dir --upgrade setuptools && \
+    pip install --no-cache-dir --requirement /app/requirements.txt && \
+    pip install --no-cache-dir --requirement /app/requirements-docker.txt
+# ENV PATH $PATH:/venv/bin
 
-RUN /venv/bin/pip install alerta==${CLIENT_VERSION} alerta-server==${SERVER_VERSION}
+RUN pip install alerta==${CLIENT_VERSION} alerta-server==${SERVER_VERSION}
 COPY install-plugins.sh /app/install-plugins.sh
 COPY plugins.txt /app/plugins.txt
 RUN /app/install-plugins.sh
@@ -98,8 +98,8 @@ COPY config/templates/web/ /web
 RUN ln -sf /dev/stdout /var/log/nginx/access.log \
     && ln -sf /dev/stderr /var/log/nginx/error.log
 
-RUN chgrp -R 0 /app /venv /web && \
-    chmod -R g=u /app /venv /web && \
+RUN chgrp -R 0 /app /web && \
+    chmod -R g=u /app /web && \
     useradd -u 1001 -g 0 -d /app alerta
 
 USER 1001

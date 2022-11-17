@@ -5,7 +5,7 @@ loglevel={{ env.SUPERVISORD_LOG_LEVEL|lower or 'debug' }}
 pidfile=/tmp/supervisord.pid
 
 [program:uwsgi]
-command=/venv/bin/uwsgi --ini /app/uwsgi.ini --strict
+command=/usr/local/bin/uwsgi --ini /app/uwsgi.ini --strict
 redirect_stderr=true
 
 [program:nginx]

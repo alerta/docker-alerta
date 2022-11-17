@@ -90,7 +90,7 @@ echo uwsgi $(uwsgi --version)
 mongo --version | grep MongoDB
 psql --version
 python3 --version
-/venv/bin/pip list
+pip list
 
 echo
 echo 'Alerta init process complete; ready for start up.'
