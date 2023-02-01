@@ -1,16 +1,26 @@
+FROM node:14 AS gr-main
+
+ARG WEBUI_SHA
+WORKDIR /tmp
+RUN curl -Ls -O https://github.com/g-research/alerta-webui/archive/$WEBUI_SHA.zip \
+  && unzip $WEBUI_SHA.zip \
+  && rm $WEBUI_SHA.zip \
+  && cd alerta-webui-$WEBUI_SHA \
+  && npm install \
+  && npm run build
+
 FROM python:3.8-slim-buster
 
 ENV PYTHONUNBUFFERED 1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PIP_NO_CACHE_DIR=1
 
-ARG BUILD_DATE=now
-ARG VCS_REF
 ARG VERSION
+ARG WEBUI_SHA
 
-ENV SERVER_VERSION=${VERSION}
+ENV SERVER_VERSION=$VERSION
 ENV CLIENT_VERSION=8.5.1
-ENV WEBUI_VERSION=8.7.0
+ENV WEBUI_SHA=$WEBUI_SHA
 
 ENV NGINX_WORKER_PROCESSES=1
 ENV NGINX_WORKER_CONNECTIONS=1024
@@ -22,14 +32,6 @@ ENV UWSGI_BUFFER_SIZE=8192
 ENV HEARTBEAT_SEVERITY=major
 ENV HK_EXPIRED_DELETE_HRS=2
 ENV HK_INFO_DELETE_HRS=12
-
-LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
-LABEL org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.url="https://alerta.io" \
-      org.label-schema.vcs-url="https://github.com/alerta/docker-alerta" \
-      org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.version=$VERSION \
-      org.label-schema.schema-version="1.0.0-rc.1"
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -84,9 +86,7 @@ COPY install-plugins.sh /app/install-plugins.sh
 COPY plugins.txt /app/plugins.txt
 RUN /app/install-plugins.sh
 
-ADD https://github.com/alerta/alerta-webui/releases/download/v${WEBUI_VERSION}/alerta-webui.tar.gz /tmp/webui.tar.gz
-RUN tar zxvf /tmp/webui.tar.gz -C /tmp && \
-    mv /tmp/dist /web
+COPY --from=gr-main /tmp/alerta-webui-$WEBUI_SHA/dist /web
 
 ENV ALERTA_SVR_CONF_FILE /app/alertad.conf
 ENV ALERTA_CONF_FILE /app/alerta.conf

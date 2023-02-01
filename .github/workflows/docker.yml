@@ -2,56 +2,52 @@ name: Push to DockerHub
 
 on:
   push:
-    tags:
-      - v*
-
-env:
-  REPOSITORY_URL: registry.hub.docker.com
-  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    branches: [ 'gr-main' ]
 
 jobs:
-  test:
-    uses: alerta/docker-alerta/.github/workflows/test.yml@master
-    secrets: 
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
   push:
-    needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    environment: release
     env:
-      IMAGE_NAME: alerta/alerta-web
+      IMAGE_NAME: gresearch/alerta
     steps:
-      - name: Checkout
+      - name: Checkout docker-alerta
         uses: actions/checkout@v2
-      - name: Variables
-        id: vars
-        run: echo "::set-output name=SHORT_COMMIT_ID::$(git rev-parse --short HEAD)"
-      - name: Build Image
-        id: docker-build
-        run: >-
-          docker build
-          --build-arg VCS_REF=${{ github.sha }}
-          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          --build-arg VERSION=$(cat VERSION)
-          -t $IMAGE_NAME
-          -t $REPOSITORY_URL/$IMAGE_NAME:$(cat VERSION)
-          -t $REPOSITORY_URL/$IMAGE_NAME:${{ steps.vars.outputs.SHORT_COMMIT_ID }}
-          -t $REPOSITORY_URL/$IMAGE_NAME:latest .
-      - uses: docker/login-action@v1
+      - name: Checkout alerta-webui
+        uses: actions/checkout@v2
         with:
-          registry: ${{ env.REPOSITORY_URL }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Publish Image
-        id: docker-push
+          repository: 'G-Research/alerta-webui'
+          path: 'alerta-webui'
+      - name: Verify SHA
+        working-directory: alerta-webui
+        run: git merge-base --is-ancestor $WEBUI_SHA gr-main
+      - name: Set variables
+        id: vars
         run: |
-          docker push $REPOSITORY_URL/$IMAGE_NAME:$(cat VERSION)
-          docker push $REPOSITORY_URL/$IMAGE_NAME:${{ steps.vars.outputs.SHORT_COMMIT_ID }}
-          docker push $REPOSITORY_URL/$IMAGE_NAME:latest
-
-      - uses: act10ns/slack@v1
-        with: 
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-        if: always()
+          echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
+          echo "WEBUI_SHA=$(cat WEBUI_VERSION)" >> $GITHUB_OUTPUT
+          echo "SHORT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Set Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest
+            type=raw,value=${{ steps.vars.outputs.VERSION }}
+            type=raw,value=${{ steps.vars.outputs.SHORT_COMMIT_ID }}
+      - name: Login to Docker Hub Container Registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Build & Push Image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          build-args: |
+            WEBUI_SHA=${{ env.WEBUI_SHA }}
+            VERSION=${{ steps.vars.outputs.VERSION }}
+          tags: ${{ steps.meta.outputs.tags }}
+          push: ${{ github.ref_protected }} # only for protected branches
+          labels: ${{ steps.meta.outputs.labels }}
