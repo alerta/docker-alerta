@@ -18,15 +18,15 @@ jobs:
         with:
           repository: 'G-Research/alerta-webui'
           path: 'alerta-webui'
-      - name: Verify SHA
-        working-directory: alerta-webui
-        run: git merge-base --is-ancestor $WEBUI_SHA gr-main
       - name: Set variables
         id: vars
         run: |
           echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
           echo "WEBUI_SHA=$(cat WEBUI_VERSION)" >> $GITHUB_OUTPUT
           echo "SHORT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Verify SHA
+        working-directory: alerta-webui
+        run: git merge-base --is-ancestor ${{ steps.vars.outputs.WEBUI_SHA }} gr-main
       - name: Set Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -46,8 +46,7 @@ jobs:
         with:
           context: .
           build-args: |
-            WEBUI_SHA=${{ env.WEBUI_SHA }}
-            VERSION=${{ steps.vars.outputs.VERSION }}
+            WEBUI_SHA=${{ steps.vars.outputs.WEBUI_SHA }}
           tags: ${{ steps.meta.outputs.tags }}
           push: ${{ github.ref_protected }} # only for protected branches
           labels: ${{ steps.meta.outputs.labels }}
