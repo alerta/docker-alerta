@@ -24,13 +24,15 @@ jobs:
         id: vars
         run: |
           echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
+          echo "CONTRIB_SHA=$(cat CONTRIB_VERSION)" >> $GITHUB_OUTPUT
           echo "WEBUI_SHA=$(cat WEBUI_VERSION)" >> $GITHUB_OUTPUT
       - name: Run tests
         id: smoketest
         run: |
           docker-compose -f tests/docker-compose.test.postgres.yml build \
             --build-arg VERSION=${{ steps.vars.outputs.VERSION }} \
-            --build-arg WEBUI_SHA=${{ steps.vars.outputs.WEBUI_SHA }}
+            --build-arg WEBUI_SHA=${{ steps.vars.outputs.WEBUI_SHA }} \
+            --build-arg CONTRIB_SHA=${{ steps.vars.outputs.CONTRIB_SHA }}
           docker-compose -f tests/docker-compose.test.postgres.yml up --exit-code-from tester
 
   test-mongodb:
@@ -50,10 +52,12 @@ jobs:
         run: |
           echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
           echo "WEBUI_SHA=$(cat WEBUI_VERSION)" >> $GITHUB_OUTPUT
+          echo "CONTRIB_SHA=$(cat CONTRIB_VERSION)" >> $GITHUB_OUTPUT
       - name: Run tests
         id: smoketest
         run: |
           docker-compose -f tests/docker-compose.test.mongodb.yml build \
             --build-arg VERSION=${{ steps.vars.outputs.VERSION }} \
-            --build-arg WEBUI_SHA=${{ steps.vars.outputs.WEBUI_SHA }}
+            --build-arg WEBUI_SHA=${{ steps.vars.outputs.WEBUI_SHA }} \
+            --build-arg CONTRIB_SHA=${{ steps.vars.outputs.CONTRIB_SHA }}
           docker-compose -f tests/docker-compose.test.mongodb.yml up --exit-code-from tester

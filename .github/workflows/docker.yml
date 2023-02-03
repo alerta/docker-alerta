@@ -18,15 +18,24 @@ jobs:
         with:
           repository: 'G-Research/alerta-webui'
           path: 'alerta-webui'
+      - name: Checkout alerta-contrib
+        uses: actions/checkout@v2
+        with:
+          repository: 'g-research/alerta-contrib'
+          path: 'alerta-contrib'
       - name: Set variables
         id: vars
         run: |
           echo "VERSION=$(cat VERSION)" >> $GITHUB_OUTPUT
           echo "WEBUI_SHA=$(cat WEBUI_VERSION)" >> $GITHUB_OUTPUT
+          echo "CONTRIB_SHA=$(cat CONTRIB_VERSION)" >> $GITHUB_OUTPUT
           echo "SHORT_COMMIT_ID=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-      - name: Verify SHA
+      - name: Verify SHA - alerta-webui
         working-directory: alerta-webui
         run: git merge-base --is-ancestor ${{ steps.vars.outputs.WEBUI_SHA }} gr-main
+      - name: Verify SHA - alerta-contrib
+        working-directory: alerta-contrib
+        run: git merge-base --is-ancestor ${{ steps.vars.outputs.CONTRIB_SHA }} gr-main
       - name: Set Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -47,6 +56,7 @@ jobs:
           context: .
           build-args: |
             WEBUI_SHA=${{ steps.vars.outputs.WEBUI_SHA }}
+            CONTRIB_SHA=${{ steps.vars.outputs.CONTRIB_SHA }}
           tags: ${{ steps.meta.outputs.tags }}
           push: ${{ github.ref_protected }} # only for protected branches
           labels: ${{ steps.meta.outputs.labels }}
