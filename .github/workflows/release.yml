@@ -2,8 +2,7 @@ name: Push to DockerHub
 
 on:
   push:
-    tags:
-      - v*
+    tags: [ 'v*' ]
 
 env:
   REPOSITORY_URL: registry.hub.docker.com
@@ -11,22 +10,22 @@ env:
 
 jobs:
   test:
-    uses: alerta/docker-alerta/.github/workflows/test.yml@master
+    name: Test
+    uses: alerta/docker-alerta/.github/workflows/tests.yml@master
     secrets: 
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   push:
+    name: Docker Push
     needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
+
     env:
       IMAGE_NAME: alerta/alerta-web
+
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Variables
-        id: vars
-        run: echo "::set-output name=SHORT_COMMIT_ID::$(git rev-parse --short HEAD)"
+      - actions/checkout@v3
       - name: Build Image
         id: docker-build
         run: >-
@@ -36,9 +35,10 @@ jobs:
           --build-arg VERSION=$(cat VERSION)
           -t $IMAGE_NAME
           -t $REPOSITORY_URL/$IMAGE_NAME:$(cat VERSION)
-          -t $REPOSITORY_URL/$IMAGE_NAME:${{ steps.vars.outputs.SHORT_COMMIT_ID }}
+          -t $REPOSITORY_URL/$IMAGE_NAME:$(git rev-parse --short HEAD)
           -t $REPOSITORY_URL/$IMAGE_NAME:latest .
-      - uses: docker/login-action@v1
+      - name: Docker Login
+        uses: docker/login-action@v2
         with:
           registry: ${{ env.REPOSITORY_URL }}
           username: ${{ github.actor }}
@@ -50,7 +50,7 @@ jobs:
           docker push $REPOSITORY_URL/$IMAGE_NAME:${{ steps.vars.outputs.SHORT_COMMIT_ID }}
           docker push $REPOSITORY_URL/$IMAGE_NAME:latest
 
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@v2
         with: 
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
