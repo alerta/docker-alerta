@@ -12,8 +12,6 @@ jobs:
   test:
     name: Tests
     uses: alerta/docker-alerta/.github/workflows/tests.yml@master
-    secrets: 
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
   push:
     name: Docker Push
