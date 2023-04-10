@@ -52,6 +52,12 @@ spec:
             - name: INSTALL_PLUGINS
               value: {{ .Values.alertaInstallPlugins | join "," }}
               {{- end }}
+              {{- if .Values.extraEnvVars }}
+              {{- range $key, $value := .Values.extraEnvVars }}
+            - name: {{ $key | quote}}
+              value: {{ $value | quote}}
+              {{- end }}
+              {{- end }}
           ports:
             - name: http
               containerPort: 8080
@@ -76,11 +82,18 @@ spec:
             - name: alerta-config
               mountPath: /app/alertad.conf
               subPath: alertad.conf
-              {{- if .Values.alertaWebUIConfig }}
+          {{- if .Values.alertaWebUIConfig }}
             - name: alerta-config
               mountPath: /app/config.js
               subPath: config.js
-              {{- end }}
+          {{- end }}
+          {{- if .Values.extraConfigs }}
+          {{- range .Values.extraConfigs }}
+            - name: alerta-config
+              mountPath: {{ .mountPath }}
+              subPath: {{ .subPath }}
+          {{- end }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
