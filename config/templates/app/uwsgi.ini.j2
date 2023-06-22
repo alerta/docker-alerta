@@ -6,8 +6,10 @@ mount = /api=wsgi:app
 master = true
 processes = {{ env.UWSGI_PROCESSES }}
 listen = {{ env.UWSGI_LISTEN }}
-max-worker-lifetime = 30
+{%- if env.UWSGI_MAX_WORKER_LIFETIME %}
+max-worker-lifetime = {{ env.UWSGI_MAX_WORKER_LIFETIME }}
 max-worker-lifetime-delta = {{ env.UWSGI_WORKER_LIFETIME_DELTA }}
+{%- endif %}
 
 {%- if env.UWSGI_THREADS %}
 threads = {{ env.UWSGI_THREADS }}
