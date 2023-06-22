@@ -83,6 +83,14 @@ extraSecretMounts: []
 #     })
 #     .constant('colors', {});
 
+extraEnvVars: []
+  # ENV_VAR_1: ~
+  # ENV_VAR_2: ~
+extraConfigs: []
+  # - name: ~
+  #   subPath: ~
+  #   mountPath: ~
+  #   data: ~
 postgresql:
   enabled: true
   postgresqlUsername: alerta
