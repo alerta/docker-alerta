@@ -9,13 +9,8 @@ env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 jobs:
-  test:
-    name: Tests
-    uses: alerta/docker-alerta/.github/workflows/tests.yml@master
-
   push:
     name: Docker Push
-    needs: test
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
