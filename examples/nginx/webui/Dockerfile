@@ -1,5 +1,6 @@
 # build stage
 FROM node:14-alpine as build-stage
+
 RUN apk add --no-cache python3 py3-pip make g++
 RUN apk add --no-cache git
 WORKDIR /app

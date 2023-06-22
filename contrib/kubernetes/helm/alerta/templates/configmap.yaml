@@ -1,17 +1,25 @@
 apiVersion: v1
 data:
+{{- if or .Values.alertaConfig .Values.postgresql.enabled }}
   alertad.conf: |
     {{- if .Values.alertaConfig }}
     {{ range $key, $value := .Values.alertaConfig }}
-    {{ $key }} = {{ $value }}
+    {{ $key }} = {{ $value | nindent 4 | trim }}
     {{- end }}
     {{- end }}
     {{ if .Values.postgresql.enabled -}}
     DATABASE_URL = "postgresql://{{ .Values.postgresql.postgresqlUsername }}:{{ .Values.postgresql.postgresqlPassword }}@{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.postgresqlDatabase }}"
     {{- end }}
+{{- end }}
 {{- if .Values.alertaWebUIConfig }}
   config.js: |
 {{ .Values.alertaWebUIConfig | indent 4 }}
+{{- end }}
+{{- if .Values.extraConfigs }}
+{{- range .Values.extraConfigs }}
+  {{ .subPath }}: |
+{{ .data | indent 4 }}
+{{- end }}
 {{- end }}
 kind: ConfigMap
 metadata:
