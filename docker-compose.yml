@@ -1,7 +1,7 @@
 version: '3.1'
 services:
   web:
-    image: ntcnlgotz/alerta-web
+    image: alerta/alerta-web
     # volumes:
       # - $PWD/config/config.json:/web/config.json
     ports:
