@@ -10,58 +10,56 @@ error_log /dev/stderr {{ env.LOG_LEVEL|lower or 'warn' }};
 {%- endif %}
 
 events {
-        worker_connections {{ env.NGINX_WORKER_CONNECTIONS }};
+    worker_connections {{ env.NGINX_WORKER_CONNECTIONS }};
 }
 
 http {
-        client_body_temp_path /tmp/client_body;
-        fastcgi_temp_path /tmp/fastcgi_temp;
-        proxy_temp_path /tmp/proxy_temp;
-        scgi_temp_path /tmp/scgi_temp;
-        uwsgi_temp_path /tmp/uwsgi_temp;
+    client_body_temp_path /tmp/client_body;
+    fastcgi_temp_path /tmp/fastcgi_temp;
+    proxy_temp_path /tmp/proxy_temp;
+    scgi_temp_path /tmp/scgi_temp;
+    uwsgi_temp_path /tmp/uwsgi_temp;
 
-        include /etc/nginx/mime.types;
+    include /etc/nginx/mime.types;
 
-        server_tokens off;
+    server_tokens off;
 
-        gzip on;
-        gzip_disable "msie6";
-{%- if env.NGINX_MAX_BODY_SIZE %}
-        client_max_body_size {{ env.NGINX_MAX_BODY_SIZE }};
-{%- endif %}
+    gzip on;
+    gzip_disable "msie6";
+    client_max_body_size {{ env.NGINX_MAX_BODY_SIZE or '2M' }};
 
-        log_format main '$remote_addr - $remote_user [$time_local] '
-                        '"$request" $status $body_bytes_sent '
-                        '"$http_referer" "$http_user_agent" - $request_time '
-                        'x_forwarded_for=$http_x_forwarded_for host=$host '
-                        '$request_id $sent_http_x_request_id';
+    log_format main '$remote_addr - $remote_user [$time_local] '
+        '"$request" $status $body_bytes_sent '
+        '"$http_referer" "$http_user_agent" - $request_time '
+        'x_forwarded_for=$http_x_forwarded_for host=$host '
+        '$request_id $sent_http_x_request_id';
 
-        default_type application/octet-stream;
+    default_type application/octet-stream;
 
-        upstream backend {
-                server 127.0.0.1:29000;
+    upstream backend {
+        server 127.0.0.1:29000;
+    }
+
+    server {
+        listen 8080 default_server;
+        listen [::]:8080 default_server;
+
+        access_log /dev/stdout main;
+
+        location /api {
+            include /etc/nginx/uwsgi_params;
+            uwsgi_pass backend;
+
+            uwsgi_param Host $host;
+            uwsgi_param X-Real-IP $remote_addr;
+            uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
+            uwsgi_param X-Forwarded-Proto $http_x_forwarded_proto;
         }
 
-        server {
-                listen 8080 default_server;
-                listen [::]:8080 default_server;
-
-                access_log /dev/stdout main;
-
-                location /api {
-                        include /etc/nginx/uwsgi_params;
-                        uwsgi_pass backend;
-
-                        uwsgi_param Host $host;
-                        uwsgi_param X-Real-IP $remote_addr;
-                        uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
-                        uwsgi_param X-Forwarded-Proto $http_x_forwarded_proto;
-                }
-
-                root /web;
-                index index.html;
-                location / {
-                        try_files $uri $uri/ /index.html;
-                }
+        root /web;
+        index index.html;
+        location / {
+            try_files $uri $uri/ /index.html;
         }
+    }
 }
