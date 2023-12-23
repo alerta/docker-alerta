@@ -4,8 +4,8 @@ ENV PYTHONUNBUFFERED 1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
 ENV PIP_NO_CACHE_DIR=1
 
-ARG BUILD_DATE=now
-ARG VCS_REF
+ARG BUILD_DATE
+ARG RELEASE
 ARG VERSION
 
 ENV SERVER_VERSION=${VERSION}
@@ -25,13 +25,13 @@ ENV HEARTBEAT_SEVERITY=major
 ENV HK_EXPIRED_DELETE_HRS=2
 ENV HK_INFO_DELETE_HRS=12
 
-LABEL maintainer="Nick Satterly <nick.satterly@gmail.com>"
-LABEL org.label-schema.build-date=$BUILD_DATE \
-      org.label-schema.url="https://alerta.io" \
-      org.label-schema.vcs-url="https://github.com/alerta/docker-alerta" \
-      org.label-schema.vcs-ref=$VCS_REF \
-      org.label-schema.version=$VERSION \
-      org.label-schema.schema-version="1.0.0-rc.1"
+LABEL org.opencontainers.image.description="Alerta API (prod)" \
+      org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.url="https://github.com/alerta/alerta/pkgs/container/alerta-api" \
+      org.opencontainers.image.source="https://github.com/alerta/alerta" \
+      org.opencontainers.image.version=$RELEASE \
+      org.opencontainers.image.revision=$VERSION \
+      org.opencontainers.image.licenses=Apache-2.0
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -73,6 +73,7 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add -
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements*.txt /app/
+
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir pip virtualenv jinja2 && \
     python3 -m venv /venv && \
