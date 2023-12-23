@@ -23,11 +23,16 @@ jobs:
           - < Dockerfile
       - name: Run tests
         id: smoketest
-        run: |
-          docker-compose -f tests/docker-compose.test.postgres.yml build \
-            --build-arg VCS_REF=${{ github.sha }} \
-            --build-arg VERSION=$(cat VERSION)
-          docker-compose -f tests/docker-compose.test.postgres.yml up --exit-code-from tester
+        run: >-
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          RELEASE=$(cat VERSION)
+          VERSION=${{ github.sha }}
+          docker-compose
+          -f tests/docker-compose.test.mongodb.yml
+          up
+          --build
+          --quiet-pull
+          --exit-code-from tester
       - uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
@@ -48,11 +53,16 @@ jobs:
           - < Dockerfile
       - name: Run tests
         id: smoketest
-        run: |
-          docker-compose -f tests/docker-compose.test.mongodb.yml build \
-            --build-arg VCS_REF=${{ github.sha }} \
-            --build-arg VERSION=$(cat VERSION)
-          docker-compose -f tests/docker-compose.test.mongodb.yml up --exit-code-from tester
+        run: >-
+          BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          RELEASE=$(cat VERSION)
+          VERSION=${{ github.sha }}
+          docker-compose
+          -f tests/docker-compose.test.mongodb.yml
+          up
+          --build
+          --quiet-pull
+          --exit-code-from tester
       - uses: act10ns/slack@v2
         with: 
           status: ${{ job.status }}
