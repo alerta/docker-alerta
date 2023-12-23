@@ -16,6 +16,7 @@ services:
       - ADMIN_PASSWORD=super-secret # default is "alerta"
       - ADMIN_KEY=demo-key  # assigned to first user in ADMIN_USERS
       - ADMIN_KEY_MAXAGE=500
+      # - NGINX_MAX_BODY_SIZE=42M  # allow larger alerts to be processed by alerta
       # - PLUGINS=remote_ip,reject,heartbeat,blackout,normalise,enhance
     restart: always
 
