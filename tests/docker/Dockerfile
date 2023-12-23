@@ -1,4 +1,4 @@
-FROM ruby:2.6
+FROM ruby:3.0
 
 COPY Gemfile* ./
 RUN gem install bundler && bundle install --jobs=3 --retry=3
