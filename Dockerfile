@@ -1,12 +1,16 @@
-FROM python:3.9-slim-buster
+FROM python:3.9-slim-bullseye
 
-ENV PYTHONUNBUFFERED 1
-ENV PIP_DISABLE_PIP_VERSION_CHECK=1
-ENV PIP_NO_CACHE_DIR=1
+ARG NGINX_VERSION=1.24.0
+ARG MONGO_VERSION=6.0
+ARG POSTGRESQL_VERSION=13
 
 ARG BUILD_DATE
 ARG RELEASE
 ARG VERSION
+
+ENV PYTHONUNBUFFERED 1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV PIP_NO_CACHE_DIR=1
 
 ENV SERVER_VERSION=${RELEASE}
 ENV CLIENT_VERSION=8.5.2
@@ -35,9 +39,9 @@ LABEL org.opencontainers.image.description="Alerta API (prod)" \
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends \
+RUN apt update && \
+    apt upgrade -y && \
+    apt install -y --no-install-recommends \
     build-essential \
     curl \
     git \
@@ -45,32 +49,35 @@ RUN apt-get update && \
     libldap2-dev \
     libpq-dev \
     libsasl2-dev \
-    postgresql-client \
+    postgresql-client-${POSTGRESQL_VERSION} \
     python3-dev \
     supervisor \
     xmlsec1 && \
-    apt-get -y clean && \
-    apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
-    echo "deb https://nginx.org/packages/debian/ buster nginx" | tee /etc/apt/sources.list.d/nginx.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    nginx && \
-    apt-get -y clean && \
-    apt-get -y autoremove && \
-    rm -rf /var/lib/apt/lists/*
+# RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
+#     echo "deb https://nginx.org/packages/mainline/debian/ bullseye nginx" | tee /etc/apt/sources.list.d/nginx.list && \
+#     apt update && \
+#     apt install -y --no-install-recommends \
+#     nginx=${NGINX_VERSION} && \
+#     rm -rf /var/lib/apt/lists/*
+
+RUN apt update && apt -y install curl gnupg2 ca-certificates lsb-release debian-archive-keyring
+RUN curl https://nginx.org/keys/nginx_signing.key | gpg --dearmor | tee /usr/share/keyrings/nginx-archive-keyring.gpg >/dev/null
+RUN echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] http://nginx.org/packages/debian `lsb_release -cs` nginx" | tee /etc/apt/sources.list.d/nginx.list
+RUN apt update && apt install -y nginx && rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3008
-RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
-    echo "deb https://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    mongodb-org-shell && \
-    apt-get -y clean && \
-    apt-get -y autoremove && \
-    rm -rf /var/lib/apt/lists/*
+# RUN curl -fsSL https://www.mongodb.org/static/pgp/server-${MONGO_VERSION}.asc | apt-key add - && \
+#     echo "deb https://repo.mongodb.org/apt/debian buster/mongodb-org/${MONGO_VERSION} main" | tee /etc/apt/sources.list.d/mongodb-org-${MONGO_VERSION}.list && \
+#     apt update && \
+#     apt install -y --no-install-recommends \
+#     mongodb-org-shell && \
+#     rm -rf /var/lib/apt/lists/*
+
+RUN curl -fsSL https://pgp.mongodb.com/server-6.0.asc | gpg --dearmor | tee /usr/share/keyrings/mongodb-server-6.0.gpg >/dev/null
+RUN echo "deb [signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg] http://repo.mongodb.org/apt/debian `lsb_release -cs`/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+RUN apt update && apt install -y mongodb-org && rm -rf /var/lib/apt/lists/*
 
 COPY requirements*.txt /app/
 
