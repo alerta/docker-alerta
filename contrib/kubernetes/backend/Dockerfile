@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip install --no-cache-dir virtualenv && \
     virtualenv --python=python3 /venv && \
-    /venv/bin/pip install uwsgi alerta alerta-server==$VERSION
+    /venv/bin/pip install gunicorn alerta alerta-server==$VERSION
 
 ENV PATH $PATH:/venv/bin
 

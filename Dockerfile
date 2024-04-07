@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.10-slim-buster
 
 ENV PYTHONUNBUFFERED 1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -15,11 +15,7 @@ ENV WEBUI_VERSION=8.7.1
 ENV NGINX_WORKER_PROCESSES=1
 ENV NGINX_WORKER_CONNECTIONS=1024
 
-ENV UWSGI_PROCESSES=5
-ENV UWSGI_LISTEN=100
-ENV UWSGI_BUFFER_SIZE=8192
-ENV UWSGI_MAX_WORKER_LIFETIME=30
-ENV UWSGI_WORKER_LIFETIME_DELTA=3
+ENV GUNICORN_WORKERS=5
 
 ENV HEARTBEAT_SEVERITY=major
 ENV HK_EXPIRED_DELETE_HRS=2
@@ -77,7 +73,7 @@ COPY requirements*.txt /app/
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir pip virtualenv jinja2 && \
     python3 -m venv /venv && \
-    /venv/bin/pip install --no-cache-dir --upgrade setuptools && \
+    /venv/bin/pip install --no-cache-dir --upgrade setuptools wheel && \
     /venv/bin/pip install --no-cache-dir --requirement /app/requirements.txt && \
     /venv/bin/pip install --no-cache-dir --requirement /app/requirements-docker.txt
 ENV PATH $PATH:/venv/bin

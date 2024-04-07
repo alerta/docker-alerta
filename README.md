@@ -126,8 +126,8 @@ API to ease deployment more generally:
 `NGINX_WORKER_CONNECTIONS`
     - maximum number of simultaneous connections that can be opened by a worker process (default:`1024`)
 
-`UWSGI_PROCESSES`
-    - number of processes for uWSGI (default:`5`)
+`GUNICORN_WORKERS`
+    - number of worker processes for Gunicorn (default:`5`)
 
 `UWSGI_LISTEN`
     - max number of concurrent connections (default:`100`)
