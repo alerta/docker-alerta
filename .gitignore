@@ -8,3 +8,5 @@ contrib/kubernetes/helm/alerta/charts
 .idea/*
 
 /.bundle/
+
+/venv/
