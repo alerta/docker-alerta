@@ -18,7 +18,7 @@ jobs:
       IMAGE_NAME: alerta/alerta-web
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build Image
         id: docker-build
         run: >-
