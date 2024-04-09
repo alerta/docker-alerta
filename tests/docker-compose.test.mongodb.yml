@@ -14,7 +14,7 @@ services:
     depends_on:
       - db
     environment:
-      - DEBUG=1  # remove this line to turn DEBUG off
+      # - DEBUG=1  # remove this line to turn DEBUG off
       - LOG_LEVEL=error  # debug, info, warn (default), or error
       - SECRET_KEY=super-secret
       - DATABASE_URL=mongodb://db:27017/monitoring

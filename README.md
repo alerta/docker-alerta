@@ -129,18 +129,6 @@ API to ease deployment more generally:
 `GUNICORN_WORKERS`
     - number of worker processes for Gunicorn (default:`5`)
 
-`UWSGI_LISTEN`
-    - max number of concurrent connections (default:`100`)
-
-`UWSGI_BUFFER_SIZE`
-    - size of the unix socket buffer (default:`8192`)
-
-`UWSGI_MAX_WORKER_LIFETIME`
-    - reload worker after this many seconds (default:`30`)
-
-`UWSGI_WORKER_LIFETIME_DELTA`
-    - time in seconds to stagger UWSGI worker respawns (default:`3`)
-
 Configuration Files
 -------------------
 

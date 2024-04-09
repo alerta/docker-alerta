@@ -67,7 +67,6 @@ if [ ! -f "${NGINX_CONF_FILE}" ]; then
   echo "# Create nginx configuration file."
   python3 -c "${JINJA2}" < ${NGINX_CONF_FILE}.j2 >${NGINX_CONF_FILE}
 fi
-cat ${NGINX_CONF_FILE}
 nginx -t -c ${NGINX_CONF_FILE}
 
 # Generate Gunicorn config, if not supplied.
