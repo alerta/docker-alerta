@@ -39,8 +39,8 @@ describe "api" do
       it "return 200" do
         expect(result.code).to eq(200)
       end
-      it "X-Forwarded-For header is set" do
-        expect(result.body).to include("X-Forwarded-For")
+      it "HTTP_X_FORWARDED_FOR envvar is set" do
+        expect(result.body).to include("HTTP_X_FORWARDED_FOR")
       end
     end
     context "get healthcheck" do

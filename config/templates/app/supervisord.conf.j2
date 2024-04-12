@@ -4,8 +4,10 @@ logfile=/tmp/supervisord.log
 loglevel={{ env.SUPERVISORD_LOG_LEVEL|lower or 'debug' }}
 pidfile=/tmp/supervisord.pid
 
-[program:uwsgi]
-command=/venv/bin/uwsgi --ini /app/uwsgi.ini
+[program:gunicorn]
+command=/venv/bin/gunicorn wsgi:app -c /app/gunicorn.conf.py
+autostart=true
+autorestart=true
 redirect_stderr=true
 
 [program:nginx]

@@ -7,7 +7,7 @@ ALERTA_CONF_FILE=${ALERTA_CONF_FILE:-/app/alerta.conf}
 ALERTA_SVR_CONF_FILE=${ALERTA_SVR_CONF_FILE:-/app/alertad.conf}
 ALERTA_WEB_CONF_FILE=${ALERTA_WEB_CONF_FILE:-/web/config.json}
 NGINX_CONF_FILE=/app/nginx.conf
-UWSGI_CONF_FILE=/app/uwsgi.ini
+GUNICORN_CONF_FILE=/app/gunicorn.conf.py
 SUPERVISORD_CONF_FILE=/app/supervisord.conf
 
 ADMIN_USER=${ADMIN_USERS%%,*}
@@ -69,10 +69,10 @@ if [ ! -f "${NGINX_CONF_FILE}" ]; then
 fi
 nginx -t -c ${NGINX_CONF_FILE}
 
-# Generate uWSGI config, if not supplied.
-if [ ! -f "${UWSGI_CONF_FILE}" ]; then
-  echo "# Create uWSGI configuration file."
-  python3 -c "${JINJA2}" < ${UWSGI_CONF_FILE}.j2 >${UWSGI_CONF_FILE}
+# Generate Gunicorn config, if not supplied.
+if [ ! -f "${GUNICORN_CONF_FILE}" ]; then
+  echo "# Create Gunicorn configuration file."
+  python3 -c "${JINJA2}" < ${GUNICORN_CONF_FILE}.j2 >${GUNICORN_CONF_FILE}
 fi
 
 # Generate web config, if not supplied.
@@ -88,7 +88,7 @@ echo Alerta Client ${CLIENT_VERSION}
 echo Alerta WebUI  ${WEBUI_VERSION}
 
 nginx -v
-echo uwsgi $(uwsgi --version)
+gunicorn --version
 mongo --version | grep MongoDB
 psql --version
 python3 --version

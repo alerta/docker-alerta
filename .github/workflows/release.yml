@@ -48,7 +48,7 @@ jobs:
     env:
       REPOSITORY_URL: registry.hub.docker.com
       IMAGE_NAME: alerta/alerta-web
-      PLATFORM: 3.9-buster-uwsgi
+      PLATFORM: 3.9-buster-gunicorn
 
     steps:
       - uses: actions/checkout@v4

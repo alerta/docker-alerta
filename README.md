@@ -126,20 +126,8 @@ API to ease deployment more generally:
 `NGINX_WORKER_CONNECTIONS`
     - maximum number of simultaneous connections that can be opened by a worker process (default:`1024`)
 
-`UWSGI_PROCESSES`
-    - number of processes for uWSGI (default:`5`)
-
-`UWSGI_LISTEN`
-    - max number of concurrent connections (default:`100`)
-
-`UWSGI_BUFFER_SIZE`
-    - size of the unix socket buffer (default:`8192`)
-
-`UWSGI_MAX_WORKER_LIFETIME`
-    - reload worker after this many seconds (default:`30`)
-
-`UWSGI_WORKER_LIFETIME_DELTA`
-    - time in seconds to stagger UWSGI worker respawns (default:`3`)
+`GUNICORN_WORKERS`
+    - number of worker processes for Gunicorn (default:`5`)
 
 Configuration Files
 -------------------
