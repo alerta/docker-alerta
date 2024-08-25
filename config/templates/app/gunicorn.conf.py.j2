@@ -1,0 +1,14 @@
+
+bind = '127.0.0.1:29000'
+
+chdir = '/app'
+daemon = False
+raw_env = [
+    'SCRIPT_NAME=/api',
+]
+worker_tmp_dir = '/dev/shm'
+workers = {{ env.GUNICORN_WORKERS }}
+
+{%- if env.DEBUG %}
+loglevel = 'debug'
+{%- endif %}
