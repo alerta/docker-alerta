@@ -27,7 +27,7 @@ jobs:
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           RELEASE=$(cat VERSION)
           VERSION=${{ github.sha }}
-          docker-compose
+          docker compose
           -f tests/docker-compose.test.mongodb.yml
           up
           --build
@@ -57,7 +57,7 @@ jobs:
           BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           RELEASE=$(cat VERSION)
           VERSION=${{ github.sha }}
-          docker-compose
+          docker compose
           -f tests/docker-compose.test.mongodb.yml
           up
           --build
