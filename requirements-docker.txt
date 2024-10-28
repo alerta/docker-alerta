@@ -1,4 +1,4 @@
 lxml==5.2.1
 pysaml2==7.2.1
 python-ldap==3.4.4
-uWSGI==2.0.21
+uWSGI==2.0.28
