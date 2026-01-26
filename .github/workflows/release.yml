@@ -1,11 +1,18 @@
 name: Push to DockerHub
 
 on:
+  workflow_dispatch:
+  branches:
+    - "master"
+    - "feature/*"
   push:
-    tags: [ 'v*' ]
+    tags:
+      - "v*"
 
 env:
-  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  # SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  REGISTRY: registry.hub.docker.com
+  IMAGE_NAME: alerta/alerta-web
 
 jobs:
   test:
@@ -48,34 +55,49 @@ jobs:
     env:
       REPOSITORY_URL: registry.hub.docker.com
       IMAGE_NAME: alerta/alerta-web
-      PLATFORM: 3.9-buster-uwsgi
 
     steps:
       - uses: actions/checkout@v4
-      - name: Build Image
-        id: docker-build
-        run: >-
-          docker build
-          --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          --build-arg RELEASE=$(cat VERSION)
-          --build-arg VERSION=${{ github.sha }}
-          -t $IMAGE_NAME
-          -t $REPOSITORY_URL/$IMAGE_NAME:$(cat VERSION)
-          -t $REPOSITORY_URL/$IMAGE_NAME:$(git rev-parse --short HEAD)
-          -t $REPOSITORY_URL/$IMAGE_NAME:$PLATFORM
-          -t $REPOSITORY_URL/$IMAGE_NAME:latest .
-      - name: Docker Login
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REPOSITORY_URL }}
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Publish Image
-        id: docker-push
-        run: docker push --all-tags $REPOSITORY_URL/$IMAGE_NAME
 
-      - uses: act10ns/slack@v2
-        with: 
-          status: ${{ job.status }}
-          steps: ${{ toJson(steps) }}
-        if: always()
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          pull: true
+          platforms: linux/arm64,linux/amd64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+            RELEASE=$(cat VERSION)
+            VERSION=${{ github.sha }}
+
+      # - uses: act10ns/slack@v2
+      #   with:
+      #     status: ${{ job.status }}
+      #     steps: ${{ toJson(steps) }}
+      #   if: always()
