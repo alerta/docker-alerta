@@ -45,6 +45,8 @@ RUN apt-get update && \
     libldap2-dev \
     libpq-dev \
     libsasl2-dev \
+    libxml2-dev \
+    libxslt-dev \
     postgresql-client \
     python3-dev \
     supervisor \
