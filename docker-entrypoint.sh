@@ -33,7 +33,7 @@ if [ -n "${ADMIN_USERS}" ]; then
   # Create user-defined API key, if required
   if [ -n "${ADMIN_KEY}" ]; then
     echo "# Create user-defined admin API key."
-    alertad key --username "${ADMIN_USER}" --key "${ADMIN_KEY}" --duration "${MAXAGE}"
+    alertad key --username "${ADMIN_USER}" --key "${ADMIN_KEY}" --duration "${MAXAGE}" || true
   fi
 fi
 
