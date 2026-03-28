@@ -42,7 +42,9 @@ http {
 
     server {
         listen 8080 default_server;
+        {%- if env.ENABLE_IPV6 is defined and env.ENABLE_IPV6|lower == 'true' %}
         listen [::]:8080 default_server;
+        {%- endif %}
 
         access_log /dev/stdout main;
 
