@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Docker Lint
         id: docker-lint
         run: |
@@ -36,7 +36,7 @@ jobs:
           --build
           --quiet-pull
           --exit-code-from tester
-      - uses: act10ns/slack@v2
+      - uses: act10ns/slack@v2.1.0
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
@@ -56,7 +56,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Docker Login
@@ -86,7 +86,7 @@ jobs:
           tags: |
             ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.RELEASE }}-${{ steps.meta.outputs.PLATFORM_TAG }}
 
-      - uses: act10ns/slack@v2
+      - uses: act10ns/slack@v2.1.0
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
@@ -98,7 +98,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set build metadata
         id: meta
         run: |
@@ -125,7 +125,7 @@ jobs:
         run: |
           echo "Platform-specific tags can be cleaned up manually if desired"
 
-      - uses: act10ns/slack@v2
+      - uses: act10ns/slack@v2.1.0
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}

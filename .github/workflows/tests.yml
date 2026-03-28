@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Docker Lint
         id: docker-lint
         run: |
@@ -33,7 +33,7 @@ jobs:
           --build
           --quiet-pull
           --exit-code-from tester
-      - uses: act10ns/slack@v2
+      - uses: act10ns/slack@v2.1.0
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
@@ -43,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Docker Lint
         id: docker-lint
         run: |
@@ -63,7 +63,7 @@ jobs:
           --build
           --quiet-pull
           --exit-code-from tester
-      - uses: act10ns/slack@v2
+      - uses: act10ns/slack@v2.1.0
         with: 
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
