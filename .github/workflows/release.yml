@@ -3,6 +3,7 @@ name: Push to DockerHub
 on:
   push:
     tags: [ 'v*' ]
+  workflow_dispatch:
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -43,7 +44,7 @@ jobs:
     name: Docker Push
     needs: test
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     env:
       REPOSITORY_URL: registry.hub.docker.com
@@ -67,7 +68,7 @@ jobs:
         with:
           context: .
           platforms: linux/amd64,linux/arm64
-          push: true
+          push: ${{ github.event_name == 'push' }}
           build-args: |
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
             RELEASE=${{ github.ref_name }}
