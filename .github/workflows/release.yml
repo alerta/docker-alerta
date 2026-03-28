@@ -62,6 +62,9 @@ jobs:
           registry: ${{ env.REPOSITORY_URL }}
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set version
+        id: version
+        run: echo "RELEASE=$(cat VERSION)" >> $GITHUB_OUTPUT
       - name: Build and Push
         id: docker-build
         uses: docker/build-push-action@v6
@@ -71,10 +74,10 @@ jobs:
           push: ${{ github.event_name == 'push' }}
           build-args: |
             BUILD_DATE=${{ github.event.head_commit.timestamp }}
-            RELEASE=${{ github.ref_name }}
+            RELEASE=${{ steps.version.outputs.RELEASE }}
             VERSION=${{ github.sha }}
           tags: |
-            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.RELEASE }}
             ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:latest
 
       - uses: act10ns/slack@v2
