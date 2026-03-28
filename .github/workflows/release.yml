@@ -81,6 +81,7 @@ jobs:
             VERSION=${{ steps.meta.outputs.SHORT_SHA }}
           tags: |
             ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.RELEASE }}
+            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}
             ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:latest
 
       - uses: act10ns/slack@v2
