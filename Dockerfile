@@ -1,4 +1,4 @@
-FROM python:3.9-slim-buster
+FROM python:3.13-slim-bookworm
 
 ENV PYTHONUNBUFFERED 1
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1
@@ -45,6 +45,8 @@ RUN apt-get update && \
     libldap2-dev \
     libpq-dev \
     libsasl2-dev \
+    libxml2-dev \
+    libxslt-dev \
     postgresql-client \
     python3-dev \
     supervisor \
@@ -54,7 +56,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
-    echo "deb https://nginx.org/packages/debian/ buster nginx" | tee /etc/apt/sources.list.d/nginx.list && \
+    echo "deb https://nginx.org/packages/debian/ bookworm nginx" | tee /etc/apt/sources.list.d/nginx.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
     nginx && \
@@ -63,11 +65,11 @@ RUN curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add - && \
     rm -rf /var/lib/apt/lists/*
 
 # hadolint ignore=DL3008
-RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
-    echo "deb https://repo.mongodb.org/apt/debian buster/mongodb-org/4.2 main" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
+RUN curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | apt-key add - && \
+    echo "deb https://repo.mongodb.org/apt/debian bookworm/mongodb-org/7.0 main" | tee /etc/apt/sources.list.d/mongodb-org-7.0.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-    mongodb-org-shell && \
+    mongodb-mongosh && \
     apt-get -y clean && \
     apt-get -y autoremove && \
     rm -rf /var/lib/apt/lists/*
