@@ -7,6 +7,8 @@ on:
 
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  REPOSITORY_URL: registry.hub.docker.com
+  IMAGE_NAME: alerta/alerta-web
 
 jobs:
   test:
@@ -40,20 +42,21 @@ jobs:
           steps: ${{ toJson(steps) }}
         if: failure()
 
-  push:
-    name: Docker Push
+  build:
+    name: Build (${{ matrix.platform }})
     needs: test
-    runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-
-    env:
-      REPOSITORY_URL: registry.hub.docker.com
-      IMAGE_NAME: alerta/alerta-web
+    strategy:
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
 
     steps:
       - uses: actions/checkout@v4
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Docker Login
@@ -68,21 +71,59 @@ jobs:
           echo "RELEASE=$(cat VERSION)" >> $GITHUB_OUTPUT
           echo "BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
           echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "PLATFORM_TAG=$(echo ${{ matrix.platform }} | tr '/' '-')" >> $GITHUB_OUTPUT
       - name: Build and Push
         id: docker-build
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name == 'push' }}
+          platforms: ${{ matrix.platform }}
+          push: true
           build-args: |
             BUILD_DATE=${{ steps.meta.outputs.BUILD_DATE }}
             RELEASE=${{ steps.meta.outputs.RELEASE }}
             VERSION=${{ steps.meta.outputs.SHORT_SHA }}
           tags: |
-            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.RELEASE }}
-            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.SHORT_SHA }}
-            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.RELEASE }}-${{ steps.meta.outputs.PLATFORM_TAG }}
+
+      - uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+        if: failure()
+
+  manifest:
+    name: Create Manifest
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set build metadata
+        id: meta
+        run: |
+          echo "RELEASE=$(cat VERSION)" >> $GITHUB_OUTPUT
+          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - name: Docker Login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REPOSITORY_URL }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Create and push manifest
+        run: |
+          RELEASE=${{ steps.meta.outputs.RELEASE }}
+          SHORT_SHA=${{ steps.meta.outputs.SHORT_SHA }}
+          REPO=${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}
+
+          for TAG in "${RELEASE}" "${SHORT_SHA}" "latest"; do
+            docker buildx imagetools create -t ${REPO}:${TAG} \
+              ${REPO}:${RELEASE}-linux-amd64 \
+              ${REPO}:${RELEASE}-linux-arm64
+          done
+      - name: Clean up platform tags
+        run: |
+          echo "Platform-specific tags can be cleaned up manually if desired"
 
       - uses: act10ns/slack@v2
         with:
