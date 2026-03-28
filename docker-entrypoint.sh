@@ -21,6 +21,7 @@ if [ ! -f "${ALERTA_SVR_CONF_FILE}" ]; then
   echo "# Create server configuration file."
   export SECRET_KEY=${SECRET_KEY:-$(< /dev/urandom tr -dc A-Za-z0-9_\!\@\#\$\%\^\&\*\(\)-+= | head -c 32)}
   python3 -c "${JINJA2}" < ${ALERTA_SVR_CONF_FILE}.j2 >${ALERTA_SVR_CONF_FILE}
+  unset SECRET_KEY
 fi
 
 # Init admin users and API keys
