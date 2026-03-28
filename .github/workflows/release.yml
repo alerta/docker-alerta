@@ -62,9 +62,11 @@ jobs:
           registry: ${{ env.REPOSITORY_URL }}
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set version
-        id: version
-        run: echo "RELEASE=$(cat VERSION)" >> $GITHUB_OUTPUT
+      - name: Set build metadata
+        id: meta
+        run: |
+          echo "RELEASE=$(cat VERSION)" >> $GITHUB_OUTPUT
+          echo "BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
       - name: Build and Push
         id: docker-build
         uses: docker/build-push-action@v6
@@ -73,11 +75,11 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: ${{ github.event_name == 'push' }}
           build-args: |
-            BUILD_DATE=${{ github.event.head_commit.timestamp }}
-            RELEASE=${{ steps.version.outputs.RELEASE }}
+            BUILD_DATE=${{ steps.meta.outputs.BUILD_DATE }}
+            RELEASE=${{ steps.meta.outputs.RELEASE }}
             VERSION=${{ github.sha }}
           tags: |
-            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.version.outputs.RELEASE }}
+            ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.RELEASE }}
             ${{ env.REPOSITORY_URL }}/${{ env.IMAGE_NAME }}:latest
 
       - uses: act10ns/slack@v2
