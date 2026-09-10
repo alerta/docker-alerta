@@ -161,6 +161,9 @@ official template, provisioning the required PostgreSQL database
 automatically. See the `official Alerta template on Easypanel
 <https://easypanel.io/templates/alerta>`_ for more details.
 
+.. image:: docs/easypanel_deployed.png
+   :alt: Alerta deployed on Easypanel
+
 Plugins
 -------
 
