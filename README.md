@@ -153,6 +153,14 @@ configuration files instead. For example:
 
 For a full list of server configuration options see https://docs.alerta.io.
 
+Easypanel
+---------
+
+[Easypanel](https://easypanel.io/) can deploy Alerta with one click using its
+official template, provisioning the required PostgreSQL database
+automatically. See the `official Alerta template on Easypanel
+<https://easypanel.io/templates/alerta>`_ for more details.
+
 Plugins
 -------
 
